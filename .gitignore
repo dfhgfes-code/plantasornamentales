@@ -1,0 +1,20 @@
+# Variables de entorno — NUNCA subir
+backend/.env
+frontend/.env.local
+frontend/.env.production
+
+# Dependencias
+backend/node_modules/
+frontend/node_modules/
+
+# Build
+backend/dist/
+frontend/.next/
+
+# Logs
+backend/logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

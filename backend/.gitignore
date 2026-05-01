@@ -1,0 +1,29 @@
+# Dependencias
+node_modules/
+dist/
+
+# Variables de entorno (NUNCA subir al repositorio)
+.env
+.env.local
+.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Coverage
+coverage/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeORM migrations generadas
+src/database/migrations/*.js
