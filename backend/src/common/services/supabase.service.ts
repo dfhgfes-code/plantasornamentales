@@ -8,17 +8,20 @@ export class SupabaseService {
   private readonly logger = new Logger(SupabaseService.name);
 
   constructor(private readonly configService: ConfigService) {
-    const url = this.configService.get<string>('supabase.url');
-    const key = this.configService.get<string>('supabase.key');
+    const url = this.configService.get<string>('supabase.url') || process.env.SUPABASE_URL;
+    const key = this.configService.get<string>('supabase.key') || process.env.SUPABASE_SERVICE_KEY;
 
+    this.logger.log(`Supabase URL: ${url ? 'Detectada' : 'No encontrada'}`);
+    this.logger.log(`Supabase Key: ${key ? 'Detectada' : 'No encontrada'}`);
 
     if (url && key) {
       this.supabase = createClient(url, key);
-      this.logger.log('Supabase client initialized');
+      this.logger.log('✅ Supabase client initialized');
     } else {
-      this.logger.warn('Supabase URL or Key missing. Storage functionality will be limited.');
+      this.logger.error('❌ Supabase configuration missing in production environment');
     }
   }
+
 
   async uploadFile(file: Express.Multer.File, bucket: string = 'flowers') {
     if (!this.supabase) {
