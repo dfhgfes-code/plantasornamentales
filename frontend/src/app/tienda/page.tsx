@@ -144,7 +144,7 @@ export default function TiendaPage() {
                   <Link href={`/tienda/${product.id}`}>
                     <h3 className="font-semibold text-gray-900 hover:text-rose-700 transition-colors line-clamp-1 mb-1">{product.name}</h3>
                   </Link>
-                  <p className="text-xs text-gray-400 line-clamp-2 mb-3">{product.description}</p>
+                  <p className="text-xs text-gray-400 line-clamp-4 mb-3">{product.description}</p>
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-rose-700 font-serif">{formatCurrency(Number(product.price))}</span>
                     <div className="flex items-center gap-1">

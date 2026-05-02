@@ -60,7 +60,8 @@ export default function AdminProductosPage() {
     if (!form.name || !form.price) { toast.error('Nombre y precio son requeridos'); return; }
     setSaving(true);
     try {
-      const payload = { ...form, price: Number(form.price), stock: Number(form.stock) };
+      const cleanPrice = String(form.price).replace(/[^0-9]/g, '');
+      const payload = { ...form, price: Number(cleanPrice), stock: Number(form.stock) };
       if (editing) {
         await api.patch(`/admin/products/${editing.id}`, payload);
         toast.success('Producto actualizado');

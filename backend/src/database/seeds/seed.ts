@@ -3,6 +3,7 @@
  * Uso: npx ts-node src/database/seeds/seed.ts
  */
 import { AppDataSource } from '../data-source';
+import { seedUsers } from './users.seed';
 import { seedProducts } from './products.seed';
 import { seedPlans } from './plans.seed';
 
@@ -13,6 +14,7 @@ async function runSeeds() {
     await AppDataSource.initialize();
     console.log('✅ Conexión a base de datos establecida\n');
 
+    await seedUsers(AppDataSource);
     await seedProducts(AppDataSource);
     await seedPlans(AppDataSource);
 

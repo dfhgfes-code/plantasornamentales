@@ -5,9 +5,11 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
-import { diskStorage } from 'multer';
 import { extname, join } from 'path';
+import { memoryStorage } from 'multer';
 import { AdminService } from './admin.service';
+import { SupabaseService } from '../../common/services/supabase.service';
+
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -35,7 +37,9 @@ export class AdminController {
     private readonly plansService: PlansService,
     private readonly usersService: UsersService,
     private readonly ordersService: OrdersService,
+    private readonly supabaseService: SupabaseService,
   ) {}
+
 
   // ─── DASHBOARD ───────────────────────────────────────────────
   @Get('dashboard')
@@ -46,16 +50,10 @@ export class AdminController {
 
   // ─── UPLOAD DE IMAGEN ────────────────────────────────────────
   @Post('upload')
-  @ApiOperation({ summary: 'Subir imagen de producto' })
+  @ApiOperation({ summary: 'Subir imagen de producto a Supabase' })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: join(process.cwd(), '..', 'frontend', 'public', 'flowers'),
-      filename: (req, file, cb) => {
-        const unique = Date.now() + '-' + Math.round(Math.random() * 1e6);
-        cb(null, `product-${unique}${extname(file.originalname)}`);
-      },
-    }),
+    storage: memoryStorage(),
     fileFilter: (req, file, cb) => {
       if (!file.mimetype.match(/\/(jpg|jpeg|png|webp|gif)$/)) {
         return cb(new BadRequestException('Solo se permiten imágenes'), false);
@@ -64,13 +62,20 @@ export class AdminController {
     },
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   }))
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException('No se recibió ningún archivo');
-    return {
-      message: 'Imagen subida correctamente',
-      data: { url: `/flowers/${file.filename}`, filename: file.filename },
-    };
+    
+    try {
+      const result = await this.supabaseService.uploadFile(file);
+      return {
+        message: 'Imagen subida correctamente a la nube',
+        data: result,
+      };
+    } catch (error) {
+      throw new BadRequestException('Error al subir imagen a Supabase: ' + error.message);
+    }
   }
+
 
   // ─── PRODUCTOS ───────────────────────────────────────────────
   @Get('products')

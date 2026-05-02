@@ -14,6 +14,8 @@ import { ProductsModule } from '../products/products.module';
 import { PlansModule } from '../plans/plans.module';
 import { UsersModule } from '../users/users.module';
 import { OrdersModule } from '../orders/orders.module';
+import { SupabaseService } from '../../common/services/supabase.service';
+
 
 @Module({
   imports: [
@@ -25,6 +27,6 @@ import { OrdersModule } from '../orders/orders.module';
     OrdersModule,
   ],
   controllers: [AdminController],
-  providers: [AdminService],
+  providers: [AdminService, SupabaseService],
 })
 export class AdminModule {}

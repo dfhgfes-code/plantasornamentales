@@ -19,7 +19,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
         ssl: { rejectUnauthorized: false },
         entities: [join(__dirname, '..', '**', '*.entity.{ts,js}')],
         migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
-        synchronize: !isProduction,
+        synchronize: true, // TEMPORAL: Crear tablas automáticamente
         logging: !isProduction ? ['query', 'error'] : ['error'],
         migrationsRun: false,
         retryAttempts: 3,
@@ -41,7 +41,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
       extra: sslEnabled ? { ssl: { rejectUnauthorized: false } } : {},
       entities: [join(__dirname, '..', '**', '*.entity.{ts,js}')],
       migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
-      synchronize: !isProduction,
+      synchronize: true, // TEMPORAL: Crear tablas automáticamente
       logging: !isProduction ? ['query', 'error'] : ['error'],
       migrationsRun: false,
       retryAttempts: 3,
