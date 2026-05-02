@@ -3,6 +3,14 @@ backend/.env
 frontend/.env.local
 frontend/.env.production
 
+# Archivos sensibles — NUNCA subir
+CREDENCIALES.md
+CREATE_ADMIN_USER.sql
+CREAR_TODAS_LAS_TABLAS.sql
+DESACTIVAR_RLS.sql
+backend/generate-password-hash.js
+**/seeds/users.seed.ts
+
 # Dependencias
 backend/node_modules/
 frontend/node_modules/
