@@ -8,8 +8,9 @@ export class SupabaseService {
   private readonly logger = new Logger(SupabaseService.name);
 
   constructor(private readonly configService: ConfigService) {
-    const url = this.configService.get<string>('SUPABASE_URL');
-    const key = this.configService.get<string>('SUPABASE_SERVICE_KEY');
+    const url = this.configService.get<string>('supabase.url');
+    const key = this.configService.get<string>('supabase.key');
+
 
     if (url && key) {
       this.supabase = createClient(url, key);

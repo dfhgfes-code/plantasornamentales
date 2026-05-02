@@ -7,8 +7,10 @@ import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import wompiConfig from './config/wompi.config';
+import supabaseConfig from './config/supabase.config';
 import { DatabaseConfig } from './database/database.config';
 import { winstonConfig } from './config/logger.config';
+
 
 import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -27,7 +29,7 @@ import { AdminModule } from './modules/admin/admin.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      load: [appConfig, databaseConfig, jwtConfig, wompiConfig],
+      load: [appConfig, databaseConfig, jwtConfig, wompiConfig, supabaseConfig],
     }),
 
     // Logger Winston global
