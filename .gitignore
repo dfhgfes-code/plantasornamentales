@@ -8,6 +8,7 @@ CREDENCIALES.md
 CREATE_ADMIN_USER.sql
 CREAR_TODAS_LAS_TABLAS.sql
 DESACTIVAR_RLS.sql
+SEGURIDAD_PENDIENTE.md
 backend/generate-password-hash.js
 **/seeds/users.seed.ts
 
