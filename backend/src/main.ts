@@ -96,8 +96,8 @@ async function bootstrap() {
     console.log(`📚 Swagger disponible en: http://localhost:${port}/docs`);
   }
 
-  await app.listen(port);
-  console.log(`🌸 Janneth Acevedo Plantas API corriendo en: http://localhost:${port}/${apiPrefix}`);
+  await app.listen(port, '0.0.0.0');
+  console.log(`🌸 Janneth Acevedo Plantas API corriendo en: http://0.0.0.0:${port}/${apiPrefix}`);
   console.log(`🌍 Entorno: ${nodeEnv}`);
 }
 
