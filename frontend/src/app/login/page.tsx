@@ -54,7 +54,7 @@ export default function LoginPage() {
       <style>{`
         .login-page {
           min-height: 100vh;
-          background: #fffcf9; /* Fondo crema muy sutil */
+          background: #fffcf9;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -74,13 +74,11 @@ export default function LoginPage() {
           position: relative;
         }
 
-        /* Panel Izquierdo - Imagen con curva */
         .left-panel {
           width: 48%;
           position: relative;
           background: #1a1a1a;
           overflow: hidden;
-          display: block;
         }
 
         @media (max-width: 1024px) {
@@ -92,21 +90,20 @@ export default function LoginPage() {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          opacity: 0.85;
-          filter: brightness(0.85);
+          opacity: 0.9;
+          filter: brightness(0.8);
         }
 
-        /* Overlay para mejorar legibilidad del texto sobre la foto */
         .left-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(to right, rgba(0,0,0,0.4), transparent);
+          background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
         }
 
         .left-content {
           position: absolute;
-          top: 80px;
-          left: 60px;
+          bottom: 60px; /* Movido hacia abajo para no pisar el texto de la imagen */
+          left: 50px;
           z-index: 10;
           color: #fff;
           max-width: 400px;
@@ -116,12 +113,12 @@ export default function LoginPage() {
           font-family: 'Playfair Display', serif;
           font-size: 3.5rem;
           line-height: 1.1;
-          margin-bottom: 24px;
+          margin-bottom: 20px;
           font-weight: 500;
         }
 
         .left-content h2 span {
-          color: #fda4af; /* Rosa suave */
+          color: #fda4af;
           font-style: italic;
         }
 
@@ -132,7 +129,6 @@ export default function LoginPage() {
           font-weight: 300;
         }
 
-        /* Panel Derecho - Formulario */
         .right-panel {
           flex: 1;
           padding: 60px;
@@ -144,22 +140,16 @@ export default function LoginPage() {
           background: #fff;
         }
 
-        @media (max-width: 640px) {
-          .right-panel { padding: 40px 24px; }
-          .form-header h1 { font-size: 1.75rem !important; }
-        }
-
-        /* Ramita decorativa SVG fondo (Rosa muy pálido) */
         .decor-sketch {
           position: absolute;
           bottom: -40px;
           right: -40px;
           width: 250px;
           height: 250px;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none'%3E%3Cpath d='M180 180 Q140 120 100 100 Q60 80 20 20' stroke='%23fff1f2' stroke-width='2' stroke-linecap='round'/%3E%3Cellipse cx='100' cy='100' rx='8' ry='14' fill='%23fff1f2' transform='rotate(-30 100 100)'/%3E%3Cellipse cx='120' cy='80' rx='6' ry='11' fill='%23fff1f2' transform='rotate(20 120 80)'/%3E%3C/svg%3E");
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none'%3E%3Cpath d='M180 180 Q140 120 100 100 Q60 80 20 20' stroke='%23fff1f2' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
           background-size: contain;
           background-repeat: no-repeat;
-          opacity: 0.8;
+          opacity: 0.6;
           pointer-events: none;
         }
 
@@ -179,7 +169,6 @@ export default function LoginPage() {
           font-weight: 700;
           color: #1f2937;
           margin-bottom: 8px;
-          letter-spacing: -0.02em;
         }
 
         .form-header p {
@@ -198,7 +187,6 @@ export default function LoginPage() {
           color: #4b5563;
           margin-bottom: 8px;
           text-transform: uppercase;
-          letter-spacing: 0.05em;
         }
 
         .input-wrapper {
@@ -218,20 +206,26 @@ export default function LoginPage() {
         .input-field {
           width: 100%;
           padding: 14px 16px 14px 48px;
-          background: #fcfcfc;
+          background: #fff !important; /* Forzado a blanco */
           border: 1.5px solid #f3f4f6;
           border-radius: 14px;
           font-size: 1rem;
           color: #111827;
-          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.25s;
         }
 
-        .input-field::placeholder { color: #d1d5db; }
+        /* Corrección de Autofill de Chrome (el fondo azul) */
+        .input-field:-webkit-autofill,
+        .input-field:-webkit-autofill:hover, 
+        .input-field:-webkit-autofill:focus, 
+        .input-field:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 40px white inset !important;
+          -webkit-text-fill-color: #111827 !important;
+        }
 
         .input-field:focus {
           outline: none;
-          background: #fff;
-          border-color: #ec4899; /* Rosa vibrante de la página */
+          border-color: #ec4899;
           box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.08);
         }
 
@@ -242,11 +236,7 @@ export default function LoginPage() {
           cursor: pointer;
           background: none;
           border: none;
-          padding: 8px;
-          border-radius: 8px;
-          transition: color 0.2s;
         }
-        .show-password:hover { color: #ec4899; }
 
         .forgot-password {
           display: block;
@@ -256,14 +246,12 @@ export default function LoginPage() {
           margin-top: 12px;
           text-decoration: none;
           font-weight: 600;
-          transition: color 0.2s;
         }
-        .forgot-password:hover { color: #db2777; }
 
         .btn-login {
           width: 100%;
           padding: 16px;
-          background: linear-gradient(135deg, #f472b6 0%, #db2777 100%); /* Degradado rosa de la página */
+          background: linear-gradient(135deg, #f472b6 0%, #db2777 100%);
           color: #fff;
           border: none;
           border-radius: 14px;
@@ -272,17 +260,13 @@ export default function LoginPage() {
           margin-top: 32px;
           cursor: pointer;
           box-shadow: 0 10px 25px rgba(219, 39, 119, 0.25);
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.3s;
         }
 
         .btn-login:hover:not(:disabled) {
           transform: translateY(-2px);
-          box-shadow: 0 15px 35px rgba(219, 39, 119, 0.35);
           filter: brightness(1.05);
         }
-
-        .btn-login:active:not(:disabled) { transform: translateY(0); }
-        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .divider {
           display: flex;
@@ -291,20 +275,11 @@ export default function LoginPage() {
           color: #e5e7eb;
         }
 
-        .divider::before, .divider::after {
-          content: "";
-          flex: 1;
-          height: 1px;
-          background: #f3f4f6;
-        }
-
         .divider span {
           padding: 0 16px;
           font-size: 0.8rem;
-          font-weight: 500;
           color: #9ca3af;
           text-transform: uppercase;
-          letter-spacing: 0.05em;
         }
 
         .btn-google {
@@ -321,13 +296,6 @@ export default function LoginPage() {
           font-weight: 600;
           color: #4b5563;
           cursor: pointer;
-          transition: all 0.2s;
-        }
-
-        .btn-google:hover {
-          background: #fafafa;
-          border-color: #e5e7eb;
-          color: #1f2937;
         }
 
         .footer-text {
@@ -341,9 +309,7 @@ export default function LoginPage() {
           color: #f472b6;
           font-weight: 700;
           text-decoration: none;
-          margin-left: 4px;
         }
-        .footer-text a:hover { text-decoration: underline; }
       `}</style>
 
       <div className="login-page">
@@ -351,29 +317,21 @@ export default function LoginPage() {
           className="login-card"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.6 }}
         >
           {/* Panel Izquierdo */}
           <div className="left-panel">
             <img src="/images/login_bg.png" alt="Premium Bouquet" />
             <div className="left-overlay" />
             <div className="left-content">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
-              >
-                <h2>Cada flor<br />cuenta una<br /><span>historia</span></h2>
-                <p>Arreglos únicos diseñados para transformar momentos ordinarios en recuerdos inolvidables.</p>
-              </motion.div>
+              <h2>Cada flor<br />cuenta una<br /><span>historia</span></h2>
+              <p>Arreglos únicos diseñados para transformar momentos ordinarios en recuerdos inolvidables.</p>
             </div>
           </div>
 
           {/* Panel Derecho */}
           <div className="right-panel">
-            {/* Sketch decorativo */}
             <div className="decor-sketch" />
-
             <div className="form-container">
               <div className="flex justify-center mb-10">
                 <Logo size="xl" centered />
@@ -424,7 +382,7 @@ export default function LoginPage() {
                 </div>
 
                 <button type="submit" disabled={loading} className="btn-login">
-                  {loading ? 'Validando...' : 'Ingresar al Jardín'}
+                  {loading ? 'Cargando...' : 'Ingresar al Jardín'}
                 </button>
               </form>
 
