@@ -6,7 +6,8 @@ import { adminApi } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { Users, Package, RefreshCw, DollarSign, AlertTriangle, ShoppingBag } from 'lucide-react';
+import { Users, Package, RefreshCw, DollarSign, AlertTriangle, ShoppingBag, ArrowRight } from 'lucide-react';
+
 import Link from 'next/link';
 
 export default function AdminPage() {
@@ -59,10 +60,28 @@ export default function AdminPage() {
                 <p className={`font-bold text-gray-900 ${small ? 'text-base' : 'text-2xl'}`}>{value}</p>
                 <p className="text-xs text-gray-500 mt-0.5">{label}</p>
               </Card>
-            ))}
           </div>
 
+          {/* Banner de configuración rápida */}
+          <Link href="/admin/configuracion" className="block mb-8 group">
+            <div className="bg-gradient-to-r from-rose-500 to-pink-600 rounded-3xl p-6 text-white shadow-lg shadow-rose-200 flex items-center justify-between hover:scale-[1.01] transition-all">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-white/20 rounded-2xl">
+                  <RefreshCw className="w-6 h-6" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-lg">Configuración de la Tienda</h2>
+                  <p className="text-rose-100 text-sm">Cambia WhatsApp, redes sociales, dirección y más.</p>
+                </div>
+              </div>
+              <div className="bg-white/20 p-2 rounded-xl group-hover:translate-x-1 transition-transform">
+                <ArrowRight className="w-5 h-5" />
+              </div>
+            </div>
+          </Link>
+
           <div className="grid lg:grid-cols-2 gap-6">
+
             {/* Pedidos recientes */}
             <Card>
               <div className="flex items-center justify-between mb-5">
