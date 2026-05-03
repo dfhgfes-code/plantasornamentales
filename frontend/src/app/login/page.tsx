@@ -9,7 +9,6 @@ import { Mail, Lock, ArrowRight, Flower2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
-import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { EpicGarden } from '@/components/EpicGarden';
 import toast from 'react-hot-toast';
@@ -53,157 +52,150 @@ export default function LoginPage() {
   return (
     <>
       <style>{`
-        @keyframes slow-zoom {
-          from { transform: scale(1.0); }
-          to   { transform: scale(1.08); }
+        .login-bg {
+          background: linear-gradient(160deg,
+            #fff0f5 0%,
+            #fce7f3 25%,
+            #fdf4ff 50%,
+            #fff1f2 75%,
+            #fef9c3 100%
+          );
+          background-size: 400% 400%;
+          animation: gradient-shift 12s ease infinite;
         }
-        @keyframes shimmer-border {
+        @keyframes gradient-shift {
           0%   { background-position: 0% 50%; }
           50%  { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
         }
         @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 40px 0px rgba(244,114,182,0.15); }
-          50%       { box-shadow: 0 0 80px 10px rgba(244,114,182,0.30); }
-        }
-        .bg-zoom {
-          animation: slow-zoom 30s ease-in-out infinite alternate;
+          0%, 100% { box-shadow: 0 8px 60px rgba(244,114,182,0.12), 0 2px 20px rgba(0,0,0,0.06); }
+          50%       { box-shadow: 0 8px 80px rgba(244,114,182,0.22), 0 2px 20px rgba(0,0,0,0.06); }
         }
         .card-glow {
           animation: pulse-glow 5s ease-in-out infinite;
         }
         .luxury-card {
-          background: rgba(255,255,255,0.72);
-          backdrop-filter: blur(32px) saturate(180%);
-          -webkit-backdrop-filter: blur(32px) saturate(180%);
-          border: 1px solid rgba(255,255,255,0.6);
+          background: rgba(255, 255, 255, 0.78);
+          backdrop-filter: blur(28px) saturate(160%);
+          -webkit-backdrop-filter: blur(28px) saturate(160%);
+          border: 1px solid rgba(255, 255, 255, 0.7);
         }
-        .btn-gradient {
-          background: linear-gradient(135deg, #be185d 0%, #9f1239 50%, #881337 100%);
-          background-size: 200% 200%;
-          transition: background-position 0.4s ease, transform 0.15s ease, box-shadow 0.3s ease;
+        .btn-rose {
+          background: linear-gradient(135deg, #e11d48 0%, #be185d 60%, #9f1239 100%);
+          transition: filter 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
         }
-        .btn-gradient:hover {
-          background-position: right center;
-          box-shadow: 0 12px 40px rgba(190,24,93,0.45);
+        .btn-rose:hover:not(:disabled) {
+          filter: brightness(1.1);
+          box-shadow: 0 10px 36px rgba(190,24,93,0.40);
           transform: translateY(-1px);
         }
-        .btn-gradient:active { transform: scale(0.97); }
-        .input-luxury {
-          background: rgba(255,255,255,0.5) !important;
-          border: 1.5px solid rgba(244,114,182,0.25) !important;
-          transition: all 0.3s ease !important;
+        .btn-rose:active:not(:disabled) { transform: scale(0.97); }
+        .input-wrap {
+          background: rgba(255,255,255,0.55);
+          border: 1.5px solid rgba(244,114,182,0.22);
+          border-radius: 14px;
+          transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
         }
-        .input-luxury:focus-within {
-          background: rgba(255,255,255,0.9) !important;
-          border-color: rgba(236,72,153,0.5) !important;
-          box-shadow: 0 0 0 4px rgba(244,114,182,0.12) !important;
+        .input-wrap:focus-within {
+          background: rgba(255,255,255,0.95);
+          border-color: rgba(236,72,153,0.45);
+          box-shadow: 0 0 0 4px rgba(244,114,182,0.10);
         }
-        .divider-line {
-          background: linear-gradient(90deg, transparent, rgba(244,114,182,0.4), transparent);
+        .divider {
+          background: linear-gradient(90deg, transparent, rgba(244,114,182,0.35), transparent);
+          height: 1px;
         }
       `}</style>
 
-      {/* ── Fondo fotográfico ── */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-zoom"
-          style={{ backgroundImage: "url('/images/boutique-bg.png')" }}
-        />
-        {/* Overlay degradado suave */}
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-50/60 via-white/30 to-pink-50/50" />
-        <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-transparent to-white/20" />
+      {/* ── Fondo degradado animado (sin imagen) ── */}
+      <div className="login-bg fixed inset-0 z-0" />
+
+      {/* ── Círculos decorativos de fondo ── */}
+      <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
+        <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full bg-rose-200/30 blur-3xl" />
+        <div className="absolute top-1/3 -right-24 w-72 h-72 rounded-full bg-pink-200/25 blur-3xl" />
+        <div className="absolute -bottom-20 left-1/3 w-96 h-96 rounded-full bg-fuchsia-100/30 blur-3xl" />
       </div>
 
-      {/* ── Jardín animado (flores creciendo) ── */}
+      {/* ── Jardín animado ── */}
       <EpicGarden />
 
-      {/* ── Contenido principal ── */}
-      <div className="relative z-20 min-h-screen flex flex-col items-center justify-center px-4 py-24">
+      {/* ── Contenido ── */}
+      <div className="relative z-20 min-h-screen flex flex-col items-center justify-center px-4 py-16 sm:py-20">
 
-        {/* Logo / Marca */}
+        {/* Marca */}
         <motion.div
-          className="text-center mb-10"
-          initial={{ opacity: 0, y: -24 }}
+          className="text-center mb-8 sm:mb-10"
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
         >
-          {/* Ícono floral */}
           <motion.div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/80 shadow-lg mb-5 border border-rose-100"
-            animate={{ rotate: [0, 5, -5, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+            className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/80 shadow-md mb-4 border border-rose-100"
+            animate={{ rotate: [0, 6, -6, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <Flower2 className="w-8 h-8 text-rose-500" />
+            <Flower2 className="w-7 h-7 sm:w-8 sm:h-8 text-rose-500" />
           </motion.div>
 
           <h1
-            className="text-5xl md:text-6xl text-gray-900 tracking-tight leading-none"
+            className="text-4xl sm:text-5xl text-gray-900 leading-tight"
             style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: 'italic' }}
           >
             Janneth Acevedo
           </h1>
 
-          <div className="flex items-center justify-center gap-3 mt-4">
-            <div className="h-px w-12 divider-line" />
-            <p className="text-[10px] font-black uppercase tracking-[0.45em] text-rose-500">
+          <div className="flex items-center justify-center gap-3 mt-3">
+            <div className="divider w-10" />
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-500">
               Boutique Floral de Lujo
             </p>
-            <div className="h-px w-12 divider-line" />
+            <div className="divider w-10" />
           </div>
         </motion.div>
 
-        {/* Tarjeta de login */}
+        {/* Tarjeta */}
         <motion.div
-          className="w-full max-w-[440px]"
-          initial={{ opacity: 0, y: 40, scale: 0.96 }}
+          className="w-full max-w-sm sm:max-w-[420px]"
+          initial={{ opacity: 0, y: 32, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1.1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="luxury-card card-glow rounded-[2.5rem] p-10 md:p-12 relative overflow-hidden">
+          <div className="luxury-card card-glow rounded-[2rem] sm:rounded-[2.5rem] p-7 sm:p-10 relative overflow-hidden">
 
-            {/* Destellos decorativos internos */}
-            <div className="absolute -top-20 -right-20 w-56 h-56 bg-rose-300/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-pink-200/15 rounded-full blur-3xl pointer-events-none" />
+            {/* Destellos internos */}
+            <div className="absolute -top-16 -right-16 w-48 h-48 bg-rose-200/15 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-pink-100/20 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Encabezado del formulario */}
-            <div className="text-center mb-9 relative z-10">
-              <motion.h2
-                className="text-2xl font-bold text-gray-800 tracking-tight"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.7 }}
-              >
+            {/* Encabezado */}
+            <div className="text-center mb-7 relative z-10">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 tracking-tight">
                 Bienvenida de vuelta
-              </motion.h2>
-              <motion.p
-                className="text-gray-400 mt-2 text-sm"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.9 }}
-              >
+              </h2>
+              <p className="text-gray-400 mt-1.5 text-sm">
                 Tu espacio personal en nuestro jardín 🌸
-              </motion.p>
+              </p>
             </div>
 
             {/* Formulario */}
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 relative z-10">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 relative z-10">
 
               {/* Email */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.0 }}
+                transition={{ delay: 0.7 }}
               >
-                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1.5 ml-1">
                   Correo electrónico
                 </label>
-                <div className="input-luxury rounded-2xl overflow-hidden">
+                <div className="input-wrap">
                   <Input
                     type="email"
                     placeholder="tu@email.com"
                     icon={<Mail className="w-4 h-4 text-rose-400" />}
-                    className="bg-transparent border-0 rounded-2xl h-13 focus:ring-0 focus:outline-none pl-11 text-gray-800 placeholder:text-gray-300"
+                    className="bg-transparent border-0 rounded-[13px] h-12 focus:ring-0 focus:outline-none text-gray-800 placeholder:text-gray-300 text-sm"
                     error={errors.email?.message}
                     {...register('email')}
                   />
@@ -212,19 +204,19 @@ export default function LoginPage() {
 
               {/* Contraseña */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.15 }}
+                transition={{ delay: 0.85 }}
               >
-                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1.5 ml-1">
                   Contraseña
                 </label>
-                <div className="input-luxury rounded-2xl overflow-hidden">
+                <div className="input-wrap">
                   <Input
                     type="password"
                     placeholder="••••••••"
                     icon={<Lock className="w-4 h-4 text-rose-400" />}
-                    className="bg-transparent border-0 rounded-2xl h-13 focus:ring-0 focus:outline-none pl-11 text-gray-800 placeholder:text-gray-300"
+                    className="bg-transparent border-0 rounded-[13px] h-12 focus:ring-0 focus:outline-none text-gray-800 placeholder:text-gray-300 text-sm"
                     error={errors.password?.message}
                     {...register('password')}
                   />
@@ -233,19 +225,19 @@ export default function LoginPage() {
 
               {/* Botón */}
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.3 }}
-                className="pt-2"
+                transition={{ delay: 1.0 }}
+                className="pt-1"
               >
                 <button
                   type="submit"
                   disabled={loading}
-                  className="btn-gradient w-full h-14 rounded-2xl text-white font-bold text-base tracking-wide flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="btn-rose w-full h-13 rounded-2xl text-white font-bold text-sm sm:text-base tracking-wide flex items-center justify-center gap-2.5 disabled:opacity-60 disabled:cursor-not-allowed py-3.5"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
-                      <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none">
+                      <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
                       </svg>
@@ -254,7 +246,7 @@ export default function LoginPage() {
                   ) : (
                     <>
                       Ingresar al Jardín
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-4 h-4" />
                     </>
                   )}
                 </button>
@@ -262,10 +254,10 @@ export default function LoginPage() {
             </form>
 
             {/* Separador */}
-            <div className="flex items-center gap-3 my-7 relative z-10">
-              <div className="flex-1 h-px divider-line" />
+            <div className="flex items-center gap-3 my-5 relative z-10">
+              <div className="flex-1 divider" />
               <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">o</span>
-              <div className="flex-1 h-px divider-line" />
+              <div className="flex-1 divider" />
             </div>
 
             {/* Registro */}
@@ -273,7 +265,7 @@ export default function LoginPage() {
               className="text-center relative z-10"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.5 }}
+              transition={{ delay: 1.2 }}
             >
               <Link
                 href="/registro"
@@ -287,12 +279,12 @@ export default function LoginPage() {
             </motion.div>
           </div>
 
-          {/* Pie de página */}
+          {/* Pie */}
           <motion.p
-            className="text-center text-[9px] font-black uppercase tracking-[0.5em] text-gray-300 mt-8"
+            className="text-center text-[9px] font-black uppercase tracking-[0.45em] text-gray-300 mt-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.8 }}
+            transition={{ delay: 1.4 }}
           >
             Luxury Flower Boutique · Experiencias Reales
           </motion.p>
