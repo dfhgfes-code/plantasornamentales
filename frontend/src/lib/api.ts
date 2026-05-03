@@ -99,6 +99,7 @@ export const paymentsApi = {
 
 export const adminApi = {
   getDashboard: () => api.get('/admin/dashboard'),
+  getSuperAnalytics: () => api.get('/admin/super-analytics'),
   getUsers: (params?: any) => api.get('/users', { params }),
   toggleUserActive: (id: string) => api.patch(`/users/${id}/toggle-active`),
   createAdmin: (data: any) => api.post('/users/create-admin', data),

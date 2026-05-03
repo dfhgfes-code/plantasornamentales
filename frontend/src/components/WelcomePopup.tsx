@@ -2,16 +2,29 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { X, ArrowRight, Gift, Check } from 'lucide-react';
+import { settingsApi } from '@/lib/api';
 
 export function WelcomePopup() {
   const [visible, setVisible] = useState(false);
+  const [settings, setSettings] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const seen = sessionStorage.getItem('popup_seen');
-    if (!seen) {
+    if (seen) return;
+
+    settingsApi.getAll().then(res => {
+      const s = res.data;
+      setSettings(s);
+      // Only show if popup is enabled in settings
+      if (s.popup_enabled !== 'false') {
+        const timer = setTimeout(() => setVisible(true), 1800);
+        return () => clearTimeout(timer);
+      }
+    }).catch(() => {
+      // Fallback: show popup anyway
       const timer = setTimeout(() => setVisible(true), 1800);
       return () => clearTimeout(timer);
-    }
+    });
   }, []);
 
   const close = () => {
@@ -20,6 +33,12 @@ export function WelcomePopup() {
   };
 
   if (!visible) return null;
+
+  const title = settings.popup_title || '¡Bienvenida a nuestra familia floral!';
+  const subtitle = settings.popup_subtitle || 'Únete y obtén 10% de descuento en tu primer pedido';
+  const discountLabel = settings.popup_discount_label || '10% en tu primera compra';
+  const ctaText = settings.popup_cta_text || 'Quiero unirme ahora';
+  const ctaLink = settings.popup_cta_link || '/registro';
 
   return (
     <div
@@ -37,29 +56,25 @@ export function WelcomePopup() {
           <X className="w-4 h-4" />
         </button>
 
-        {/* Header con gradiente + flores decorativas */}
+        {/* Header con gradiente */}
         <div
           className="relative h-48 flex items-center justify-center overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #fce7f3 0%, #fdf2f8 40%, #fff1f5 100%)' }}
         >
-          {/* Flores decorativas de fondo */}
           <div className="absolute inset-0 flex items-center justify-center opacity-20 select-none pointer-events-none">
             <span style={{ fontSize: 180, lineHeight: 1 }}>🌸</span>
           </div>
 
-          {/* Flores pequeñas dispersas */}
           <span className="absolute top-4 left-6 text-4xl opacity-60 animate-float">🌷</span>
           <span className="absolute top-8 right-10 text-3xl opacity-50 animate-float" style={{ animationDelay: '1s' }}>🌺</span>
           <span className="absolute bottom-4 left-12 text-3xl opacity-50 animate-float" style={{ animationDelay: '0.5s' }}>🌼</span>
           <span className="absolute bottom-6 right-6 text-4xl opacity-60 animate-float" style={{ animationDelay: '1.5s' }}>🌹</span>
 
-          {/* Badge descuento */}
           <div className="absolute top-4 left-4 bg-pink-500 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg z-10">
             <Gift className="w-3.5 h-3.5" />
-            10% en tu primera compra
+            {discountLabel}
           </div>
 
-          {/* Ícono central */}
           <div className="relative z-10 w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-pink-100">
             <span className="text-4xl">🌸</span>
           </div>
@@ -67,14 +82,12 @@ export function WelcomePopup() {
 
         {/* Contenido */}
         <div className="px-7 pb-7 pt-5 text-center">
-          <h2 className="font-display text-3xl font-bold text-gray-900 leading-tight mb-2">
-            Bienvenida a nuestra<br />
-            <span className="italic text-pink-500">familia floral</span>
+          <h2 className="font-display text-2xl font-bold text-gray-900 leading-tight mb-2">
+            {title}
           </h2>
 
           <p className="text-gray-500 text-sm leading-relaxed mb-5 max-w-xs mx-auto">
-            Únete a cientos de personas que ya reciben flores frescas en su puerta. Regístrate y obtén{' '}
-            <strong className="text-pink-600">10% de descuento</strong> en tu primer pedido.
+            {subtitle}
           </p>
 
           {/* Beneficios */}
@@ -91,26 +104,14 @@ export function WelcomePopup() {
             ))}
           </div>
 
-          {/* Lista rápida */}
-          <div className="flex flex-col gap-1.5 mb-6 text-left">
-            {['Suscripciones semanales y mensuales', 'Cancela cuando quieras', 'Arreglos únicos hechos a mano'].map((item) => (
-              <div key={item} className="flex items-center gap-2 text-xs text-gray-600">
-                <div className="w-4 h-4 rounded-full bg-pink-100 flex items-center justify-center shrink-0">
-                  <Check className="w-2.5 h-2.5 text-pink-600" />
-                </div>
-                {item}
-              </div>
-            ))}
-          </div>
-
           {/* CTAs */}
           <div className="flex flex-col gap-2.5">
             <Link
-              href="/registro"
+              href={ctaLink}
               onClick={close}
               className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm"
             >
-              Quiero unirme ahora
+              {ctaText}
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link

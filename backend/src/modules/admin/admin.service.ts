@@ -103,4 +103,81 @@ export class AdminService {
       },
     };
   }
+
+  async getSuperAnalytics() {
+    // Ingresos por día - últimos 30 días
+    const revenueByDay = await this.paymentRepository
+      .createQueryBuilder('p')
+      .select("TO_CHAR(DATE_TRUNC('day', p.paid_at), 'DD/MM')", 'day')
+      .addSelect('SUM(p.amount)', 'total')
+      .addSelect('COUNT(*)', 'count')
+      .where('p.status = :status', { status: 'approved' })
+      .andWhere("p.paid_at >= NOW() - INTERVAL '30 days'")
+      .groupBy("DATE_TRUNC('day', p.paid_at), TO_CHAR(DATE_TRUNC('day', p.paid_at), 'DD/MM')")
+      .orderBy("DATE_TRUNC('day', p.paid_at)", 'ASC')
+      .getRawMany();
+
+    // Nuevos usuarios por semana - últimas 4 semanas
+    const newUsersPerWeek = await this.userRepository
+      .createQueryBuilder('u')
+      .select("TO_CHAR(DATE_TRUNC('week', u.created_at), 'DD/MM')", 'week')
+      .addSelect('COUNT(*)', 'count')
+      .where("u.created_at >= NOW() - INTERVAL '28 days'")
+      .groupBy("DATE_TRUNC('week', u.created_at), TO_CHAR(DATE_TRUNC('week', u.created_at), 'DD/MM')")
+      .orderBy("DATE_TRUNC('week', u.created_at)", 'ASC')
+      .getRawMany();
+
+    // Suscripciones activas vs canceladas
+    const subscriptionStats = await this.subscriptionRepository
+      .createQueryBuilder('s')
+      .select('s.status', 'status')
+      .addSelect('COUNT(*)', 'count')
+      .groupBy('s.status')
+      .getRawMany();
+
+    // Resumen ejecutivo
+    const [totalRevenue, totalOrders, totalUsers, activeSubscriptions] = await Promise.all([
+      this.paymentRepository
+        .createQueryBuilder('p')
+        .select('SUM(p.amount)', 'total')
+        .where('p.status = :status', { status: 'approved' })
+        .getRawOne(),
+      this.orderRepository.count(),
+      this.userRepository.count({ where: { isActive: true } }),
+      this.subscriptionRepository.count({ where: { status: 'active' as any } }),
+    ]);
+
+    // Ingresos este mes vs mes pasado
+    const thisMonth = await this.paymentRepository
+      .createQueryBuilder('p')
+      .select('SUM(p.amount)', 'total')
+      .where('p.status = :status', { status: 'approved' })
+      .andWhere("p.paid_at >= DATE_TRUNC('month', NOW())")
+      .getRawOne();
+
+    const lastMonth = await this.paymentRepository
+      .createQueryBuilder('p')
+      .select('SUM(p.amount)', 'total')
+      .where('p.status = :status', { status: 'approved' })
+      .andWhere("p.paid_at >= DATE_TRUNC('month', NOW()) - INTERVAL '1 month'")
+      .andWhere("p.paid_at < DATE_TRUNC('month', NOW())")
+      .getRawOne();
+
+    return {
+      message: 'Analytics obtenidos correctamente',
+      data: {
+        summary: {
+          totalRevenue: Number(totalRevenue?.total || 0),
+          totalOrders,
+          totalUsers,
+          activeSubscriptions,
+          thisMonthRevenue: Number(thisMonth?.total || 0),
+          lastMonthRevenue: Number(lastMonth?.total || 0),
+        },
+        revenueByDay,
+        newUsersPerWeek,
+        subscriptionStats,
+      },
+    };
+  }
 }

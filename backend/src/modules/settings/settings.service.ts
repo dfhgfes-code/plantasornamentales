@@ -41,14 +41,16 @@ export class SettingsService implements OnModuleInit {
   }
 
   private async seed() {
-    const defaultSettings = {
+    const defaultSettings: Record<string, string> = {
+      // ── Datos de contacto ──────────────────────────────────────
       shop_phone: '+57 300 123 4567',
       shop_email: 'hola@jannethplants.co',
       shop_address: 'Bogotá, Colombia',
       shop_facebook: 'https://facebook.com/jannethplants',
       shop_instagram: 'https://instagram.com/jannethplants',
       shop_whatsapp: '573001234567',
-      // Dynamic Content
+
+      // ── Carrusel Hero ─────────────────────────────────────────
       home_hero_carousel: JSON.stringify([
         {
           image: '/hero/field.png',
@@ -65,6 +67,8 @@ export class SettingsService implements OnModuleInit {
           buttonLink: '/planes',
         },
       ]),
+
+      // ── Marquesina de texto ───────────────────────────────────
       home_promo_marquee: JSON.stringify([
         '🌸 Flores frescas garantizadas',
         '🚚 Envío a domicilio',
@@ -74,9 +78,25 @@ export class SettingsService implements OnModuleInit {
         '💝 Arreglos hechos a mano',
         '🌷 Entrega el mismo día',
       ]),
+
+      // ── Banner de temporada ───────────────────────────────────
       home_holiday_banner_enabled: 'false',
       home_holiday_banner_text: '¡Feliz Día de la Madre! Sorpréndela con un detalle especial. 🌸',
       home_holiday_banner_link: '/tienda',
+
+      // ── Popup de bienvenida ───────────────────────────────────
+      popup_enabled: 'true',
+      popup_title: '¡Bienvenida a nuestra familia floral!',
+      popup_subtitle: 'Únete y obtén 10% de descuento en tu primer pedido',
+      popup_discount_label: '10% en tu primera compra',
+      popup_cta_text: 'Quiero unirme ahora',
+      popup_cta_link: '/registro',
+
+      // ── Modo mantenimiento ────────────────────────────────────
+      maintenance_mode: 'false',
+      maintenance_title: 'Estamos renovando nuestro jardín 🌱',
+      maintenance_subtitle: 'Volvemos muy pronto con novedades hermosas.',
+      maintenance_eta: '',
     };
 
     for (const [key, value] of Object.entries(defaultSettings)) {

@@ -4,6 +4,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Toaster } from 'react-hot-toast';
 import { WhatsAppButton } from '@/components/ui/WhatsAppButton';
+import { MaintenanceGate } from '@/components/MaintenanceGate';
 
 export const metadata: Metadata = {
   title: 'Janneth Acevedo | Flores & Suscripciones',
@@ -17,12 +18,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <body className="bg-white min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <WhatsAppButton />
+        <MaintenanceGate>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <WhatsAppButton />
+        </MaintenanceGate>
         <Toaster
-
           position="top-right"
           toastOptions={{
             style: {

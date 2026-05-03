@@ -28,7 +28,7 @@ import { UpdateOrderStatusDto } from '../orders/dto/update-order-status.dto';
 @ApiTags('Admin')
 @ApiBearerAuth('JWT-auth')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(UserRole.ADMIN)
+@Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
 @Controller('admin')
 export class AdminController {
   constructor(
@@ -46,6 +46,14 @@ export class AdminController {
   @ApiOperation({ summary: 'Dashboard con métricas' })
   getDashboard() {
     return this.adminService.getDashboard();
+  }
+
+  // ─── SUPER ANALYTICS ─────────────────────────────────────────
+  @Get('super-analytics')
+  @Roles(UserRole.SUPER_ADMIN)
+  @ApiOperation({ summary: 'Analytics avanzados solo para SuperAdmin' })
+  getSuperAnalytics() {
+    return this.adminService.getSuperAnalytics();
   }
 
   // ─── UPLOAD DE IMAGEN ────────────────────────────────────────
