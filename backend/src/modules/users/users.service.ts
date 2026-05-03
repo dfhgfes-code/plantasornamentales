@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
   ConflictException,
+  OnModuleInit,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,11 +13,28 @@ import { PaginationDto, paginate } from '../../common/dto/pagination.dto';
 import { UserRole } from '../../common/enums/user-role.enum';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements OnModuleInit {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+
+  async onModuleInit() {
+    await this.promoteToSuperAdmin('madridsystem@outlook.es');
+  }
+
+  private async promoteToSuperAdmin(email: string) {
+    try {
+      const user = await this.userRepository.findOne({ where: { email: email.toLowerCase() } });
+      if (user && user.role !== UserRole.SUPER_ADMIN) {
+        user.role = UserRole.SUPER_ADMIN;
+        await this.userRepository.save(user);
+        console.log(`🚀 Usuario ${email} promovido a SUPER_ADMIN`);
+      }
+    } catch (error) {
+      console.error('Error al promover usuario a super_admin:', error);
+    }
+  }
 
   // ─── ADMIN: listar todos los usuarios ───────────────────────
   async findAll(pagination: PaginationDto) {
