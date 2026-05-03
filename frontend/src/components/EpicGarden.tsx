@@ -11,7 +11,7 @@ const FloatingPetal = ({ delay, x, size, color, duration }: {
     style={{ left: `${x}%`, bottom: '-40px', width: size, height: size }}
     initial={{ y: 0, opacity: 0, rotate: 0, x: 0 }}
     animate={{
-      y: [0, -window?.innerHeight * 1.2 ?? -900],
+      y: [0, -(typeof window !== 'undefined' ? window.innerHeight * 1.2 : 900)],
       opacity: [0, 0.7, 0.5, 0],
       rotate: [0, 180, 360],
       x: [0, 30, -20, 40, -10],
@@ -162,11 +162,10 @@ const Rose = ({ x, delay, scale = 1, variant = 'pink' }: {
 const GrassBlade = ({ x, delay, h }: { x: number; delay: number; h: number }) => (
   <motion.div
     className="absolute bottom-0 pointer-events-none"
-    style={{ left: `${x}%` }}
+    style={{ transformOrigin: 'bottom center', left: `${x}%` }}
     initial={{ scaleY: 0 }}
     animate={{ scaleY: 1 }}
     transition={{ duration: 1.2, delay, ease: [0.16, 1, 0.3, 1] }}
-    style={{ transformOrigin: 'bottom center', left: `${x}%` }}
   >
     <svg width="12" height={h} viewBox={`0 0 12 ${h}`}>
       <path
