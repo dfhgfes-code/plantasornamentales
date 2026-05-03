@@ -336,6 +336,34 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── GALERÍA LIFESTYLE ── */}
+      <section className="py-16 bg-pink-50/30 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 text-center">
+          <p className="text-pink-500 text-xs font-semibold tracking-[0.2em] uppercase mb-2">Inspiración</p>
+          <h2 className="font-display text-4xl font-bold text-gray-900 mb-4">
+            Momentos <span className="italic text-pink-500">Janneth</span>
+          </h2>
+          <p className="text-gray-500 text-sm max-w-lg mx-auto">Compartimos la alegría de cada entrega. Síguenos y forma parte de nuestra comunidad floral.</p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4">
+          {[
+            { img: '/hero/gift.png', tag: '@marian_flores' },
+            { img: '/hero/field.png', tag: '@campo_vibrante' },
+            { img: '/hero/hands.png', tag: '@detalles_lujo' },
+            { img: '/hero/artisan.png', tag: '@hecho_con_amor' },
+          ].map((item, i) => (
+            <div key={i} className="group relative aspect-square rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
+              <img src={item.img} alt="gallery" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+                <span className="text-white text-xs font-medium tracking-wide">{item.tag}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+
       {/* ── CTA FINAL ── */}
       <section className="relative py-20 overflow-hidden bg-pink-500">
         {/* Decoración */}

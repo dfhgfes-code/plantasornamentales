@@ -87,8 +87,23 @@ export default function CarritoPage() {
           <Link href="/tienda" className="block text-center text-sm text-gray-400 hover:text-rose-500 mt-3 transition-colors">
             Seguir comprando
           </Link>
+
+          {/* Sellos de confianza */}
+          <div className="mt-8 pt-8 border-t border-gray-100 grid grid-cols-3 gap-2">
+            {[
+              { icon: '🛡️', text: 'Pago Seguro' },
+              { icon: '🚚', text: 'Envío Rápido' },
+              { icon: '⭐', text: 'Calidad' },
+            ].map((b) => (
+              <div key={b.text} className="text-center">
+                <div className="text-xl mb-1">{b.icon}</div>
+                <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{b.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
     </div>
   );
 }

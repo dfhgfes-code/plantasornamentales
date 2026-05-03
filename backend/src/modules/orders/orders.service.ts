@@ -14,6 +14,7 @@ import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { OrderStatus } from '../../common/enums/order-status.enum';
 import { UserRole } from '../../common/enums/user-role.enum';
 import { PaginationDto, paginate } from '../../common/dto/pagination.dto';
+import { MailService } from '../../common/services/mail.service';
 
 @Injectable()
 export class OrdersService {
@@ -26,6 +27,7 @@ export class OrdersService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(Recipient)
     private readonly recipientRepository: Repository<Recipient>,
+    private readonly mailService: MailService,
   ) {}
 
   // ─── CREAR PEDIDO MANUAL ─────────────────────────────────────
@@ -107,7 +109,12 @@ export class OrdersService {
       await this.productRepository.decrement({ id: item.productId }, 'stock', item.quantity);
     }
 
-    return { message: 'Pedido creado exitosamente', data: await this.getOrderWithItems(order.id) };
+    const savedOrder = await this.getOrderWithItems(order.id);
+    if (savedOrder.user?.email) {
+      this.mailService.sendOrderConfirmation(savedOrder.user.email, savedOrder);
+    }
+
+    return { message: 'Pedido creado exitosamente', data: savedOrder };
   }
 
   // ─── CREAR PEDIDO AUTOMÁTICO (desde suscripción) ─────────────
