@@ -83,7 +83,7 @@ export function Navbar() {
             {mounted && (
               isAuthenticated ? (
                 <div className="hidden md:flex items-center gap-1">
-                  {user?.role === 'admin' && (
+                  {(user?.role === 'admin' || user?.role === 'super_admin') && (
                     <Link href="/admin" className="p-2.5 text-gray-500 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all" title="Admin">
                       <LayoutDashboard className="w-5 h-5" />
                     </Link>
@@ -133,7 +133,7 @@ export function Navbar() {
                     <Link href="/perfil" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 rounded-xl">
                       <User className="w-4 h-4" /> Mi perfil
                     </Link>
-                    {user?.role === 'admin' && (
+                    {(user?.role === 'admin' || user?.role === 'super_admin') && (
                       <Link href="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 rounded-xl">
                         <LayoutDashboard className="w-4 h-4" /> Panel Admin
                       </Link>
