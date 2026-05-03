@@ -10,22 +10,20 @@ export class SupabaseService {
   private readonly logger = new Logger(SupabaseService.name);
 
   constructor(private readonly configService: ConfigService) {
-    const url = 'https://pucdbmecnqduilhflppi.supabase.co';
+    const url = this.configService.get<string>('SUPABASE_URL') || 
+                process.env.SUPABASE_URL || 
+                'https://pucdbmecnqduihflppi.supabase.co';
     const key = this.configService.get<string>('SUPABASE_SERVICE_KEY') || 
-                process.env.SUPABASE_SERVICE_KEY ||
-                this.configService.get<string>('supabase.key');
+                process.env.SUPABASE_SERVICE_KEY;
 
-    this.logger.log('--- INICIALIZANDO SUPABASE (V4 - FIX FETCH) ---');
-    if (key) {
+    this.logger.log(`--- INICIALIZANDO SUPABASE (URL: ${url}) ---`);
+    if (key && url) {
       this.supabase = createClient(url, key, {
-        auth: {
-          persistSession: false,
-          autoRefreshToken: false,
-        }
+        auth: { persistSession: false, autoRefreshToken: false }
       });
-      this.logger.log('✅ Cliente inicializado con fetch global');
+      this.logger.log('✅ Cliente inicializado');
     } else {
-      this.logger.error('❌ ERROR: No se encontró SUPABASE_SERVICE_KEY');
+      this.logger.error('❌ ERROR: Faltan credenciales de Supabase');
     }
   }
 
@@ -33,15 +31,18 @@ export class SupabaseService {
 
 
 
-  async uploadFile(file: Express.Multer.File, bucket: string = 'flowers') {
-    const url = 'https://pucdbmecnqduilhflppi.supabase.co';
-    const key = this.configService.get<string>('SUPABASE_SERVICE_KEY') || 
-                process.env.SUPABASE_SERVICE_KEY ||
-                this.configService.get<string>('supabase.key');
 
-    if (!key) {
-      throw new Error('Supabase no está configurado');
+  async uploadFile(file: Express.Multer.File, bucket: string = 'flowers') {
+    const url = this.configService.get<string>('SUPABASE_URL') || 
+                process.env.SUPABASE_URL || 
+                'https://pucdbmecnqduihflppi.supabase.co';
+    const key = this.configService.get<string>('SUPABASE_SERVICE_KEY') || 
+                process.env.SUPABASE_SERVICE_KEY;
+
+    if (!key || !url) {
+      throw new Error('Supabase no está configurado correctamente');
     }
+
 
     const fileName = `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`;
     const uploadUrl = `${url}/storage/v1/object/${bucket}/${fileName}`;
