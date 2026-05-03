@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Mail, Lock, ArrowRight } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { SurpriseGarden } from '@/components/SurpriseGarden';
+import { LuxuryGiftSurprise } from '@/components/LuxuryGiftSurprise';
 import toast from 'react-hot-toast';
 
 const schema = z.object({
@@ -38,7 +38,7 @@ export default function LoginPage() {
       const res = await authApi.login(data);
       const { user, accessToken } = res.data.data;
       setAuth(user, accessToken);
-      toast.success(`¡Bienvenida, ${user.firstName}! 🌹`);
+      toast.success(`¡Bienvenida al jardín, ${user.firstName}! 🌹`);
       router.push(user.role === 'admin' || user.role === 'super_admin' ? '/admin' : '/perfil');
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Error al iniciar sesión');
@@ -50,67 +50,88 @@ export default function LoginPage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* ANIMACIÓN DE SORPRESA (Caja que se abre y crecen rosas) */}
-        <SurpriseGarden />
+    <div className="min-h-screen bg-[#FDFCFB] flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden">
+      {/* Fondo con textura sutil */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/clean-gray-paper.png")' }} />
 
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Janneth Acevedo</h1>
-          <p className="text-pink-500 font-bold uppercase tracking-widest text-xs mt-1">Boutique Floral</p>
+      <div className="w-full max-w-lg z-10">
+        {/* LA SORPRESA DE LUJO */}
+        <LuxuryGiftSurprise />
+
+        <div className="text-center mb-10 relative">
+          <h1 className="text-4xl font-serif italic text-gray-900 tracking-tight">Janneth Acevedo</h1>
+          <div className="flex items-center justify-center gap-3 mt-2">
+            <span className="h-[1px] w-8 bg-pink-200" />
+            <p className="text-pink-500 font-bold uppercase tracking-[0.3em] text-[10px]">Boutique Floral</p>
+            <span className="h-[1px] w-8 bg-pink-200" />
+          </div>
         </div>
 
-        <div className="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-10">
-          <div className="mb-8 text-center">
-            <h2 className="text-xl font-bold text-gray-800">Bienvenida de vuelta</h2>
-            <p className="text-gray-400 text-sm mt-1">Ingresa tus credenciales para continuar</p>
+        <div className="bg-white rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.08)] border border-gray-100 p-12 relative group">
+          {/* Brillo decorativo en la esquina de la tarjeta */}
+          <div className="absolute top-0 right-0 p-6 opacity-20 text-pink-300">
+            <Sparkles className="w-8 h-8" />
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <Input
-              label="Correo electrónico"
-              type="email"
-              placeholder="tu@email.com"
-              icon={<Mail className="w-4 h-4 text-gray-400" />}
-              className="rounded-2xl"
-              error={errors.email?.message}
-              {...register('email')}
-            />
-            <Input
-              label="Contraseña"
-              type="password"
-              placeholder="••••••••"
-              icon={<Lock className="w-4 h-4 text-gray-400" />}
-              className="rounded-2xl"
-              error={errors.password?.message}
-              {...register('password')}
-            />
+          <div className="mb-10 text-center">
+            <h2 className="text-2xl font-bold text-gray-800 tracking-tight">Bienvenida de vuelta</h2>
+            <p className="text-gray-400 text-sm mt-2">Es un placer tenerte nuevamente en nuestro jardín.</p>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 mb-1 block">Tu Cuenta</label>
+              <Input
+                type="email"
+                placeholder="tu@email.com"
+                icon={<Mail className="w-4 h-4 text-pink-400" />}
+                className="rounded-2xl border-gray-100 focus:border-pink-300 h-14 transition-all bg-gray-50/30"
+                error={errors.email?.message}
+                {...register('email')}
+              />
+            </div>
             
-            <div className="pt-2">
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 mb-1 block">Tu Contraseña</label>
+              <Input
+                type="password"
+                placeholder="••••••••"
+                icon={<Lock className="w-4 h-4 text-pink-400" />}
+                className="rounded-2xl border-gray-100 focus:border-pink-300 h-14 transition-all bg-gray-50/30"
+                error={errors.password?.message}
+                {...register('password')}
+              />
+            </div>
+            
+            <div className="pt-4">
               <Button 
                 type="submit" 
                 loading={loading} 
-                className="w-full h-14 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl text-lg font-bold shadow-lg shadow-pink-100 transition-all active:scale-95"
+                className="w-full h-16 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-black hover:to-gray-900 text-white rounded-2xl text-lg font-bold shadow-2xl transition-all active:scale-95 group"
               >
-                <span className="flex items-center justify-center gap-2">
-                  Ingresar
-                  <ArrowRight className="w-5 h-5" />
+                <span className="flex items-center justify-center gap-3">
+                  Ingresar a la Boutique
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </Button>
             </div>
           </form>
 
-          <p className="text-center text-sm text-gray-500 mt-8">
-            ¿No tienes cuenta?{' '}
-            <Link href="/registro" className="text-pink-500 hover:text-pink-600 font-bold underline-offset-4 hover:underline">
-              Regístrate gratis
-            </Link>
-          </p>
+          <div className="mt-12 text-center pt-8 border-t border-gray-50">
+            <p className="text-sm text-gray-400">
+              ¿Aún no eres parte del club?{' '}
+              <Link href="/registro" className="text-gray-900 font-bold border-b-2 border-pink-200 hover:border-pink-500 transition-all pb-0.5">
+                Regístrate ahora
+              </Link>
+            </p>
+          </div>
         </div>
         
-        <p className="text-center mt-12 text-[10px] font-bold uppercase tracking-[0.4em] text-gray-300">
-          Experiencias que Florecen
-        </p>
+        <div className="mt-16 text-center">
+           <p className="text-[9px] font-black uppercase tracking-[0.5em] text-gray-300">
+             Luxury Experiences · Handmade with Love
+           </p>
+        </div>
       </div>
     </div>
   );
