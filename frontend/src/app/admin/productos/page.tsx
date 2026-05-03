@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/auth.store';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 import api from '@/lib/api';
 import { productsApi } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
@@ -11,8 +10,7 @@ import toast from 'react-hot-toast';
 const EMPTY = { name: '', description: '', price: '', category: '', sku: '', stock: '0', isAvailable: true, imageUrl: '' };
 
 export default function AdminProductosPage() {
-  const { user, isAuthenticated } = useAuthStore();
-  const router = useRouter();
+  const { authorized } = useAuthGuard(['admin', 'super_admin']);
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,11 +22,10 @@ export default function AdminProductosPage() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'admin') { router.push('/login'); return; }
+    if (!authorized) return;
     load();
-    // Cargar categorías existentes para sugerencias
     productsApi.getCategories().then(r => setCategories(r.data.data || []));
-  }, [isAuthenticated]);
+  }, [authorized]);
 
   const load = () => {
     setLoading(true);

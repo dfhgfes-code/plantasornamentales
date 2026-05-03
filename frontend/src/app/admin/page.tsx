@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { adminApi } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { Badge } from '@/components/ui/Badge';
@@ -11,19 +12,22 @@ import { Users, Package, RefreshCw, DollarSign, AlertTriangle, ShoppingBag, Arro
 import Link from 'next/link';
 
 export default function AdminPage() {
-  const { user, isAuthenticated } = useAuthStore();
-  const router = useRouter();
+  const { authorized, user } = useAuthGuard(['admin', 'super_admin']);
   const [dashboard, setDashboard] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
 
   useEffect(() => {
-    if (!isAuthenticated || !isAdmin) { router.push('/login'); return; }
+    if (!authorized) return;
     adminApi.getDashboard().then((r) => setDashboard(r.data.data)).finally(() => setLoading(false));
-  }, [isAuthenticated, isAdmin]);
+  }, [authorized]);
 
-  if (!isAuthenticated || !isAdmin) return null;
+  if (!authorized) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
+    </div>
+  );
 
   const stats = dashboard?.summary;
 

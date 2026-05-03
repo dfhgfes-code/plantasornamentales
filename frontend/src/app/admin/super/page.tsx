@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { adminApi, settingsApi } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -13,8 +14,8 @@ import { Badge } from '@/components/ui/Badge';
 type Tab = 'analytics' | 'content' | 'config' | 'admins';
 
 export default function SuperAdminPage() {
-  const { user, isAuthenticated } = useAuthStore();
-  const router = useRouter();
+  const { authorized, user } = useAuthGuard(['super_admin']);
+  const { user: storeUser } = useAuthStore();
   const [tab, setTab] = useState<Tab>('analytics');
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
@@ -24,10 +25,9 @@ export default function SuperAdminPage() {
   const [newAdmin, setNewAdmin] = useState({ firstName: '', lastName: '', email: '', password: '' });
 
   useEffect(() => {
-    if (!isAuthenticated) { router.push('/login'); return; }
-    if (user?.role !== 'super_admin') { router.push('/admin'); return; }
+    if (!authorized) return;
     loadAll();
-  }, [isAuthenticated, user]);
+  }, [authorized]);
 
   const loadAll = async () => {
     try {
@@ -65,7 +65,11 @@ export default function SuperAdminPage() {
   const getCarousel = () => { try { return JSON.parse(settings.home_hero_carousel || '[]'); } catch { return []; } };
   const setCarousel = (arr: any[]) => setSetting('home_hero_carousel', JSON.stringify(arr));
 
-  if (!isAuthenticated || user?.role !== 'super_admin') return null;
+  if (!authorized) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+    </div>
+  );
 
   const tabs: { id: Tab; label: string; icon: any }[] = [
     { id: 'analytics', label: 'Analíticas', icon: BarChart2 },
