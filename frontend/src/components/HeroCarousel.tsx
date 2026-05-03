@@ -5,42 +5,43 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
   {
-    image: '/flowers/f-rosas-rojas.jpg',
+    image: '/hero/gift.png',
     bg: '#1a0f12',
-    tag: 'Nueva colección',
-    title: 'Flores que enamoran',
-    subtitle: 'Arreglos únicos hechos con amor para cada ocasión especial',
-    cta: 'Ver colección',
+    tag: 'Momentos inolvidables',
+    title: 'Flores que cuentan historias',
+    subtitle: 'Sorprende a quienes más quieres con detalles que nacen del corazón y perduran en la memoria.',
+    cta: 'Ver catálogo',
     href: '/tienda',
   },
   {
-    image: '/flowers/f-girasoles.jpg',
+    image: '/hero/field.png',
     bg: '#1a1a0a',
-    tag: 'Suscripciones',
-    title: 'Flores frescas cada semana',
-    subtitle: 'Suscríbete y recibe arreglos florales directamente en tu puerta',
-    cta: 'Ver planes',
+    tag: 'Naturaleza pura',
+    title: 'Frescura desde el origen',
+    subtitle: 'Nuestras flores crecen bajo el sol y llegan a tu puerta con toda la vitalidad del campo.',
+    cta: 'Suscripciones',
     href: '/planes',
   },
   {
-    image: '/flowers/f-tulipanes.jpg',
+    image: '/hero/hands.png',
     bg: '#180a10',
-    tag: 'Rosas premium',
-    title: 'El regalo perfecto',
-    subtitle: 'Sorprende a alguien especial con nuestras rosas de tallo largo',
+    tag: 'El detalle perfecto',
+    title: 'El arte de regalar',
+    subtitle: 'Cada entrega es una experiencia de lujo diseñada para transmitir tus sentimientos más puros.',
     cta: 'Comprar ahora',
     href: '/tienda',
   },
   {
-    image: '/flowers/f-orquideas.jpg',
+    image: '/hero/artisan.png',
     bg: '#0a0a1a',
-    tag: 'Orquídeas & Lilies',
-    title: 'Belleza natural',
-    subtitle: 'Descubre nuestra selección de flores exóticas y de temporada',
+    tag: 'Pasión artesanal',
+    title: 'Hecho con el alma',
+    subtitle: 'Arreglos florales creados a mano por expertos apasionados por la belleza y la delicadeza.',
     cta: 'Explorar tienda',
     href: '/tienda',
   },
 ];
+
 
 export function HeroCarousel() {
   const [current, setCurrent] = useState(0);
