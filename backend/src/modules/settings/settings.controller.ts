@@ -20,7 +20,7 @@ export class SettingsController {
 
   @Patch()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Actualizar configuraciones (Solo Admin)' })
   update(@Body() settings: Record<string, string>) {

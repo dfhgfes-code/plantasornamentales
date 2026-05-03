@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -41,8 +42,10 @@ export class UsersService {
 
   // ─── Actualizar perfil propio ────────────────────────────────
   async update(id: string, dto: UpdateUserDto, requestingUser: User) {
-    // Solo el propio usuario o un admin puede actualizar
-    if (requestingUser.id !== id && requestingUser.role !== UserRole.ADMIN) {
+    // Solo el propio usuario, un admin o super_admin puede actualizar
+    if (requestingUser.id !== id && 
+        requestingUser.role !== UserRole.ADMIN && 
+        requestingUser.role !== UserRole.SUPER_ADMIN) {
       throw new ForbiddenException('No puedes modificar este perfil');
     }
 
@@ -78,6 +81,30 @@ export class UsersService {
     await this.userRepository.save(user);
 
     return { message: 'Rol actualizado correctamente', data: this.sanitize(user) };
+  }
+
+  // ─── SUPER_ADMIN: crear un administrador ───────────────────
+  async createAdmin(dto: any) {
+    const existing = await this.userRepository.findOne({
+      where: { email: dto.email.toLowerCase() },
+    });
+
+    if (existing) {
+      throw new ConflictException('Ya existe una cuenta con este correo electrónico');
+    }
+
+    const user = this.userRepository.create({
+      firstName: dto.firstName.trim(),
+      lastName: dto.lastName.trim(),
+      email: dto.email.toLowerCase().trim(),
+      password: dto.password,
+      phone: dto.phone,
+      role: UserRole.ADMIN,
+      emailVerified: true,
+    });
+
+    await this.userRepository.save(user);
+    return { message: 'Administrador creado correctamente', data: this.sanitize(user) };
   }
 
   // ─── Helper ─────────────────────────────────────────────────

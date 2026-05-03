@@ -48,12 +48,43 @@ export class SettingsService implements OnModuleInit {
       shop_facebook: 'https://facebook.com/jannethplants',
       shop_instagram: 'https://instagram.com/jannethplants',
       shop_whatsapp: '573001234567',
+      // Dynamic Content
+      home_hero_carousel: JSON.stringify([
+        {
+          image: '/hero/field.png',
+          title: 'Flores frescas para momentos inolvidables',
+          subtitle: 'Enviamos amor en cada ramo a todo el país',
+          buttonText: 'Ver Colección',
+          buttonLink: '/tienda',
+        },
+        {
+          image: '/hero/artisan.png',
+          title: 'Suscripciones Florales',
+          subtitle: 'Recibe la frescura del campo cada semana en tu puerta',
+          buttonText: 'Ver Planes',
+          buttonLink: '/planes',
+        },
+      ]),
+      home_promo_marquee: JSON.stringify([
+        '🌸 Flores frescas garantizadas',
+        '🚚 Envío a domicilio',
+        '🔄 Suscripciones flexibles',
+        '⭐ +500 clientes felices',
+        '❌ Cancela cuando quieras',
+        '💝 Arreglos hechos a mano',
+        '🌷 Entrega el mismo día',
+      ]),
+      home_holiday_banner_enabled: 'false',
+      home_holiday_banner_text: '¡Feliz Día de la Madre! Sorpréndela con un detalle especial. 🌸',
+      home_holiday_banner_link: '/tienda',
     };
 
-    const count = await this.settingsRepository.count();
-    if (count === 0) {
-      for (const [key, value] of Object.entries(defaultSettings)) {
-        await this.settingsRepository.save(this.settingsRepository.create({ key, value }));
+    for (const [key, value] of Object.entries(defaultSettings)) {
+      const exists = await this.settingsRepository.findOne({ where: { key } });
+      if (!exists) {
+        await this.settingsRepository.save(
+          this.settingsRepository.create({ key, value }),
+        );
       }
     }
   }

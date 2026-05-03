@@ -4,6 +4,7 @@ import {
   Patch,
   Param,
   Body,
+  Post,
   Query,
   UseGuards,
   ParseUUIDPipe,
@@ -32,14 +33,14 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiOperation({ summary: '[ADMIN] Listar todos los usuarios' })
   findAll(@Query() pagination: PaginationDto) {
     return this.usersService.findAll(pagination);
   }
 
   @Get(':id')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiOperation({ summary: '[ADMIN] Obtener usuario por ID' })
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findOne(id);
@@ -56,9 +57,16 @@ export class UsersController {
   }
 
   @Patch(':id/toggle-active')
-  @Roles(UserRole.ADMIN)
-  @ApiOperation({ summary: '[ADMIN] Activar o desactivar usuario' })
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @ApiOperation({ summary: '[ADMIN/SUPER] Activar o desactivar usuario' })
   toggleActive(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.toggleActive(id);
+  }
+
+  @Post('create-admin')
+  @Roles(UserRole.SUPER_ADMIN)
+  @ApiOperation({ summary: '[SUPER] Crear un administrador' })
+  createAdmin(@Body() dto: any) {
+    return this.usersService.createAdmin(dto);
   }
 }
