@@ -48,7 +48,7 @@ export default function LoginPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="mb-4">
+          <div className="mb-6 h-24 flex items-center justify-center">
             <BloomingRose />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Bienvenida de vuelta</h1>
