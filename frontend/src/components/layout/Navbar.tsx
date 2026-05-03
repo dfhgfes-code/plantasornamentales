@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/auth.store';
 import { useCartStore } from '@/store/cart.store';
 import { cn } from '@/lib/utils';
+import { Logo } from '@/components/ui/Logo';
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -45,11 +46,7 @@ export function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-2xl">🌸</span>
-            <div>
-              <span className="font-display font-bold text-gray-900 text-lg leading-none block">Janneth Acevedo</span>
-              <span className="text-[9px] text-pink-400 tracking-[0.18em] uppercase font-medium">Plantas Ornamentales</span>
-            </div>
+            <Logo size="md" horizontal />
           </Link>
 
           {/* Links desktop */}

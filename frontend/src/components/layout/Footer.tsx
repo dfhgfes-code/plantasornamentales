@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Phone, Mail, MapPin, ArrowRight, ShieldCheck, Award, Sprout } from 'lucide-react';
 import Link from 'next/link';
 import { settingsApi } from '@/lib/api';
+import { Logo } from '@/components/ui/Logo';
 
 export function Footer() {
   const [settings, setSettings] = useState<Record<string, string>>({});
@@ -55,12 +56,8 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2 mb-6">
-              <span className="text-2xl">🌸</span>
-              <div>
-                <span className="font-display font-bold text-white text-xl leading-none block">Janneth Acevedo</span>
-                <span className="text-[10px] text-pink-400 tracking-[0.2em] uppercase font-semibold">Plantas Ornamentales</span>
-              </div>
+            <div className="flex flex-col items-start gap-2 mb-6">
+              <Logo size="lg" centered={false} />
             </div>
             <p className="text-sm text-white/35 leading-relaxed max-w-sm mb-6">
               Llevamos la belleza y el alma de las flores directamente a tu puerta. Suscripciones personalizadas y arreglos premium para transformar cada momento en un recuerdo inolvidable.
@@ -106,7 +103,7 @@ export function Footer() {
 
       <div className="border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-white/20">© {new Date().getFullYear()} Janneth Acevedo Plantas Ornamentales</p>
+          <p className="text-xs text-white/20">© {new Date().getFullYear()} FLOR & VIDA - Florería Boutique</p>
           <div className="flex gap-4 text-xs text-white/20">
             <a href="#" className="hover:text-white/40 transition-colors">Privacidad</a>
             <a href="#" className="hover:text-white/40 transition-colors">Términos</a>
