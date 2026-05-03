@@ -13,15 +13,20 @@ export class SupabaseService {
                 process.env.SUPABASE_SERVICE_KEY ||
                 this.configService.get<string>('supabase.key');
 
-    this.logger.log('--- INICIALIZANDO SUPABASE (V3) ---');
+    this.logger.log('--- INICIALIZANDO SUPABASE (V4 - FIX FETCH) ---');
     if (key) {
-      this.logger.log(`Llave detectada (empieza por: ${key.substring(0, 5)}...)`);
-      this.supabase = createClient(url, key);
-      this.logger.log('✅ Cliente inicializado');
+      this.supabase = createClient(url, key, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        }
+      });
+      this.logger.log('✅ Cliente inicializado con fetch global');
     } else {
       this.logger.error('❌ ERROR: No se encontró SUPABASE_SERVICE_KEY');
     }
   }
+
 
 
 
