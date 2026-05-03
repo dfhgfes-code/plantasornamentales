@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -18,80 +18,6 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-/* ── Canvas de partículas de pétalos ─────────────────────── */
-function PetalCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    const colors = ['#f9a8d4', '#fda4af', '#fbcfe8', '#fce7f3', '#e9d5ff', '#fef3c7'];
-
-    const petals = Array.from({ length: 28 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height - canvas.height,
-      size: 4 + Math.random() * 8,
-      speedY: 0.4 + Math.random() * 0.8,
-      speedX: (Math.random() - 0.5) * 0.6,
-      rotation: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.02,
-      opacity: 0.3 + Math.random() * 0.5,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      sway: Math.random() * Math.PI * 2,
-      swaySpeed: 0.005 + Math.random() * 0.01,
-    }));
-
-    let raf: number;
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      petals.forEach(p => {
-        p.y += p.speedY;
-        p.sway += p.swaySpeed;
-        p.x += p.speedX + Math.sin(p.sway) * 0.5;
-        p.rotation += p.rotSpeed;
-        if (p.y > canvas.height + 20) {
-          p.y = -20;
-          p.x = Math.random() * canvas.width;
-        }
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
-        ctx.globalAlpha = p.opacity;
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, p.size * 0.5, p.size, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      });
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('resize', resize);
-    };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 z-[1] pointer-events-none"
-    />
-  );
-}
-
-/* ── Página ───────────────────────────────────────────────── */
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -122,356 +48,298 @@ export default function LoginPage() {
   if (!mounted) return null;
 
   return (
-    <>
-      <style>{`
-        .login-bg {
-          background:
-            radial-gradient(ellipse 80% 60% at 20% 80%, rgba(190,24,93,0.18) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 50% at 80% 20%, rgba(139,92,246,0.12) 0%, transparent 55%),
-            radial-gradient(ellipse 70% 70% at 50% 50%, rgba(253,164,175,0.08) 0%, transparent 70%),
-            linear-gradient(160deg, #0f0a0c 0%, #1a0d12 35%, #160b10 65%, #0a0608 100%);
-        }
-        .glass-card {
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.10);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-        }
-        .field {
-          background: rgba(255,255,255,0.06);
-          border: 1px solid rgba(255,255,255,0.12);
-          border-radius: 10px;
-          transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
-        }
-        .field:focus-within {
-          background: rgba(255,255,255,0.10);
-          border-color: rgba(244,114,182,0.55);
-          box-shadow: 0 0 0 3px rgba(244,114,182,0.10);
-        }
-        .field input {
-          color: #fff !important;
-        }
-        .field input::placeholder { color: rgba(255,255,255,0.25) !important; }
-        .field svg { color: rgba(255,255,255,0.35) !important; }
-        .btn-main {
-          background: linear-gradient(135deg, #be185d, #9f1239);
-          border-radius: 10px;
-          transition: filter 0.2s, transform 0.15s, box-shadow 0.2s;
-        }
-        .btn-main:hover:not(:disabled) {
-          filter: brightness(1.15);
-          box-shadow: 0 8px 32px rgba(190,24,93,0.45);
-          transform: translateY(-1px);
-        }
-        .btn-main:active:not(:disabled) { transform: scale(0.98); }
-        .gold-bar {
-          background: linear-gradient(90deg, transparent, rgba(212,175,55,0.7), transparent);
-          height: 1px;
-        }
-        .label-text { color: rgba(255,255,255,0.45); }
-        .link-register { color: rgba(255,255,255,0.45); }
-        .link-register span { color: rgba(255,255,255,0.85); border-bottom: 1px solid rgba(255,255,255,0.2); }
-        .link-register:hover span { color: #f472b6; border-color: #f472b6; }
-      `}</style>
+    <div className="min-h-screen flex">
 
-      {/* Fondo oscuro */}
-      <div className="login-bg fixed inset-0 z-0" />
+      {/* ── Panel izquierdo: imagen + marca ── */}
+      <div
+        className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-14"
+        style={{
+          background: 'linear-gradient(160deg, #f8e8ee 0%, #fce4ec 40%, #f3e5f5 100%)',
+        }}
+      >
+        {/* Círculos decorativos de fondo */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(236,72,153,0.08) 0%, transparent 70%)' }} />
+          <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.07) 0%, transparent 70%)' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(244,114,182,0.05) 0%, transparent 60%)' }} />
+        </div>
 
-      {/* Pétalos canvas */}
-      <PetalCanvas />
+        {/* Logo arriba */}
+        <div className="relative z-10">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">🌸</span>
+            <span className="text-sm font-bold tracking-widest uppercase text-rose-400">Janneth Acevedo</span>
+          </div>
+        </div>
 
-      {/* Contenido */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-16">
+        {/* Contenido central */}
         <motion.div
-          className="w-full max-w-[400px]"
-          initial={{ opacity: 0, y: 24 }}
+          className="relative z-10"
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, delay: 0.3 }}
         >
+          {/* Ilustración floral grande */}
+          <div className="mb-10">
+            <svg width="280" height="220" viewBox="0 0 280 220" fill="none" overflow="visible">
+              {/* Tallos */}
+              <motion.path d="M140 220 Q136 185 140 150" stroke="#6aad7a" strokeWidth="3" strokeLinecap="round" fill="none"
+                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, delay: 0.4 }} />
+              <motion.path d="M140 195 Q112 178 92 155" stroke="#5a9e6f" strokeWidth="2.5" strokeLinecap="round" fill="none"
+                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, delay: 0.6 }} />
+              <motion.path d="M140 195 Q168 178 188 155" stroke="#5a9e6f" strokeWidth="2.5" strokeLinecap="round" fill="none"
+                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, delay: 0.6 }} />
+              <motion.path d="M140 180 Q108 162 82 138" stroke="#4a8c5c" strokeWidth="2" strokeLinecap="round" fill="none"
+                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, delay: 0.8 }} />
+              <motion.path d="M140 180 Q172 162 198 138" stroke="#4a8c5c" strokeWidth="2" strokeLinecap="round" fill="none"
+                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, delay: 0.8 }} />
+              <motion.path d="M140 170 Q122 148 118 122" stroke="#5a9e6f" strokeWidth="1.8" strokeLinecap="round" fill="none"
+                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, delay: 1.0 }} />
+              <motion.path d="M140 170 Q158 148 162 122" stroke="#5a9e6f" strokeWidth="1.8" strokeLinecap="round" fill="none"
+                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, delay: 1.0 }} />
 
-          {/* Marca */}
-          <motion.div
-            className="text-center mb-10"
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.15 }}
+              {/* Hojas */}
+              {[
+                { d: "M140 192 Q124 183 127 172 Q136 177 140 192Z", delay: 1.3 },
+                { d: "M140 192 Q156 183 153 172 Q144 177 140 192Z", delay: 1.4 },
+                { d: "M116 168 Q100 158 105 146 Q115 153 116 168Z", delay: 1.5 },
+                { d: "M164 168 Q180 158 175 146 Q165 153 164 168Z", delay: 1.5 },
+              ].map((l, i) => (
+                <motion.path key={i} d={l.d} fill="#6aad7a" opacity="0.7"
+                  initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 0.7 }}
+                  transition={{ duration: 0.6, delay: l.delay, ease: [0.34, 1.56, 0.64, 1] }}
+                  style={{ transformOrigin: '140px 192px' }} />
+              ))}
+
+              {/* Rosa central — pétalos exteriores */}
+              {[0, 45, 90, 135, 180, 225, 270, 315].map((a, i) => {
+                const rad = a * Math.PI / 180;
+                const cx = 140 + Math.sin(rad) * 16;
+                const cy = 150 - Math.cos(rad) * 16;
+                return (
+                  <motion.ellipse key={`rco${i}`} cx={cx} cy={cy} rx="9" ry="18"
+                    fill={i % 2 === 0 ? '#f9a8d4' : '#f472b6'} opacity="0.9"
+                    transform={`rotate(${a} ${cx} ${cy})`}
+                    initial={{ scale: 0 }} animate={{ scale: 1 }}
+                    transition={{ duration: 0.5, delay: 1.6 + i * 0.06, ease: [0.34, 1.56, 0.64, 1] }}
+                    style={{ transformOrigin: `${cx}px ${cy}px` }} />
+                );
+              })}
+              {/* Rosa central — pétalos interiores */}
+              {[0, 60, 120, 180, 240, 300].map((a, i) => {
+                const rad = a * Math.PI / 180;
+                const cx = 140 + Math.sin(rad) * 9;
+                const cy = 150 - Math.cos(rad) * 9;
+                return (
+                  <motion.ellipse key={`rci${i}`} cx={cx} cy={cy} rx="6" ry="12"
+                    fill="#ec4899" opacity="0.95"
+                    transform={`rotate(${a} ${cx} ${cy})`}
+                    initial={{ scale: 0 }} animate={{ scale: 1 }}
+                    transition={{ duration: 0.4, delay: 2.1 + i * 0.05, ease: [0.34, 1.56, 0.64, 1] }}
+                    style={{ transformOrigin: `${cx}px ${cy}px` }} />
+                );
+              })}
+              <motion.circle cx="140" cy="150" r="8" fill="#fbbf24"
+                initial={{ scale: 0 }} animate={{ scale: 1 }}
+                transition={{ duration: 0.35, delay: 2.5, ease: [0.34, 1.56, 0.64, 1] }}
+                style={{ transformOrigin: '140px 150px' }} />
+              <motion.circle cx="140" cy="150" r="4" fill="#f59e0b"
+                initial={{ scale: 0 }} animate={{ scale: 1 }}
+                transition={{ duration: 0.25, delay: 2.7 }}
+                style={{ transformOrigin: '140px 150px' }} />
+
+              {/* Flor izquierda — lila */}
+              {[0, 72, 144, 216, 288].map((a, i) => {
+                const rad = a * Math.PI / 180;
+                const cx = 92 + Math.sin(rad) * 11;
+                const cy = 155 - Math.cos(rad) * 11;
+                return (
+                  <motion.ellipse key={`fl${i}`} cx={cx} cy={cy} rx="6" ry="13"
+                    fill={i % 2 === 0 ? '#c4b5fd' : '#a78bfa'} opacity="0.88"
+                    transform={`rotate(${a} ${cx} ${cy})`}
+                    initial={{ scale: 0 }} animate={{ scale: 1 }}
+                    transition={{ duration: 0.45, delay: 1.8 + i * 0.07, ease: [0.34, 1.56, 0.64, 1] }}
+                    style={{ transformOrigin: `${cx}px ${cy}px` }} />
+                );
+              })}
+              <motion.circle cx="92" cy="155" r="6" fill="#fde68a"
+                initial={{ scale: 0 }} animate={{ scale: 1 }}
+                transition={{ duration: 0.3, delay: 2.2, ease: [0.34, 1.56, 0.64, 1] }}
+                style={{ transformOrigin: '92px 155px' }} />
+
+              {/* Flor derecha — durazno */}
+              {[0, 72, 144, 216, 288].map((a, i) => {
+                const rad = a * Math.PI / 180;
+                const cx = 188 + Math.sin(rad) * 11;
+                const cy = 155 - Math.cos(rad) * 11;
+                return (
+                  <motion.ellipse key={`fr${i}`} cx={cx} cy={cy} rx="6" ry="13"
+                    fill={i % 2 === 0 ? '#fed7aa' : '#fb923c'} opacity="0.88"
+                    transform={`rotate(${a} ${cx} ${cy})`}
+                    initial={{ scale: 0 }} animate={{ scale: 1 }}
+                    transition={{ duration: 0.45, delay: 1.8 + i * 0.07, ease: [0.34, 1.56, 0.64, 1] }}
+                    style={{ transformOrigin: `${cx}px ${cy}px` }} />
+                );
+              })}
+              <motion.circle cx="188" cy="155" r="6" fill="#fde68a"
+                initial={{ scale: 0 }} animate={{ scale: 1 }}
+                transition={{ duration: 0.3, delay: 2.2, ease: [0.34, 1.56, 0.64, 1] }}
+                style={{ transformOrigin: '188px 155px' }} />
+
+              {/* Flores pequeñas laterales */}
+              {[
+                { cx: 82, cy: 138, color1: '#fce7f3', color2: '#fbcfe8', delay: 2.0 },
+                { cx: 198, cy: 138, color1: '#fca5a5', color2: '#f87171', delay: 2.0 },
+                { cx: 118, cy: 122, color1: '#f472b6', color2: '#db2777', delay: 2.3 },
+                { cx: 162, cy: 122, color1: '#c084fc', color2: '#9333ea', delay: 2.3 },
+              ].map((f, fi) => (
+                [0, 60, 120, 180, 240, 300].map((a, i) => {
+                  const rad = a * Math.PI / 180;
+                  const cx = f.cx + Math.sin(rad) * 8;
+                  const cy = f.cy - Math.cos(rad) * 8;
+                  return (
+                    <motion.ellipse key={`fs${fi}-${i}`} cx={cx} cy={cy} rx="4" ry="9"
+                      fill={i % 2 === 0 ? f.color1 : f.color2} opacity="0.82"
+                      transform={`rotate(${a} ${cx} ${cy})`}
+                      initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      transition={{ duration: 0.4, delay: f.delay + i * 0.06, ease: [0.34, 1.56, 0.64, 1] }}
+                      style={{ transformOrigin: `${cx}px ${cy}px` }} />
+                  );
+                })
+              ))}
+              {[
+                { cx: 82, cy: 138 }, { cx: 198, cy: 138 },
+                { cx: 118, cy: 122 }, { cx: 162, cy: 122 },
+              ].map((c, i) => (
+                <motion.circle key={`fc${i}`} cx={c.cx} cy={c.cy} r="4" fill="#fbbf24"
+                  initial={{ scale: 0 }} animate={{ scale: 1 }}
+                  transition={{ duration: 0.25, delay: 2.6 + i * 0.1 }}
+                  style={{ transformOrigin: `${c.cx}px ${c.cy}px` }} />
+              ))}
+            </svg>
+          </div>
+
+          <h2
+            className="text-4xl xl:text-5xl text-gray-800 leading-tight mb-4"
+            style={{ fontFamily: "Georgia, serif", fontStyle: 'italic' }}
           >
-            {/* ── Arreglo floral que florece ── */}
-            <div className="flex justify-center mb-6">
-              <svg width="220" height="130" viewBox="0 0 220 130" fill="none" overflow="visible">
+            Donde cada flor<br />cuenta una historia
+          </h2>
+          <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
+            Flores frescas, suscripciones personalizadas y arreglos premium para transformar cada momento.
+          </p>
+        </motion.div>
 
-                {/* ── Tallos principales ── */}
-                <motion.path d="M110 128 Q108 100 110 72" stroke="#4a7c59" strokeWidth="2" strokeLinecap="round"
-                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, delay: 0.2 }} />
-                <motion.path d="M110 110 Q88 95 72 78" stroke="#4a7c59" strokeWidth="1.8" strokeLinecap="round"
-                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, delay: 0.5 }} />
-                <motion.path d="M110 110 Q132 95 148 78" stroke="#4a7c59" strokeWidth="1.8" strokeLinecap="round"
-                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, delay: 0.5 }} />
-                <motion.path d="M110 100 Q80 88 58 68" stroke="#3d6b4a" strokeWidth="1.5" strokeLinecap="round"
-                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, delay: 0.7 }} />
-                <motion.path d="M110 100 Q140 88 162 68" stroke="#3d6b4a" strokeWidth="1.5" strokeLinecap="round"
-                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, delay: 0.7 }} />
-                <motion.path d="M110 95 Q95 75 90 52" stroke="#4a7c59" strokeWidth="1.4" strokeLinecap="round"
-                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.8, delay: 0.9 }} />
-                <motion.path d="M110 95 Q125 75 130 52" stroke="#4a7c59" strokeWidth="1.4" strokeLinecap="round"
-                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.8, delay: 0.9 }} />
+        {/* Pie del panel */}
+        <div className="relative z-10">
+          <p className="text-[10px] text-gray-300 uppercase tracking-widest">
+            © 2025 Janneth Acevedo · Boutique Floral
+          </p>
+        </div>
+      </div>
 
-                {/* ── Hojas ── */}
-                {[
-                  { d: "M110 108 Q96 100 98 90 Q106 94 110 108Z", delay: 1.1 },
-                  { d: "M110 108 Q124 100 122 90 Q114 94 110 108Z", delay: 1.2 },
-                  { d: "M90 80 Q78 72 82 62 Q90 68 90 80Z", delay: 1.4 },
-                  { d: "M130 80 Q142 72 138 62 Q130 68 130 80Z", delay: 1.4 },
-                ].map((leaf, i) => (
-                  <motion.path key={i} d={leaf.d} fill="#5a9e6f" opacity="0.75"
-                    initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 0.75 }}
-                    transition={{ duration: 0.6, delay: leaf.delay, ease: [0.34,1.56,0.64,1] }}
-                    style={{ transformOrigin: '110px 108px' }} />
-                ))}
+      {/* ── Panel derecho: formulario ── */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 bg-white">
+        <motion.div
+          className="w-full max-w-sm"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {/* Logo móvil (solo visible en móvil) */}
+          <div className="flex items-center gap-2 mb-10 lg:hidden">
+            <span className="text-xl">🌸</span>
+            <span className="text-sm font-bold tracking-widest uppercase text-rose-400">Janneth Acevedo</span>
+          </div>
 
-                {/* ── Rosa central grande ── */}
-                {[0,51,102,153,204,255,306].map((a, i) => (
-                  <motion.ellipse key={`rc${i}`}
-                    cx={110 + Math.sin(a*Math.PI/180)*13} cy={72 - Math.cos(a*Math.PI/180)*13}
-                    rx="7" ry="14"
-                    fill={i % 2 === 0 ? '#f9a8d4' : '#ec4899'} opacity="0.88"
-                    transform={`rotate(${a} ${110 + Math.sin(a*Math.PI/180)*13} ${72 - Math.cos(a*Math.PI/180)*13})`}
-                    initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    transition={{ duration: 0.5, delay: 1.3 + i*0.07, ease: [0.34,1.56,0.64,1] }}
-                    style={{ transformOrigin: `${110 + Math.sin(a*Math.PI/180)*13}px ${72 - Math.cos(a*Math.PI/180)*13}px` }}
-                  />
-                ))}
-                {[0,60,120,180,240,300].map((a, i) => (
-                  <motion.ellipse key={`ri${i}`}
-                    cx={110 + Math.sin(a*Math.PI/180)*7} cy={72 - Math.cos(a*Math.PI/180)*7}
-                    rx="5" ry="10"
-                    fill="#be185d" opacity="0.9"
-                    transform={`rotate(${a} ${110 + Math.sin(a*Math.PI/180)*7} ${72 - Math.cos(a*Math.PI/180)*7})`}
-                    initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    transition={{ duration: 0.4, delay: 1.8 + i*0.06, ease: [0.34,1.56,0.64,1] }}
-                    style={{ transformOrigin: `${110 + Math.sin(a*Math.PI/180)*7}px ${72 - Math.cos(a*Math.PI/180)*7}px` }}
-                  />
-                ))}
-                <motion.circle cx="110" cy="72" r="7" fill="#fbbf24"
-                  initial={{ scale: 0 }} animate={{ scale: 1 }}
-                  transition={{ duration: 0.35, delay: 2.2, ease: [0.34,1.56,0.64,1] }}
-                  style={{ transformOrigin: '110px 72px' }} />
-                <motion.circle cx="110" cy="72" r="3.5" fill="#f59e0b"
-                  initial={{ scale: 0 }} animate={{ scale: 1 }}
-                  transition={{ duration: 0.25, delay: 2.4 }}
-                  style={{ transformOrigin: '110px 72px' }} />
-
-                {/* ── Flor izquierda media (lila) ── */}
-                {[0,72,144,216,288].map((a, i) => (
-                  <motion.ellipse key={`lm${i}`}
-                    cx={72 + Math.sin(a*Math.PI/180)*9} cy={78 - Math.cos(a*Math.PI/180)*9}
-                    rx="5" ry="10"
-                    fill={i%2===0 ? '#c4b5fd' : '#a78bfa'} opacity="0.85"
-                    transform={`rotate(${a} ${72 + Math.sin(a*Math.PI/180)*9} ${78 - Math.cos(a*Math.PI/180)*9})`}
-                    initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    transition={{ duration: 0.45, delay: 1.5 + i*0.08, ease: [0.34,1.56,0.64,1] }}
-                    style={{ transformOrigin: `${72 + Math.sin(a*Math.PI/180)*9}px ${78 - Math.cos(a*Math.PI/180)*9}px` }}
-                  />
-                ))}
-                <motion.circle cx="72" cy="78" r="5" fill="#fde68a"
-                  initial={{ scale: 0 }} animate={{ scale: 1 }}
-                  transition={{ duration: 0.3, delay: 1.95, ease: [0.34,1.56,0.64,1] }}
-                  style={{ transformOrigin: '72px 78px' }} />
-
-                {/* ── Flor derecha media (durazno) ── */}
-                {[0,72,144,216,288].map((a, i) => (
-                  <motion.ellipse key={`rm${i}`}
-                    cx={148 + Math.sin(a*Math.PI/180)*9} cy={78 - Math.cos(a*Math.PI/180)*9}
-                    rx="5" ry="10"
-                    fill={i%2===0 ? '#fed7aa' : '#fb923c'} opacity="0.85"
-                    transform={`rotate(${a} ${148 + Math.sin(a*Math.PI/180)*9} ${78 - Math.cos(a*Math.PI/180)*9})`}
-                    initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    transition={{ duration: 0.45, delay: 1.5 + i*0.08, ease: [0.34,1.56,0.64,1] }}
-                    style={{ transformOrigin: `${148 + Math.sin(a*Math.PI/180)*9}px ${78 - Math.cos(a*Math.PI/180)*9}px` }}
-                  />
-                ))}
-                <motion.circle cx="148" cy="78" r="5" fill="#fde68a"
-                  initial={{ scale: 0 }} animate={{ scale: 1 }}
-                  transition={{ duration: 0.3, delay: 1.95, ease: [0.34,1.56,0.64,1] }}
-                  style={{ transformOrigin: '148px 78px' }} />
-
-                {/* ── Flor izquierda pequeña (blanca/rosa) ── */}
-                {[0,60,120,180,240,300].map((a, i) => (
-                  <motion.ellipse key={`ls${i}`}
-                    cx={58 + Math.sin(a*Math.PI/180)*7} cy={68 - Math.cos(a*Math.PI/180)*7}
-                    rx="4" ry="8"
-                    fill={i%2===0 ? '#fce7f3' : '#fbcfe8'} opacity="0.8"
-                    transform={`rotate(${a} ${58 + Math.sin(a*Math.PI/180)*7} ${68 - Math.cos(a*Math.PI/180)*7})`}
-                    initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    transition={{ duration: 0.4, delay: 1.7 + i*0.07, ease: [0.34,1.56,0.64,1] }}
-                    style={{ transformOrigin: `${58 + Math.sin(a*Math.PI/180)*7}px ${68 - Math.cos(a*Math.PI/180)*7}px` }}
-                  />
-                ))}
-                <motion.circle cx="58" cy="68" r="4" fill="#fbbf24"
-                  initial={{ scale: 0 }} animate={{ scale: 1 }}
-                  transition={{ duration: 0.25, delay: 2.1 }}
-                  style={{ transformOrigin: '58px 68px' }} />
-
-                {/* ── Flor derecha pequeña (roja) ── */}
-                {[0,60,120,180,240,300].map((a, i) => (
-                  <motion.ellipse key={`rs${i}`}
-                    cx={162 + Math.sin(a*Math.PI/180)*7} cy={68 - Math.cos(a*Math.PI/180)*7}
-                    rx="4" ry="8"
-                    fill={i%2===0 ? '#fca5a5' : '#f87171'} opacity="0.8"
-                    transform={`rotate(${a} ${162 + Math.sin(a*Math.PI/180)*7} ${68 - Math.cos(a*Math.PI/180)*7})`}
-                    initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    transition={{ duration: 0.4, delay: 1.7 + i*0.07, ease: [0.34,1.56,0.64,1] }}
-                    style={{ transformOrigin: `${162 + Math.sin(a*Math.PI/180)*7}px ${68 - Math.cos(a*Math.PI/180)*7}px` }}
-                  />
-                ))}
-                <motion.circle cx="162" cy="68" r="4" fill="#fbbf24"
-                  initial={{ scale: 0 }} animate={{ scale: 1 }}
-                  transition={{ duration: 0.25, delay: 2.1 }}
-                  style={{ transformOrigin: '162px 68px' }} />
-
-                {/* ── Capullo izquierdo (rosa cerrado) ── */}
-                <motion.ellipse cx="90" cy="52" rx="5" ry="10" fill="#f472b6" opacity="0.7"
-                  initial={{ scale: 0, y: 8 }} animate={{ scale: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 1.6, ease: [0.34,1.56,0.64,1] }}
-                  style={{ transformOrigin: '90px 52px' }} />
-                <motion.ellipse cx="90" cy="52" rx="3" ry="7" fill="#db2777" opacity="0.8"
-                  initial={{ scale: 0 }} animate={{ scale: 1 }}
-                  transition={{ duration: 0.4, delay: 1.8 }}
-                  style={{ transformOrigin: '90px 52px' }} />
-
-                {/* ── Capullo derecho ── */}
-                <motion.ellipse cx="130" cy="52" rx="5" ry="10" fill="#c084fc" opacity="0.7"
-                  initial={{ scale: 0, y: 8 }} animate={{ scale: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 1.6, ease: [0.34,1.56,0.64,1] }}
-                  style={{ transformOrigin: '130px 52px' }} />
-                <motion.ellipse cx="130" cy="52" rx="3" ry="7" fill="#9333ea" opacity="0.8"
-                  initial={{ scale: 0 }} animate={{ scale: 1 }}
-                  transition={{ duration: 0.4, delay: 1.8 }}
-                  style={{ transformOrigin: '130px 52px' }} />
-
-                {/* ── Destellos de luz ── */}
-                {[[110,72],[72,78],[148,78]].map(([cx,cy],i) => (
-                  <motion.circle key={`gl${i}`} cx={cx} cy={cy} r="18"
-                    fill="rgba(255,255,255,0.04)"
-                    animate={{ r: [16, 22, 16], opacity: [0.04, 0.08, 0.04] }}
-                    transition={{ duration: 3 + i, repeat: Infinity, ease: 'easeInOut', delay: i * 0.8 }}
-                  />
-                ))}
-              </svg>
-            </div>
-
+          {/* Encabezado */}
+          <div className="mb-8">
             <h1
-              className="text-[2.6rem] leading-none text-white"
-              style={{ fontFamily: "Georgia, serif", fontStyle: 'italic', letterSpacing: '-0.01em' }}
+              className="text-3xl text-gray-900 mb-1"
+              style={{ fontFamily: "Georgia, serif", fontStyle: 'italic' }}
             >
-              Janneth Acevedo
+              Bienvenida
             </h1>
-            <div className="gold-bar w-20 mx-auto mt-4 mb-3" />
-            <p className="text-[9px] font-black uppercase tracking-[0.5em] text-rose-400">
-              Boutique Floral de Lujo
-            </p>
-          </motion.div>
+            <p className="text-gray-400 text-sm">Ingresa a tu cuenta para continuar</p>
+          </div>
 
-          {/* Tarjeta */}
-          <motion.div
-            className="glass-card rounded-2xl p-8"
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            <div className="mb-7">
-              <h2 className="text-xl font-bold text-white tracking-tight">
-                Bienvenida de vuelta
-              </h2>
-              <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                Ingresa a tu cuenta para continuar
-              </p>
+          {/* Formulario */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                Correo electrónico
+              </label>
+              <Input
+                type="email"
+                placeholder="tu@email.com"
+                icon={<Mail className="w-4 h-4 text-gray-300" />}
+                className="h-12 rounded-xl border-gray-200 bg-gray-50 focus:bg-white text-gray-900 text-sm placeholder:text-gray-300 transition-all"
+                error={errors.email?.message}
+                {...register('email')}
+              />
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <label className="label-text block text-[10px] font-bold uppercase tracking-widest mb-1.5">
-                  Correo electrónico
-                </label>
-                <div className="field">
-                  <Input
-                    type="email"
-                    placeholder="tu@email.com"
-                    icon={<Mail className="w-4 h-4" />}
-                    className="bg-transparent border-0 h-11 focus:ring-0 text-sm"
-                    error={errors.email?.message}
-                    {...register('email')}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="label-text block text-[10px] font-bold uppercase tracking-widest mb-1.5">
-                  Contraseña
-                </label>
-                <div className="field">
-                  <Input
-                    type="password"
-                    placeholder="••••••••"
-                    icon={<Lock className="w-4 h-4" />}
-                    className="bg-transparent border-0 h-11 focus:ring-0 text-sm"
-                    error={errors.password?.message}
-                    {...register('password')}
-                  />
-                </div>
-              </div>
-
-              <div className="pt-1">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="btn-main w-full h-11 text-white font-semibold text-sm tracking-wide flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <span className="flex items-center gap-2">
-                      <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-                      </svg>
-                      Ingresando…
-                    </span>
-                  ) : (
-                    <>
-                      Ingresar al Jardín
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-
-            <div className="flex items-center gap-3 my-5">
-              <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.07)' }} />
-              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>o</span>
-              <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.07)' }} />
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                Contraseña
+              </label>
+              <Input
+                type="password"
+                placeholder="••••••••"
+                icon={<Lock className="w-4 h-4 text-gray-300" />}
+                className="h-12 rounded-xl border-gray-200 bg-gray-50 focus:bg-white text-gray-900 text-sm placeholder:text-gray-300 transition-all"
+                error={errors.password?.message}
+                {...register('password')}
+              />
             </div>
 
-            <p className="link-register text-sm text-center transition-colors">
-              ¿Nueva en la boutique?{' '}
-              <Link href="/registro">
-                <span className="font-semibold transition-colors pb-0.5">
-                  Regístrate aquí
-                </span>
-              </Link>
-            </p>
-          </motion.div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-12 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                background: loading ? '#9f1239' : 'linear-gradient(135deg, #e11d48 0%, #9f1239 100%)',
+                boxShadow: '0 4px 20px rgba(225,29,72,0.25)',
+              }}
+              onMouseEnter={e => { if (!loading) (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 28px rgba(225,29,72,0.40)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 20px rgba(225,29,72,0.25)'; }}
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                  </svg>
+                  Ingresando…
+                </>
+              ) : (
+                <>
+                  Ingresar al Jardín
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </form>
 
-          <motion.p
-            className="text-center text-[9px] uppercase tracking-[0.4em] mt-7"
-            style={{ color: 'rgba(255,255,255,0.15)' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-          >
-            © 2025 Janneth Acevedo · Todos los derechos reservados
-          </motion.p>
+          {/* Separador */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-gray-100" />
+            <span className="text-xs text-gray-300">o</span>
+            <div className="flex-1 h-px bg-gray-100" />
+          </div>
+
+          {/* Registro */}
+          <p className="text-sm text-gray-400 text-center">
+            ¿Nueva en la boutique?{' '}
+            <Link href="/registro" className="font-semibold text-rose-500 hover:text-rose-600 transition-colors">
+              Regístrate aquí
+            </Link>
+          </p>
         </motion.div>
       </div>
-    </>
+    </div>
   );
 }
