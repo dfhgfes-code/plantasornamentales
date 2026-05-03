@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import axios from 'axios';
+
 
 @Injectable()
 export class SupabaseService {
@@ -32,33 +34,41 @@ export class SupabaseService {
 
 
   async uploadFile(file: Express.Multer.File, bucket: string = 'flowers') {
-    if (!this.supabase) {
+    const url = 'https://pucdbmecnqduihflfppi.supabase.co';
+    const key = this.configService.get<string>('SUPABASE_SERVICE_KEY') || 
+                process.env.SUPABASE_SERVICE_KEY ||
+                this.configService.get<string>('supabase.key');
+
+    if (!key) {
       throw new Error('Supabase no está configurado');
     }
 
-    const fileExt = file.originalname.split('.').pop();
-    const fileName = `product-${Date.now()}-${Math.round(Math.random() * 1e6)}.${fileExt}`;
-    const filePath = `${fileName}`;
+    const fileName = `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`;
+    const uploadUrl = `${url}/storage/v1/object/${bucket}/${fileName}`;
 
-    const { data, error } = await this.supabase.storage
-      .from(bucket)
-      .upload(filePath, file.buffer, {
-        contentType: file.mimetype,
-        upsert: true,
+    this.logger.log(`Intentando subir directamente a: ${uploadUrl}`);
+
+    try {
+      const response = await axios.post(uploadUrl, file.buffer, {
+        headers: {
+          'Authorization': `Bearer ${key}`,
+          'apikey': key,
+          'Content-Type': file.mimetype,
+        },
       });
 
-    if (error) {
-      this.logger.error(`Error uploading to Supabase: ${error.message}`);
-      throw error;
+      if (response.status !== 200) {
+        throw new Error(`Error de Supabase: ${response.statusText}`);
+      }
+
+      const publicUrl = `${url}/storage/v1/object/public/${bucket}/${fileName}`;
+      this.logger.log(`✅ ¡ÉXITO TOTAL! Imagen en: ${publicUrl}`);
+      
+      return publicUrl;
+    } catch (error) {
+      this.logger.error(`Error en subida directa: ${error.message}`);
+      throw new Error(`Error al subir imagen: ${error.message}`);
     }
-
-    const { data: { publicUrl } } = this.supabase.storage
-      .from(bucket)
-      .getPublicUrl(filePath);
-
-    return {
-      url: publicUrl,
-      fileName: filePath,
-    };
   }
+
 }
