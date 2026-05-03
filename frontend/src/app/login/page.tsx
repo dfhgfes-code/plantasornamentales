@@ -54,7 +54,7 @@ export default function LoginPage() {
       <style>{`
         .login-page {
           min-height: 100vh;
-          background: #fffcf9;
+          background: #fdfaf7;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -74,11 +74,13 @@ export default function LoginPage() {
           position: relative;
         }
 
+        /* Panel Izquierdo */
         .left-panel {
-          width: 48%;
+          width: 50%;
           position: relative;
           background: #1a1a1a;
           overflow: hidden;
+          clip-path: ellipse(110% 110% at 0% 50%);
         }
 
         @media (max-width: 1024px) {
@@ -91,19 +93,18 @@ export default function LoginPage() {
           height: 100%;
           object-fit: cover;
           opacity: 0.9;
-          filter: brightness(0.8);
         }
 
         .left-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+          background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%);
         }
 
         .left-content {
           position: absolute;
-          bottom: 60px; /* Movido hacia abajo para no pisar el texto de la imagen */
-          left: 50px;
+          bottom: 60px;
+          left: 60px;
           z-index: 10;
           color: #fff;
           max-width: 400px;
@@ -129,6 +130,7 @@ export default function LoginPage() {
           font-weight: 300;
         }
 
+        /* Panel Derecho */
         .right-panel {
           flex: 1;
           padding: 60px;
@@ -140,53 +142,62 @@ export default function LoginPage() {
           background: #fff;
         }
 
-        .decor-sketch {
+        /* Ramas Decorativas (Inspiradas en la referencia) */
+        .branch-left {
           position: absolute;
-          bottom: -40px;
+          bottom: -30px;
+          left: -40px;
+          width: 200px;
+          opacity: 0.12;
+          transform: rotate(45deg);
+          pointer-events: none;
+        }
+
+        .branch-right {
+          position: absolute;
+          top: -30px;
           right: -40px;
-          width: 250px;
-          height: 250px;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none'%3E%3Cpath d='M180 180 Q140 120 100 100 Q60 80 20 20' stroke='%23fff1f2' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-          background-size: contain;
-          background-repeat: no-repeat;
-          opacity: 0.6;
+          width: 200px;
+          opacity: 0.12;
+          transform: rotate(-135deg);
           pointer-events: none;
         }
 
         .form-container {
           width: 100%;
-          max-width: 380px;
+          max-width: 400px;
           z-index: 1;
         }
 
         .form-header {
           text-align: center;
-          margin-bottom: 36px;
+          margin-bottom: 40px;
         }
 
         .form-header h1 {
-          font-size: 2.2rem;
-          font-weight: 700;
-          color: #1f2937;
-          margin-bottom: 8px;
+          font-size: 2.4rem;
+          font-weight: 500;
+          color: #111827;
+          margin-bottom: 12px;
+          font-family: 'Playfair Display', serif;
         }
 
         .form-header p {
-          color: #9ca3af;
-          font-size: 1rem;
+          color: #6b7280;
+          font-size: 1.05rem;
+          font-weight: 400;
         }
 
         .input-group {
-          margin-bottom: 20px;
+          margin-bottom: 24px;
         }
 
         .input-label {
           display: block;
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: #4b5563;
-          margin-bottom: 8px;
-          text-transform: uppercase;
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: #374151;
+          margin-bottom: 10px;
         }
 
         .input-wrapper {
@@ -197,141 +208,141 @@ export default function LoginPage() {
 
         .input-icon {
           position: absolute;
-          left: 16px;
+          left: 18px;
           color: #d1d5db;
-          width: 18px;
-          height: 18px;
+          width: 20px;
         }
 
         .input-field {
           width: 100%;
-          padding: 14px 16px 14px 48px;
-          background: #fff !important; /* Forzado a blanco */
+          padding: 15px 20px 15px 54px;
+          background: #fff !important;
           border: 1.5px solid #f3f4f6;
-          border-radius: 14px;
+          border-radius: 16px;
           font-size: 1rem;
           color: #111827;
           transition: all 0.25s;
         }
 
-        /* Corrección de Autofill de Chrome (el fondo azul) */
-        .input-field:-webkit-autofill,
-        .input-field:-webkit-autofill:hover, 
-        .input-field:-webkit-autofill:focus, 
-        .input-field:-webkit-autofill:active {
-          -webkit-box-shadow: 0 0 0 40px white inset !important;
+        .input-field:-webkit-autofill {
+          -webkit-box-shadow: 0 0 0 50px white inset !important;
           -webkit-text-fill-color: #111827 !important;
         }
 
         .input-field:focus {
           outline: none;
-          border-color: #ec4899;
-          box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.08);
+          border-color: #5d6d5e;
+          box-shadow: 0 0 0 4px rgba(93, 109, 94, 0.1);
         }
 
         .show-password {
           position: absolute;
-          right: 16px;
+          right: 18px;
           color: #d1d5db;
           cursor: pointer;
           background: none;
           border: none;
+          padding: 5px;
         }
 
         .forgot-password {
           display: block;
           text-align: right;
           font-size: 0.85rem;
-          color: #f472b6;
+          color: #fca5a5;
           margin-top: 12px;
+          font-weight: 500;
           text-decoration: none;
-          font-weight: 600;
         }
 
         .btn-login {
           width: 100%;
-          padding: 16px;
-          background: linear-gradient(135deg, #f472b6 0%, #db2777 100%);
+          padding: 18px;
+          background: #5d6d5e;
           color: #fff;
           border: none;
-          border-radius: 14px;
-          font-size: 1rem;
-          font-weight: 700;
-          margin-top: 32px;
+          border-radius: 16px;
+          font-size: 1.05rem;
+          font-weight: 600;
+          margin-top: 36px;
           cursor: pointer;
-          box-shadow: 0 10px 25px rgba(219, 39, 119, 0.25);
-          transition: all 0.3s;
+          transition: all 0.2s;
+          box-shadow: 0 10px 20px rgba(93, 109, 94, 0.2);
         }
 
         .btn-login:hover:not(:disabled) {
-          transform: translateY(-2px);
-          filter: brightness(1.05);
+          background: #4a574b;
+          transform: translateY(-1px);
+          box-shadow: 0 15px 30px rgba(93, 109, 94, 0.3);
         }
 
         .divider {
           display: flex;
           align-items: center;
-          margin: 32px 0;
+          margin: 36px 0;
           color: #e5e7eb;
         }
 
         .divider span {
           padding: 0 16px;
-          font-size: 0.8rem;
+          font-size: 0.85rem;
           color: #9ca3af;
-          text-transform: uppercase;
         }
 
         .btn-google {
           width: 100%;
-          padding: 14px;
+          padding: 15px;
           background: #fff;
           border: 1.5px solid #f3f4f6;
-          border-radius: 14px;
+          border-radius: 16px;
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 12px;
           font-size: 0.95rem;
-          font-weight: 600;
-          color: #4b5563;
+          font-weight: 500;
+          color: #374151;
           cursor: pointer;
+          transition: all 0.2s;
         }
 
         .footer-text {
-          margin-top: 40px;
+          margin-top: 45px;
           text-align: center;
-          font-size: 0.9rem;
-          color: #9ca3af;
+          font-size: 0.95rem;
+          color: #6b7280;
         }
 
         .footer-text a {
-          color: #f472b6;
-          font-weight: 700;
+          color: #fca5a5;
+          font-weight: 600;
           text-decoration: none;
+          margin-left: 5px;
         }
       `}</style>
 
       <div className="login-page">
         <motion.div 
           className="login-card"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
         >
           {/* Panel Izquierdo */}
           <div className="left-panel">
-            <img src="/images/login_bg.png" alt="Premium Bouquet" />
+            <img src="/images/login_bg.png" alt="Flor & Vida" />
             <div className="left-overlay" />
             <div className="left-content">
               <h2>Cada flor<br />cuenta una<br /><span>historia</span></h2>
-              <p>Arreglos únicos diseñados para transformar momentos ordinarios en recuerdos inolvidables.</p>
+              <p>Ramos únicos para momentos inolvidables.</p>
             </div>
           </div>
 
           {/* Panel Derecho */}
           <div className="right-panel">
-            <div className="decor-sketch" />
+            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-left" alt="" />
+            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-right" alt="" />
+
             <div className="form-container">
               <div className="flex justify-center mb-10">
                 <Logo size="xl" centered />
@@ -339,7 +350,7 @@ export default function LoginPage() {
 
               <div className="form-header">
                 <h1>Bienvenido</h1>
-                <p>Inicia sesión para continuar</p>
+                <p>Inicia sesión para gestionar tu tienda</p>
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -354,7 +365,7 @@ export default function LoginPage() {
                       {...register('email')}
                     />
                   </div>
-                  {errors.email && <p className="text-pink-500 text-xs mt-1.5 font-medium">{errors.email.message}</p>}
+                  {errors.email && <p className="text-red-400 text-xs mt-1.5">{errors.email.message}</p>}
                 </div>
 
                 <div className="input-group">
@@ -372,17 +383,17 @@ export default function LoginPage() {
                       className="show-password"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
-                  {errors.password && <p className="text-pink-500 text-xs mt-1.5 font-medium">{errors.password.message}</p>}
+                  {errors.password && <p className="text-red-400 text-xs mt-1.5">{errors.password.message}</p>}
                   <Link href="/recuperar" className="forgot-password">
                     ¿Olvidaste tu contraseña?
                   </Link>
                 </div>
 
                 <button type="submit" disabled={loading} className="btn-login">
-                  {loading ? 'Cargando...' : 'Ingresar al Jardín'}
+                  {loading ? 'Validando...' : 'Iniciar sesión'}
                 </button>
               </form>
 
@@ -391,7 +402,7 @@ export default function LoginPage() {
               </div>
 
               <button className="btn-google" type="button">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" alt="Google" />
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="Google" />
                 Continuar con Google
               </button>
 
