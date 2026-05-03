@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Mail, Lock } from 'lucide-react';
-import { BloomingRose } from '@/components/BloomingRose';
+import { BloomingBouquet } from '@/components/BloomingBouquet';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
 import { Button } from '@/components/ui/Button';
@@ -48,8 +48,8 @@ export default function LoginPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="mb-6 h-24 flex items-center justify-center">
-            <BloomingRose />
+          <div className="mb-2">
+            <BloomingBouquet />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Bienvenida de vuelta</h1>
           <p className="text-gray-500 mt-1">Ingresa a tu cuenta para continuar</p>
