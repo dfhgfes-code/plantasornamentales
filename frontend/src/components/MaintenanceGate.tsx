@@ -9,7 +9,7 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   const { user } = useAuthStore();
 
   useEffect(() => {
-    settingsApi.getAll().then(r => setSettings(r.data)).catch(() => setSettings({}));
+    settingsApi.getAll().then(r => setSettings(r.data.data || {})).catch(() => setSettings({}));
   }, []);
 
   // While loading, render normally

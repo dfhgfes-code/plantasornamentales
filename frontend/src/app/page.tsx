@@ -38,10 +38,10 @@ export default function HomePage() {
       
       setProducts(prodRes.data.data.data || []);
       setPlans(planRes.data.data || []);
-      setSettings(setRes.data);
+      setSettings(setRes.data.data || {});
       
-      if (setRes.data.home_promo_marquee) {
-        setMarqueeItems(JSON.parse(setRes.data.home_promo_marquee));
+      if (setRes.data.data?.home_promo_marquee) {
+        setMarqueeItems(JSON.parse(setRes.data.data.home_promo_marquee));
       }
     } catch (error) {
       console.error('Error loading home data:', error);

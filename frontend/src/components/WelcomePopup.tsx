@@ -13,7 +13,7 @@ export function WelcomePopup() {
     if (seen) return;
 
     settingsApi.getAll().then(res => {
-      const s = res.data;
+      const s = res.data.data || {};
       setSettings(s);
       // Only show if popup is enabled in settings
       if (s.popup_enabled !== 'false') {

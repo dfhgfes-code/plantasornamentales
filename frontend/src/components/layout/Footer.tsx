@@ -8,7 +8,7 @@ export function Footer() {
   const [settings, setSettings] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    settingsApi.getAll().then(res => setSettings(res.data)).catch(() => {});
+    settingsApi.getAll().then(res => setSettings(res.data.data || {})).catch(() => {});
   }, []);
 
   const trustBadges = [

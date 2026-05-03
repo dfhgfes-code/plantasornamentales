@@ -36,7 +36,7 @@ export default function SuperAdminPage() {
         adminApi.getUsers({ limit: 100 }),
         adminApi.getSuperAnalytics(),
       ]);
-      if (sRes.status === 'fulfilled') setSettings(sRes.value.data);
+      if (sRes.status === 'fulfilled') setSettings(sRes.value.data.data || {});
       if (aRes.status === 'fulfilled') setAdmins((aRes.value.data.data?.data || []).filter((u: any) => u.role === 'admin'));
       if (anRes.status === 'fulfilled') setAnalytics(anRes.value.data.data);
     } finally { setLoading(false); }
