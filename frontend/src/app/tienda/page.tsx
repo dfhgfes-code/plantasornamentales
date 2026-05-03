@@ -16,6 +16,8 @@ export default function TiendaPage() {
   const [sortBy, setSortBy] = useState('createdAt');
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  
   const addItem = useCartStore((s) => s.addItem);
   const LIMIT = 8;
 
@@ -26,13 +28,23 @@ export default function TiendaPage() {
   useEffect(() => {
     setLoading(true);
     productsApi.getAll({ search, category, sortBy, page, limit: LIMIT, isAvailable: true })
-      .then((r) => { setProducts(r.data.data.data || []); setTotal(r.data.data.total || 0); })
+      .then((r) => { 
+        setProducts(r.data.data.data || []); 
+        setTotal(r.data.data.total || 0); 
+      })
       .finally(() => setLoading(false));
   }, [search, category, sortBy, page]);
 
   const handleAdd = (product: any) => {
     addItem({ id: product.id, name: product.name, price: Number(product.price), imageUrl: product.imageUrl });
     toast.success(`¡${product.name} agregado! 🌸`);
+  };
+
+  const toggleExpand = (id: string) => {
+    const newExpanded = new Set(expanded);
+    if (newExpanded.has(id)) newExpanded.delete(id);
+    else newExpanded.add(id);
+    setExpanded(newExpanded);
   };
 
   return (
@@ -53,7 +65,6 @@ export default function TiendaPage() {
         {/* Filtros */}
         <div className="bg-white rounded-3xl shadow-card border border-rose-50 p-5 mb-8">
           <div className="flex flex-wrap gap-4 items-center">
-            {/* Búsqueda */}
             <div className="flex-1 min-w-[220px] relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -69,7 +80,6 @@ export default function TiendaPage() {
               )}
             </div>
 
-            {/* Categorías */}
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => { setCategory(''); setPage(1); }}
@@ -85,7 +95,6 @@ export default function TiendaPage() {
               ))}
             </div>
 
-            {/* Ordenar */}
             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}
               className="bg-cream border border-transparent focus:border-rose-200 rounded-2xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-rose-300 transition-all">
               <option value="createdAt">Más recientes</option>
@@ -131,7 +140,9 @@ export default function TiendaPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute top-3 left-3">
-                    <span className="category-tag">{product.category}</span>
+                    <span className="bg-white/90 backdrop-blur-md text-rose-700 text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm">
+                      {product.category}
+                    </span>
                   </div>
                 </div>
                 <div className="p-4 flex flex-col flex-1">
@@ -140,11 +151,22 @@ export default function TiendaPage() {
                   </Link>
                   <div className="flex items-center gap-1 mb-2">
                     <Star className="w-3 h-3 fill-gold text-gold" />
-                    <span className="text-[10px] text-gray-400 font-medium">4.9 (24 reseñas)</span>
+                    <span className="text-[10px] text-gray-400 font-medium">
+                      {product.rating?.toFixed(1) || '5.0'} ({product.reviewsCount || 0} reseñas)
+                    </span>
                   </div>
-                  <p className="text-xs text-gray-500 line-clamp-3 mb-4 flex-1">
-                    {product.description}
-                  </p>
+                  <div className="mb-4 flex-1">
+                    <p className={`text-xs text-gray-500 leading-relaxed ${expanded.has(product.id) ? '' : 'line-clamp-3'}`}>
+                      {product.description}
+                    </p>
+                    {product.description?.length > 100 && (
+                      <button 
+                        onClick={() => toggleExpand(product.id)}
+                        className="text-[10px] font-bold text-rose-600 mt-1 hover:underline">
+                        {expanded.has(product.id) ? 'Ver menos' : 'Ver descripción completa'}
+                      </button>
+                    )}
+                  </div>
                   <div className="flex items-center justify-between mb-4">
                     <span className="font-bold text-rose-700 text-lg font-serif">{formatCurrency(Number(product.price))}</span>
                   </div>
@@ -155,7 +177,6 @@ export default function TiendaPage() {
                 </div>
               </div>
             ))}
-
           </div>
         )}
 

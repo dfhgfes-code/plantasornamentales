@@ -20,6 +20,8 @@ export async function seedProducts(dataSource: DataSource) {
       stock: 50,
       isAvailable: true,
       imageUrl: 'https://images.unsplash.com/photo-1548094990-c16ca90f1f0d?w=500',
+      rating: 4.9,
+      reviewsCount: 124,
     },
     {
       name: 'Girasoles Alegres',
@@ -30,6 +32,8 @@ export async function seedProducts(dataSource: DataSource) {
       stock: 30,
       isAvailable: true,
       imageUrl: 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=500',
+      rating: 4.8,
+      reviewsCount: 85,
     },
     {
       name: 'Orquídeas Blancas',
@@ -40,6 +44,8 @@ export async function seedProducts(dataSource: DataSource) {
       stock: 20,
       isAvailable: true,
       imageUrl: 'https://images.unsplash.com/photo-1566907225472-514215c9e6e4?w=500',
+      rating: 5.0,
+      reviewsCount: 42,
     },
     {
       name: 'Tulipanes Mixtos',
@@ -50,6 +56,8 @@ export async function seedProducts(dataSource: DataSource) {
       stock: 40,
       isAvailable: true,
       imageUrl: 'https://images.unsplash.com/photo-1520763185298-1b434c919102?w=500',
+      rating: 4.7,
+      reviewsCount: 63,
     },
     {
       name: 'Lilies Rosados',
@@ -60,6 +68,8 @@ export async function seedProducts(dataSource: DataSource) {
       stock: 25,
       isAvailable: true,
       imageUrl: 'https://images.unsplash.com/photo-1490750967868-88df5691cc5e?w=500',
+      rating: 4.9,
+      reviewsCount: 29,
     },
     {
       name: 'Arreglo Primaveral',
@@ -70,6 +80,8 @@ export async function seedProducts(dataSource: DataSource) {
       stock: 15,
       isAvailable: true,
       imageUrl: 'https://images.unsplash.com/photo-1487530811015-780780169993?w=500',
+      rating: 4.6,
+      reviewsCount: 18,
     },
     {
       name: 'Rosas Rosadas Delicadas',
@@ -80,6 +92,8 @@ export async function seedProducts(dataSource: DataSource) {
       stock: 45,
       isAvailable: true,
       imageUrl: 'https://images.unsplash.com/photo-1559563458-527698bf5295?w=500',
+      rating: 4.8,
+      reviewsCount: 94,
     },
     {
       name: 'Claveles Blancos',
@@ -90,7 +104,10 @@ export async function seedProducts(dataSource: DataSource) {
       stock: 60,
       isAvailable: true,
       imageUrl: 'https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=500',
+      rating: 4.7,
+      reviewsCount: 51,
     },
+
   ];
 
   for (const p of products) {

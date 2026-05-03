@@ -27,6 +27,12 @@ export class Product extends BaseEntity {
   @Column({ name: 'sku', length: 50, nullable: true, unique: true })
   sku: string;
 
+  @Column({ type: 'float', default: 5.0 })
+  rating: number;
+
+  @Column({ name: 'reviews_count', default: 0 })
+  reviewsCount: number;
+
   // @OneToMany(() => OrderItem, (item) => item.product)
   // orderItems: OrderItem[];
 
