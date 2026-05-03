@@ -2,25 +2,36 @@
 import { useEffect, useState } from 'react';
 import { settingsApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
-import { Wrench, Clock } from 'lucide-react';
+import { Clock } from 'lucide-react';
 
 export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<Record<string, string> | null>(null);
-  const { user } = useAuthStore();
+  const { user, _hasHydrated } = useAuthStore();
 
   useEffect(() => {
-    settingsApi.getAll().then(r => setSettings(r.data.data || {})).catch(() => setSettings({}));
+    // Solo pedimos configuraciones una vez
+    settingsApi.getAll()
+      .then(r => setSettings(r.data.data || {}))
+      .catch(() => setSettings({}));
   }, []);
 
-  // While loading, render normally
-  if (settings === null) return <>{children}</>;
+  // 1. Mientras NO se haya hidratado el Auth o cargado los settings, 
+  // renderizamos un estado neutro para evitar parpadeos
+  if (!_hasHydrated || settings === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="w-8 h-8 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
-  // If maintenance mode is off, render normally
+  // 2. Si el modo mantenimiento está APAGADO, pasamos directo
   if (settings.maintenance_mode !== 'true') return <>{children}</>;
 
-  // Super admins bypass maintenance mode
+  // 3. Si eres SuperAdmin, saltas el mantenimiento siempre
   if (user?.role === 'super_admin') return <>{children}</>;
 
+  // 4. De lo contrario, mostramos la pantalla de mantenimiento
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-fuchsia-50 flex items-center justify-center p-6">
       <div className="max-w-lg w-full text-center">
