@@ -28,7 +28,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
-      _hasHydrated: false,
+      _hasHydrated: false,          // siempre empieza en false — NO se persiste
       setHasHydrated: (v) => set({ _hasHydrated: v }),
       setAuth: (user, token) => {
         localStorage.setItem('token', token);
@@ -44,6 +44,12 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
+      // ⚠️ Excluir _hasHydrated y setHasHydrated del localStorage
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
+      }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },
