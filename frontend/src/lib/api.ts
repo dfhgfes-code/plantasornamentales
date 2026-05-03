@@ -50,10 +50,16 @@ export const productsApi = {
 };
 
 export const plansApi = {
-  getAll: (onlyActive = true) => api.get('/plans', { params: { onlyActive } }),
+  getAll: (onlyActive = false) => api.get(`/plans${onlyActive ? '?active=true' : ''}`),
   getOne: (id: string) => api.get(`/plans/${id}`),
   create: (data: any) => api.post('/plans', data),
   update: (id: string, data: any) => api.patch(`/plans/${id}`, data),
+  delete: (id: string) => api.delete(`/plans/${id}`),
+};
+
+export const settingsApi = {
+  getAll: () => api.get('/settings'),
+  update: (data: Record<string, string>) => api.patch('/settings', data),
 };
 
 export const recipientsApi = {

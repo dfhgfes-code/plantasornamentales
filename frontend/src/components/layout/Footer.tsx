@@ -1,7 +1,16 @@
+'use client';
+import { useEffect, useState } from 'react';
 import { Phone, Mail, MapPin, ArrowRight, ShieldCheck, Award, Sprout } from 'lucide-react';
 import Link from 'next/link';
+import { settingsApi } from '@/lib/api';
 
 export function Footer() {
+  const [settings, setSettings] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    settingsApi.getAll().then(res => setSettings(res.data)).catch(() => {});
+  }, []);
+
   const trustBadges = [
     { Icon: ShieldCheck, title: 'Pago 100% Seguro', desc: 'Protección de datos' },
     { Icon: Sprout, title: 'Frescura Garantizada', desc: 'Directo del campo' },
@@ -57,12 +66,15 @@ export function Footer() {
               Llevamos la belleza y el alma de las flores directamente a tu puerta. Suscripciones personalizadas y arreglos premium para transformar cada momento en un recuerdo inolvidable.
             </p>
             <div className="flex gap-2">
-              {['Instagram', 'Facebook', 'WhatsApp'].map((s) => (
-                <a key={s} href="#" className="px-4 py-2 bg-white/5 hover:bg-pink-500/20 border border-white/10 hover:border-pink-500/30 rounded-xl text-xs text-white/40 hover:text-white transition-all font-medium">{s}</a>
+              {[
+                { name: 'Instagram', url: settings.shop_instagram || '#' },
+                { name: 'Facebook', url: settings.shop_facebook || '#' },
+                { name: 'WhatsApp', url: `https://wa.me/${settings.shop_whatsapp}` }
+              ].map((s) => (
+                <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white/5 hover:bg-pink-500/20 border border-white/10 hover:border-pink-500/30 rounded-xl text-xs text-white/40 hover:text-white transition-all font-medium">{s.name}</a>
               ))}
             </div>
           </div>
-
 
           <div>
             <h4 className="text-white font-semibold text-sm mb-4">Navegación</h4>
@@ -78,15 +90,20 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold text-sm mb-4">Contacto</h4>
             <ul className="space-y-3">
-              {[[Phone, '+57 300 123 4567'], [Mail, 'hola@jannethplants.co'], [MapPin, 'Bogotá, Colombia']].map(([Icon, text]: any) => (
-                <li key={text} className="flex items-center gap-2.5 text-sm text-white/35">
-                  <Icon className="w-4 h-4 text-pink-400 shrink-0" /> {text}
-                </li>
-              ))}
+              <li className="flex items-center gap-2.5 text-sm text-white/35">
+                <Phone className="w-4 h-4 text-pink-400 shrink-0" /> {settings.shop_phone || '+57 300 123 4567'}
+              </li>
+              <li className="flex items-center gap-2.5 text-sm text-white/35">
+                <Mail className="w-4 h-4 text-pink-400 shrink-0" /> {settings.shop_email || 'hola@jannethplants.co'}
+              </li>
+              <li className="flex items-center gap-2.5 text-sm text-white/35">
+                <MapPin className="w-4 h-4 text-pink-400 shrink-0" /> {settings.shop_address || 'Bogotá, Colombia'}
+              </li>
             </ul>
           </div>
         </div>
       </div>
+ </div>
 
       <div className="border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">

@@ -114,8 +114,9 @@ export default function AdminPage() {
               { href: '/admin/productos', label: 'Gestionar Productos', icon: ShoppingBag, color: 'bg-purple-50 text-purple-700 hover:bg-purple-100' },
               { href: '/admin/planes', label: 'Gestionar Planes', icon: RefreshCw, color: 'bg-pink-50 text-pink-700 hover:bg-pink-100' },
               { href: '/admin/pedidos', label: 'Gestionar Pedidos', icon: Package, color: 'bg-orange-50 text-orange-700 hover:bg-orange-100' },
-              { href: '/admin/usuarios', label: 'Usuarios', icon: Users, color: 'bg-blue-50 text-blue-700 hover:bg-blue-100' },
+              { href: '/admin/configuracion', label: 'Configuración Tienda', icon: RefreshCw, color: 'bg-rose-50 text-rose-700 hover:bg-rose-100' },
             ].map(({ href, label, icon: Icon, color }) => (
+
               <Link key={href} href={href} className={`flex items-center gap-3 p-4 rounded-2xl font-medium text-sm transition-colors ${color}`}>
                 <Icon className="w-5 h-5" /> {label}
               </Link>
