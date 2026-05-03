@@ -6,12 +6,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { ZenGarden } from '@/components/ZenGarden';
+import { SurpriseGarden } from '@/components/SurpriseGarden';
 import toast from 'react-hot-toast';
 
 const schema = z.object({
@@ -39,7 +38,7 @@ export default function LoginPage() {
       const res = await authApi.login(data);
       const { user, accessToken } = res.data.data;
       setAuth(user, accessToken);
-      toast.success(`¡Bienvenida de vuelta! 🌸`);
+      toast.success(`¡Bienvenida, ${user.firstName}! 🌹`);
       router.push(user.role === 'admin' || user.role === 'super_admin' ? '/admin' : '/perfil');
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Error al iniciar sesión');
@@ -51,72 +50,68 @@ export default function LoginPage() {
   if (!mounted) return null;
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-[#fafafa]">
-      {/* EL JARDÍN ZEN (ARTÍSTICO Y LIMPIO) */}
-      <ZenGarden />
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md">
+        {/* ANIMACIÓN DE SORPRESA (Caja que se abre y crecen rosas) */}
+        <SurpriseGarden />
 
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1 }}
-        className="w-full max-w-[420px] z-30 relative"
-      >
-        <div className="text-center mb-10">
-           <h1 className="text-5xl font-serif italic text-gray-900 tracking-tight">Bienvenida</h1>
-           <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 mt-4">Janneth Acevedo · Boutique Floral</p>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Janneth Acevedo</h1>
+          <p className="text-pink-500 font-bold uppercase tracking-widest text-xs mt-1">Boutique Floral</p>
         </div>
 
-        <div className="bg-white/70 backdrop-blur-2xl rounded-[3rem] p-10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] border border-white/60 relative overflow-hidden">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 relative z-10">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 ml-1">Correo Electrónico</label>
-              <Input
-                type="email"
-                placeholder="tu@email.com"
-                icon={<Mail className="w-4 h-4 text-rose-300" />}
-                className="bg-transparent border-b border-x-0 border-t-0 border-gray-100 rounded-none focus:ring-0 focus:border-rose-400 transition-all px-0 h-12 text-gray-800"
-                error={errors.email?.message}
-                {...register('email')}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 ml-1">Contraseña</label>
-              <Input
-                type="password"
-                placeholder="••••••••"
-                icon={<Lock className="w-4 h-4 text-rose-300" />}
-                className="bg-transparent border-b border-x-0 border-t-0 border-gray-100 rounded-none focus:ring-0 focus:border-rose-400 transition-all px-0 h-12 text-gray-800"
-                error={errors.password?.message}
-                {...register('password')}
-              />
-            </div>
+        <div className="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-10">
+          <div className="mb-8 text-center">
+            <h2 className="text-xl font-bold text-gray-800">Bienvenida de vuelta</h2>
+            <p className="text-gray-400 text-sm mt-1">Ingresa tus credenciales para continuar</p>
+          </div>
 
-            <Button 
-              type="submit" 
-              loading={loading} 
-              className="w-full h-16 bg-gray-900 hover:bg-black text-white rounded-2xl text-base font-bold shadow-2xl transition-all active:scale-95 group"
-            >
-              <span className="flex items-center justify-center gap-3">
-                ENTRAR AL JARDÍN
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </Button>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <Input
+              label="Correo electrónico"
+              type="email"
+              placeholder="tu@email.com"
+              icon={<Mail className="w-4 h-4 text-gray-400" />}
+              className="rounded-2xl"
+              error={errors.email?.message}
+              {...register('email')}
+            />
+            <Input
+              label="Contraseña"
+              type="password"
+              placeholder="••••••••"
+              icon={<Lock className="w-4 h-4 text-gray-400" />}
+              className="rounded-2xl"
+              error={errors.password?.message}
+              {...register('password')}
+            />
+            
+            <div className="pt-2">
+              <Button 
+                type="submit" 
+                loading={loading} 
+                className="w-full h-14 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl text-lg font-bold shadow-lg shadow-pink-100 transition-all active:scale-95"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  Ingresar
+                  <ArrowRight className="w-5 h-5" />
+                </span>
+              </Button>
+            </div>
           </form>
 
-          <div className="mt-10 text-center relative z-10">
-            <Link href="/registro" className="text-xs text-gray-400 hover:text-rose-500 transition-all font-medium">
-              ¿Nueva aquí? <span className="text-gray-900 font-bold border-b border-gray-900 pb-0.5">Crea tu cuenta</span>
+          <p className="text-center text-sm text-gray-500 mt-8">
+            ¿No tienes cuenta?{' '}
+            <Link href="/registro" className="text-pink-500 hover:text-pink-600 font-bold underline-offset-4 hover:underline">
+              Regístrate gratis
             </Link>
-          </div>
+          </p>
         </div>
         
-        <div className="mt-12 text-center opacity-30">
-           <p className="text-[9px] font-bold uppercase tracking-[0.6em] text-gray-400">
-             Arte & Naturaleza
-           </p>
-        </div>
-      </motion.div>
+        <p className="text-center mt-12 text-[10px] font-bold uppercase tracking-[0.4em] text-gray-300">
+          Experiencias que Florecen
+        </p>
+      </div>
     </div>
   );
 }
