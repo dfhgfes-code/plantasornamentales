@@ -121,40 +121,41 @@ export default function TiendaPage() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {products.map((product) => (
               <div key={product.id}
-                className="group bg-white rounded-3xl overflow-hidden shadow-card card-hover border border-rose-50/50">
+                className="group bg-white rounded-3xl overflow-hidden shadow-card card-hover border border-rose-50/50 flex flex-col">
                 <div className="relative h-56 overflow-hidden">
                   <img
                     src={product.imageUrl || '/flowers/f-rosas-rojas.jpg'}
                     alt={product.name}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                    <button onClick={() => handleAdd(product)}
-                      className="w-full btn-primary py-2.5 text-sm flex items-center justify-center gap-2">
-                      <ShoppingCart className="w-4 h-4" /> Agregar
-                    </button>
-                  </div>
                   <div className="absolute top-3 left-3">
                     <span className="category-tag">{product.category}</span>
                   </div>
                 </div>
-                <div className="p-4">
-                  <Link href={`/tienda/${product.id}`}>
-                    <h3 className="font-semibold text-gray-900 hover:text-rose-700 transition-colors line-clamp-1 mb-1">{product.name}</h3>
+                <div className="p-4 flex flex-col flex-1">
+                  <Link href={`/tienda/${product.id}`} className="mb-1">
+                    <h3 className="font-semibold text-gray-900 hover:text-rose-700 transition-colors line-clamp-1">{product.name}</h3>
                   </Link>
-                  <p className="text-xs text-gray-400 line-clamp-4 mb-3">{product.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-rose-700 font-serif">{formatCurrency(Number(product.price))}</span>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3 h-3 fill-gold text-gold" />
-                      <span className="text-xs text-gray-400">4.9</span>
-                    </div>
+                  <div className="flex items-center gap-1 mb-2">
+                    <Star className="w-3 h-3 fill-gold text-gold" />
+                    <span className="text-[10px] text-gray-400 font-medium">4.9 (24 reseñas)</span>
                   </div>
+                  <p className="text-xs text-gray-500 line-clamp-3 mb-4 flex-1">
+                    {product.description}
+                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="font-bold text-rose-700 text-lg font-serif">{formatCurrency(Number(product.price))}</span>
+                  </div>
+                  <button onClick={() => handleAdd(product)}
+                    className="w-full bg-rose-700 hover:bg-rose-800 text-white py-3 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-rose hover:shadow-lg active:scale-[0.98]">
+                    <ShoppingCart className="w-4 h-4" /> Agregar al Carrito
+                  </button>
                 </div>
               </div>
             ))}
+
           </div>
         )}
 

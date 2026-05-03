@@ -10,16 +10,20 @@ import { cn } from '@/lib/utils';
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { isAuthenticated, user, logout } = useAuthStore();
+
   const itemCount = useCartStore((s) => s.itemCount());
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
+    setMounted(true);
     const fn = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', fn);
     return () => window.removeEventListener('scroll', fn);
   }, []);
+
 
   const handleLogout = () => { logout(); router.push('/'); };
 
@@ -76,32 +80,34 @@ export function Navbar() {
               )}
             </Link>
 
-            {isAuthenticated ? (
-              <div className="hidden md:flex items-center gap-1">
-                {user?.role === 'admin' && (
-                  <Link href="/admin" className="p-2.5 text-gray-500 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all" title="Admin">
-                    <LayoutDashboard className="w-5 h-5" />
+            {mounted && (
+              isAuthenticated ? (
+                <div className="hidden md:flex items-center gap-1">
+                  {user?.role === 'admin' && (
+                    <Link href="/admin" className="p-2.5 text-gray-500 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all" title="Admin">
+                      <LayoutDashboard className="w-5 h-5" />
+                    </Link>
+                  )}
+                  <Link href="/perfil" className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all">
+                    <div className="w-7 h-7 rounded-lg bg-pink-100 flex items-center justify-center">
+                      <User className="w-4 h-4 text-pink-600" />
+                    </div>
+                    <span className="hidden lg:block">{user?.firstName}</span>
                   </Link>
-                )}
-                <Link href="/perfil" className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all">
-                  <div className="w-7 h-7 rounded-lg bg-pink-100 flex items-center justify-center">
-                    <User className="w-4 h-4 text-pink-600" />
-                  </div>
-                  <span className="hidden lg:block">{user?.firstName}</span>
-                </Link>
-                <button onClick={handleLogout} className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
-              <div className="hidden md:flex items-center gap-2">
-                <Link href="/login" className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all">
-                  Ingresar
-                </Link>
-                <Link href="/registro" className="px-5 py-2 text-sm font-semibold bg-pink-500 hover:bg-pink-600 text-white rounded-xl transition-all shadow-pink hover:shadow-lg hover:-translate-y-px">
-                  Registrarse
-                </Link>
-              </div>
+                  <button onClick={handleLogout} className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="hidden md:flex items-center gap-2">
+                  <Link href="/login" className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all">
+                    Ingresar
+                  </Link>
+                  <Link href="/registro" className="px-5 py-2 text-sm font-semibold bg-pink-500 hover:bg-pink-600 text-white rounded-xl transition-all shadow-pink hover:shadow-lg hover:-translate-y-px">
+                    Registrarse
+                  </Link>
+                </div>
+              )
             )}
 
             <button className="md:hidden p-2.5 text-gray-600 hover:bg-pink-50 rounded-xl transition-all" onClick={() => setOpen(!open)}>
@@ -121,25 +127,27 @@ export function Navbar() {
               </Link>
             ))}
             <div className="border-t border-gray-100 pt-2 mt-2 space-y-1">
-              {isAuthenticated ? (
-                <>
-                  <Link href="/perfil" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 rounded-xl">
-                    <User className="w-4 h-4" /> Mi perfil
-                  </Link>
-                  {user?.role === 'admin' && (
-                    <Link href="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 rounded-xl">
-                      <LayoutDashboard className="w-4 h-4" /> Panel Admin
+              {mounted && (
+                isAuthenticated ? (
+                  <>
+                    <Link href="/perfil" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 rounded-xl">
+                      <User className="w-4 h-4" /> Mi perfil
                     </Link>
-                  )}
-                  <button onClick={() => { handleLogout(); setOpen(false); }} className="flex items-center gap-2 w-full px-4 py-3 text-sm text-red-500 hover:bg-red-50 rounded-xl">
-                    <LogOut className="w-4 h-4" /> Cerrar sesión
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link href="/login" onClick={() => setOpen(false)} className="block px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 rounded-xl">Ingresar</Link>
-                  <Link href="/registro" onClick={() => setOpen(false)} className="block px-4 py-3 text-sm font-semibold text-pink-600 bg-pink-50 rounded-xl">Registrarse</Link>
-                </>
+                    {user?.role === 'admin' && (
+                      <Link href="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 rounded-xl">
+                        <LayoutDashboard className="w-4 h-4" /> Panel Admin
+                      </Link>
+                    )}
+                    <button onClick={() => { handleLogout(); setOpen(false); }} className="flex items-center gap-2 w-full px-4 py-3 text-sm text-red-500 hover:bg-red-50 rounded-xl">
+                      <LogOut className="w-4 h-4" /> Cerrar sesión
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login" onClick={() => setOpen(false)} className="block px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 rounded-xl">Ingresar</Link>
+                    <Link href="/registro" onClick={() => setOpen(false)} className="block px-4 py-3 text-sm font-semibold text-pink-600 bg-pink-50 rounded-xl">Registrarse</Link>
+                  </>
+                )
               )}
             </div>
           </div>
