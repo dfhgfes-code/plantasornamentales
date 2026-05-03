@@ -27,6 +27,7 @@ export class SettingsService implements OnModuleInit {
   }
 
   async updateMany(settings: Record<string, string>) {
+    console.log('[SettingsService] Updating keys:', Object.keys(settings));
     for (const [key, value] of Object.entries(settings)) {
       let setting = await this.findOne(key);
       if (setting) {
