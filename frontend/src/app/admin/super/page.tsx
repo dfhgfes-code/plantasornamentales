@@ -43,8 +43,17 @@ export default function SuperAdminPage() {
   };
 
   const save = async () => {
-    try { await settingsApi.update(settings); toast.success('¡Guardado! 🌸'); }
-    catch { toast.error('Error al guardar'); }
+    const id = toast.loading('Guardando cambios...');
+    try {
+      await settingsApi.update(settings);
+      toast.success('¡Guardado correctamente! Aplicando cambios...', { id });
+      // Reload after 1.5s so Footer/Navbar/Popup pick up the new values
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message || 'Error desconocido';
+      toast.error(`Error al guardar: ${msg}`, { id });
+      console.error('[SuperAdmin save]', err?.response?.data || err);
+    }
   };
 
   const createAdmin = async (e: React.FormEvent) => {
