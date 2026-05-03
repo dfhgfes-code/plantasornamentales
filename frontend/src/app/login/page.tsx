@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -18,95 +18,80 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-/* ─── Flor SVG animada ─────────────────────────────────────── */
-function AnimatedFlower({
-  x, y, delay, size = 1, color1, color2, stemColor,
-}: {
-  x: string; y: string; delay: number; size?: number;
-  color1: string; color2: string; stemColor: string;
-}) {
-  const petals = [0, 60, 120, 180, 240, 300];
+/* ── Canvas de partículas de pétalos ─────────────────────── */
+function PetalCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const colors = ['#f9a8d4', '#fda4af', '#fbcfe8', '#fce7f3', '#e9d5ff', '#fef3c7'];
+
+    const petals = Array.from({ length: 28 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      size: 4 + Math.random() * 8,
+      speedY: 0.4 + Math.random() * 0.8,
+      speedX: (Math.random() - 0.5) * 0.6,
+      rotation: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.02,
+      opacity: 0.3 + Math.random() * 0.5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      sway: Math.random() * Math.PI * 2,
+      swaySpeed: 0.005 + Math.random() * 0.01,
+    }));
+
+    let raf: number;
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      petals.forEach(p => {
+        p.y += p.speedY;
+        p.sway += p.swaySpeed;
+        p.x += p.speedX + Math.sin(p.sway) * 0.5;
+        p.rotation += p.rotSpeed;
+        if (p.y > canvas.height + 20) {
+          p.y = -20;
+          p.x = Math.random() * canvas.width;
+        }
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, p.size * 0.5, p.size, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
   return (
-    <motion.div
-      className="absolute pointer-events-none"
-      style={{ left: x, top: y }}
-      initial={{ opacity: 0, scale: 0.3, y: 40 }}
-      animate={{ opacity: 1, scale: size, y: 0 }}
-      transition={{ duration: 1.4, delay, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <svg width="90" height="130" viewBox="0 0 90 130" overflow="visible">
-        {/* Tallo */}
-        <motion.path
-          d="M45 130 Q40 100 45 70"
-          stroke={stemColor} strokeWidth="2.5" strokeLinecap="round" fill="none"
-          initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-          transition={{ duration: 1.2, delay: delay + 0.2 }}
-        />
-        {/* Hoja */}
-        <motion.path
-          d="M44 100 Q25 88 30 75 Q40 80 44 100Z"
-          fill={stemColor} opacity="0.8"
-          initial={{ scale: 0 }} animate={{ scale: 1 }}
-          transition={{ duration: 0.7, delay: delay + 0.9, ease: [0.34, 1.56, 0.64, 1] }}
-          style={{ transformOrigin: '44px 100px' }}
-        />
-        {/* Pétalos exteriores */}
-        {petals.map((angle, i) => (
-          <motion.ellipse
-            key={`o${i}`} cx="45" cy="45" rx="10" ry="22"
-            fill={color1} opacity="0.85"
-            transform={`rotate(${angle} 45 45) translate(0 -18)`}
-            initial={{ scale: 0 }} animate={{ scale: 1 }}
-            transition={{ duration: 0.6, delay: delay + 1.0 + i * 0.07, ease: [0.34, 1.56, 0.64, 1] }}
-            style={{ transformOrigin: '45px 45px' }}
-          />
-        ))}
-        {/* Pétalos interiores */}
-        {petals.map((angle, i) => (
-          <motion.ellipse
-            key={`i${i}`} cx="45" cy="45" rx="7" ry="15"
-            fill={color2} opacity="0.9"
-            transform={`rotate(${angle + 30} 45 45) translate(0 -12)`}
-            initial={{ scale: 0 }} animate={{ scale: 1 }}
-            transition={{ duration: 0.5, delay: delay + 1.5 + i * 0.06, ease: [0.34, 1.56, 0.64, 1] }}
-            style={{ transformOrigin: '45px 45px' }}
-          />
-        ))}
-        {/* Centro */}
-        <motion.circle
-          cx="45" cy="45" r="9" fill="#fbbf24"
-          initial={{ scale: 0 }} animate={{ scale: 1 }}
-          transition={{ duration: 0.4, delay: delay + 2.0, ease: [0.34, 1.56, 0.64, 1] }}
-          style={{ transformOrigin: '45px 45px' }}
-        />
-        <motion.circle
-          cx="45" cy="45" r="5" fill="#f59e0b"
-          initial={{ scale: 0 }} animate={{ scale: 1 }}
-          transition={{ duration: 0.3, delay: delay + 2.2 }}
-          style={{ transformOrigin: '45px 45px' }}
-        />
-      </svg>
-    </motion.div>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 z-[1] pointer-events-none"
+    />
   );
 }
 
-/* ─── Pétalo flotante ──────────────────────────────────────── */
-function FallingPetal({ x, delay, color }: { x: string; delay: number; color: string }) {
-  return (
-    <motion.div
-      className="absolute pointer-events-none"
-      style={{ left: x, top: '-20px' }}
-      animate={{ y: ['0vh', '110vh'], x: [0, 30, -20, 15, -10], rotate: [0, 180, 360], opacity: [0, 0.7, 0.6, 0] }}
-      transition={{ duration: 9 + Math.random() * 4, delay, repeat: Infinity, repeatDelay: 6 + Math.random() * 8, ease: 'easeInOut' }}
-    >
-      <svg width="14" height="20" viewBox="0 0 14 20">
-        <ellipse cx="7" cy="10" rx="5" ry="9" fill={color} opacity="0.75" transform="rotate(15 7 10)" />
-      </svg>
-    </motion.div>
-  );
-}
-
-/* ─── Página ───────────────────────────────────────────────── */
+/* ── Página ───────────────────────────────────────────────── */
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -125,10 +110,10 @@ export default function LoginPage() {
       const res = await authApi.login(data);
       const { user, accessToken } = res.data.data;
       setAuth(user, accessToken);
-      toast.success(`¡Bienvenida, ${user.firstName}! 🌹`);
+      toast.success(`Bienvenida, ${user.firstName} 🌹`);
       router.push(user.role === 'admin' || user.role === 'super_admin' ? '/admin' : '/perfil');
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error al iniciar sesión');
+      toast.error(err.response?.data?.message || 'Correo o contraseña incorrectos');
     } finally {
       setLoading(false);
     }
@@ -136,142 +121,142 @@ export default function LoginPage() {
 
   if (!mounted) return null;
 
-  const flowers = [
-    { x: '5%',  y: '30%', delay: 0.2, size: 1.1, color1: '#f9a8d4', color2: '#ec4899', stemColor: '#4a7c59' },
-    { x: '18%', y: '55%', delay: 0.7, size: 0.85,color1: '#fda4af', color2: '#f43f5e', stemColor: '#3d6b4a' },
-    { x: '32%', y: '20%', delay: 1.2, size: 0.75,color1: '#c4b5fd', color2: '#8b5cf6', stemColor: '#4a7c59' },
-    { x: '48%', y: '60%', delay: 0.4, size: 1.0, color1: '#fed7aa', color2: '#f97316', stemColor: '#3d6b4a' },
-    { x: '62%', y: '25%', delay: 1.5, size: 0.9, color1: '#fbcfe8', color2: '#db2777', stemColor: '#4a7c59' },
-    { x: '75%', y: '50%', delay: 0.9, size: 1.15,color1: '#f9a8d4', color2: '#be185d', stemColor: '#3d6b4a' },
-    { x: '88%', y: '35%', delay: 1.8, size: 0.8, color1: '#fde68a', color2: '#f59e0b', stemColor: '#4a7c59' },
-  ];
-
-  const petals = [
-    { x: '10%', delay: 0,   color: '#fda4af' },
-    { x: '25%', delay: 2.5, color: '#f9a8d4' },
-    { x: '40%', delay: 5,   color: '#c4b5fd' },
-    { x: '55%', delay: 1.5, color: '#fbcfe8' },
-    { x: '70%', delay: 3.5, color: '#fda4af' },
-    { x: '82%', delay: 7,   color: '#f9a8d4' },
-    { x: '92%', delay: 4,   color: '#fde68a' },
-  ];
-
   return (
     <>
       <style>{`
-        .login-left {
-          background: linear-gradient(145deg, #1a0a0f 0%, #2d0f1a 40%, #1f0d15 70%, #0f0608 100%);
+        .login-bg {
+          background:
+            radial-gradient(ellipse 80% 60% at 20% 80%, rgba(190,24,93,0.18) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 50% at 80% 20%, rgba(139,92,246,0.12) 0%, transparent 55%),
+            radial-gradient(ellipse 70% 70% at 50% 50%, rgba(253,164,175,0.08) 0%, transparent 70%),
+            linear-gradient(160deg, #0f0a0c 0%, #1a0d12 35%, #160b10 65%, #0a0608 100%);
         }
-        .login-right {
-          background: #fafafa;
+        .glass-card {
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.10);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
         }
-        .field-box {
-          background: #f5f5f5;
-          border: 1.5px solid #e5e7eb;
-          border-radius: 12px;
-          transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        .field {
+          background: rgba(255,255,255,0.06);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 10px;
+          transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
         }
-        .field-box:focus-within {
-          background: #fff;
-          border-color: #f472b6;
-          box-shadow: 0 0 0 3px rgba(244,114,182,0.12);
+        .field:focus-within {
+          background: rgba(255,255,255,0.10);
+          border-color: rgba(244,114,182,0.55);
+          box-shadow: 0 0 0 3px rgba(244,114,182,0.10);
         }
-        .submit-btn {
-          background: #111;
-          border-radius: 12px;
-          transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+        .field input {
+          color: #fff !important;
         }
-        .submit-btn:hover:not(:disabled) {
-          background: #1f1f1f;
-          box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        .field input::placeholder { color: rgba(255,255,255,0.25) !important; }
+        .field svg { color: rgba(255,255,255,0.35) !important; }
+        .btn-main {
+          background: linear-gradient(135deg, #be185d, #9f1239);
+          border-radius: 10px;
+          transition: filter 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+        .btn-main:hover:not(:disabled) {
+          filter: brightness(1.15);
+          box-shadow: 0 8px 32px rgba(190,24,93,0.45);
           transform: translateY(-1px);
         }
-        .submit-btn:active:not(:disabled) { transform: scale(0.98); }
-        .gold-line {
-          background: linear-gradient(90deg, transparent, #d4af37, transparent);
+        .btn-main:active:not(:disabled) { transform: scale(0.98); }
+        .gold-bar {
+          background: linear-gradient(90deg, transparent, rgba(212,175,55,0.7), transparent);
           height: 1px;
         }
+        .label-text { color: rgba(255,255,255,0.45); }
+        .link-register { color: rgba(255,255,255,0.45); }
+        .link-register span { color: rgba(255,255,255,0.85); border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .link-register:hover span { color: #f472b6; border-color: #f472b6; }
       `}</style>
 
-      <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* Fondo oscuro */}
+      <div className="login-bg fixed inset-0 z-0" />
 
-        {/* ══ LADO IZQUIERDO — jardín oscuro de lujo ══ */}
-        <div className="login-left relative lg:w-1/2 min-h-[320px] lg:min-h-screen overflow-hidden flex flex-col items-center justify-center">
+      {/* Pétalos canvas */}
+      <PetalCanvas />
 
-          {/* Flores animadas */}
-          {flowers.map((f, i) => <AnimatedFlower key={i} {...f} />)}
+      {/* Contenido */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-16">
+        <motion.div
+          className="w-full max-w-[400px]"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        >
 
-          {/* Pétalos cayendo */}
-          {petals.map((p, i) => <FallingPetal key={i} {...p} />)}
-
-          {/* Texto sobre el jardín */}
+          {/* Marca */}
           <motion.div
-            className="relative z-10 text-center px-8 mt-8 lg:mt-0"
-            initial={{ opacity: 0, y: 20 }}
+            className="text-center mb-10"
+            initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 2.5 }}
+            transition={{ duration: 0.8, delay: 0.15 }}
           >
-            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-rose-400 mb-4">
+            {/* Rosa decorativa SVG simple */}
+            <motion.div
+              className="inline-block mb-5"
+              animate={{ rotate: [0, 4, -4, 0] }}
+              transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+                <circle cx="22" cy="22" r="21" stroke="rgba(244,114,182,0.3)" strokeWidth="1"/>
+                {[0,60,120,180,240,300].map((a,i) => (
+                  <ellipse key={i}
+                    cx={22 + Math.sin(a*Math.PI/180)*9}
+                    cy={22 - Math.cos(a*Math.PI/180)*9}
+                    rx="5" ry="8"
+                    fill="rgba(244,114,182,0.55)"
+                    transform={`rotate(${a} ${22 + Math.sin(a*Math.PI/180)*9} ${22 - Math.cos(a*Math.PI/180)*9})`}
+                  />
+                ))}
+                <circle cx="22" cy="22" r="5" fill="rgba(251,191,36,0.7)" />
+                <circle cx="22" cy="22" r="2.5" fill="rgba(245,158,11,0.9)" />
+              </svg>
+            </motion.div>
+
+            <h1
+              className="text-[2.6rem] leading-none text-white"
+              style={{ fontFamily: "Georgia, serif", fontStyle: 'italic', letterSpacing: '-0.01em' }}
+            >
+              Janneth Acevedo
+            </h1>
+            <div className="gold-bar w-20 mx-auto mt-4 mb-3" />
+            <p className="text-[9px] font-black uppercase tracking-[0.5em] text-rose-400">
               Boutique Floral de Lujo
             </p>
-            <h2
-              className="text-3xl lg:text-4xl text-white leading-snug"
-              style={{ fontFamily: "Georgia, serif", fontStyle: 'italic' }}
-            >
-              Donde cada flor<br />cuenta una historia
-            </h2>
-            <div className="gold-line w-24 mx-auto mt-5" />
-            <p className="text-white/40 text-xs mt-4 tracking-wider">
-              Flores frescas · Suscripciones · Entregas a domicilio
-            </p>
           </motion.div>
-        </div>
 
-        {/* ══ LADO DERECHO — formulario limpio ══ */}
-        <div className="login-right lg:w-1/2 flex items-center justify-center px-6 py-12 lg:py-0">
+          {/* Tarjeta */}
           <motion.div
-            className="w-full max-w-sm"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="glass-card rounded-2xl p-8"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
           >
-            {/* Logo */}
-            <div className="mb-10">
-              <h1
-                className="text-4xl text-gray-900"
-                style={{ fontFamily: "Georgia, serif", fontStyle: 'italic' }}
-              >
-                Janneth Acevedo
-              </h1>
-              <div className="gold-line w-16 mt-3 mb-1" />
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-500 mt-2">
-                Boutique Floral
-              </p>
-            </div>
-
-            {/* Encabezado */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+            <div className="mb-7">
+              <h2 className="text-xl font-bold text-white tracking-tight">
                 Bienvenida de vuelta
               </h2>
-              <p className="text-gray-400 text-sm mt-1">
+              <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 Ingresa a tu cuenta para continuar
               </p>
             </div>
 
-            {/* Formulario */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
               <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">
+                <label className="label-text block text-[10px] font-bold uppercase tracking-widest mb-1.5">
                   Correo electrónico
                 </label>
-                <div className="field-box">
+                <div className="field">
                   <Input
                     type="email"
                     placeholder="tu@email.com"
-                    icon={<Mail className="w-4 h-4 text-gray-400" />}
-                    className="bg-transparent border-0 h-12 focus:ring-0 text-gray-900 placeholder:text-gray-300 text-sm"
+                    icon={<Mail className="w-4 h-4" />}
+                    className="bg-transparent border-0 h-11 focus:ring-0 text-sm"
                     error={errors.email?.message}
                     {...register('email')}
                   />
@@ -279,26 +264,26 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">
+                <label className="label-text block text-[10px] font-bold uppercase tracking-widest mb-1.5">
                   Contraseña
                 </label>
-                <div className="field-box">
+                <div className="field">
                   <Input
                     type="password"
                     placeholder="••••••••"
-                    icon={<Lock className="w-4 h-4 text-gray-400" />}
-                    className="bg-transparent border-0 h-12 focus:ring-0 text-gray-900 placeholder:text-gray-300 text-sm"
+                    icon={<Lock className="w-4 h-4" />}
+                    className="bg-transparent border-0 h-11 focus:ring-0 text-sm"
                     error={errors.password?.message}
                     {...register('password')}
                   />
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-1">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="submit-btn w-full h-12 text-white font-semibold text-sm tracking-wide flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-main w-full h-11 text-white font-semibold text-sm tracking-wide flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -318,27 +303,32 @@ export default function LoginPage() {
               </div>
             </form>
 
-            {/* Separador */}
-            <div className="flex items-center gap-3 my-6">
-              <div className="flex-1 h-px bg-gray-100" />
-              <span className="text-xs text-gray-300 font-medium">o</span>
-              <div className="flex-1 h-px bg-gray-100" />
+            <div className="flex items-center gap-3 my-5">
+              <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.07)' }} />
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>o</span>
+              <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.07)' }} />
             </div>
 
-            {/* Registro */}
-            <p className="text-sm text-gray-500 text-center">
+            <p className="link-register text-sm text-center transition-colors">
               ¿Nueva en la boutique?{' '}
-              <Link href="/registro" className="font-semibold text-gray-900 hover:text-rose-600 transition-colors border-b border-gray-200 hover:border-rose-400 pb-0.5">
-                Regístrate aquí
+              <Link href="/registro">
+                <span className="font-semibold transition-colors pb-0.5">
+                  Regístrate aquí
+                </span>
               </Link>
             </p>
-
-            {/* Pie */}
-            <p className="text-[10px] text-gray-300 text-center mt-10 uppercase tracking-widest">
-              © 2025 Janneth Acevedo · Todos los derechos reservados
-            </p>
           </motion.div>
-        </div>
+
+          <motion.p
+            className="text-center text-[9px] uppercase tracking-[0.4em] mt-7"
+            style={{ color: 'rgba(255,255,255,0.15)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+          >
+            © 2025 Janneth Acevedo · Todos los derechos reservados
+          </motion.p>
+        </motion.div>
       </div>
     </>
   );
