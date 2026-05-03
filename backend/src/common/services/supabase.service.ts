@@ -8,23 +8,21 @@ export class SupabaseService {
   private readonly logger = new Logger(SupabaseService.name);
 
   constructor(private readonly configService: ConfigService) {
-    // La URL de Supabase es pública para tu proyecto, la ponemos fija para evitar errores de carga
     const url = 'https://pucdbmecnqduihflfppi.supabase.co';
-    const key = this.configService.get<string>('supabase.key') || 
-                this.configService.get<string>('SUPABASE_SERVICE_KEY') || 
-                process.env.SUPABASE_SERVICE_KEY;
+    const key = this.configService.get<string>('SUPABASE_SERVICE_KEY') || 
+                process.env.SUPABASE_SERVICE_KEY ||
+                this.configService.get<string>('supabase.key');
 
-    this.logger.log('--- INICIALIZANDO SUPABASE ---');
-    this.logger.log(`URL: ${url}`);
-    this.logger.log(`Key Detectada: ${key ? 'SÍ' : 'NO'}`);
-
-    if (url && key) {
+    this.logger.log('--- INICIALIZANDO SUPABASE (V3) ---');
+    if (key) {
+      this.logger.log(`Llave detectada (empieza por: ${key.substring(0, 5)}...)`);
       this.supabase = createClient(url, key);
-      this.logger.log('✅ Cliente de Supabase inicializado correctamente');
+      this.logger.log('✅ Cliente inicializado');
     } else {
-      this.logger.error('❌ CRÍTICO: No se detectó la SUPABASE_SERVICE_KEY en Railway');
+      this.logger.error('❌ ERROR: No se encontró SUPABASE_SERVICE_KEY');
     }
   }
+
 
 
 
