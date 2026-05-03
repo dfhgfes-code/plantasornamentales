@@ -1,10 +1,10 @@
-import { Controller, Get, Patch, Body, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
 import { SettingsService } from './settings.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../../common/enums/user-role.enum';
-
+import { UpdateSettingsDto } from './dto/update-settings.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('settings')
@@ -21,11 +21,9 @@ export class SettingsController {
   @Patch()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  @UsePipes(new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }))
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Actualizar configuraciones (Solo Admin)' })
-  update(@Body() settings: Record<string, string>) {
-    console.log('[SettingsController] Incoming update:', settings);
-    return this.settingsService.updateMany(settings);
+  update(@Body() settings: UpdateSettingsDto) {
+    return this.settingsService.updateMany(settings as any);
   }
 }

@@ -27,27 +27,24 @@ export class SettingsService implements OnModuleInit {
   }
 
   async updateMany(settings: Record<string, string>) {
-    console.log('[SettingsService] Received settings for update:', settings);
     const keys = Object.keys(settings);
     
     for (const key of keys) {
       const value = settings[key];
+      if (value === undefined) continue;
+
       let setting = await this.settingsRepository.findOne({ where: { key } });
       
       if (setting) {
-        console.log(`[SettingsService] Updating existing key: ${key} = ${value}`);
         setting.value = value;
       } else {
-        console.log(`[SettingsService] Creating new key: ${key} = ${value}`);
         setting = this.settingsRepository.create({ key, value });
       }
       
       await this.settingsRepository.save(setting);
     }
     
-    const updated = await this.findAll();
-    console.log('[SettingsService] Update complete. New settings:', updated);
-    return updated;
+    return this.findAll();
   }
 
   private async seed() {
