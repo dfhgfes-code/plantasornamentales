@@ -10,7 +10,7 @@ export class SupabaseService {
   private readonly logger = new Logger(SupabaseService.name);
 
   constructor(private readonly configService: ConfigService) {
-    const url = 'https://pucdbmecnqduihflfppi.supabase.co';
+    const url = 'https://pucdbmecnqduilhflppi.supabase.co';
     const key = this.configService.get<string>('SUPABASE_SERVICE_KEY') || 
                 process.env.SUPABASE_SERVICE_KEY ||
                 this.configService.get<string>('supabase.key');
@@ -34,7 +34,7 @@ export class SupabaseService {
 
 
   async uploadFile(file: Express.Multer.File, bucket: string = 'flowers') {
-    const url = 'https://pucdbmecnqduihflfppi.supabase.co';
+    const url = 'https://pucdbmecnqduilhflppi.supabase.co';
     const key = this.configService.get<string>('SUPABASE_SERVICE_KEY') || 
                 process.env.SUPABASE_SERVICE_KEY ||
                 this.configService.get<string>('supabase.key');
