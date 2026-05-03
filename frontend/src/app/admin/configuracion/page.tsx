@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { settingsApi } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { Save, Phone, Mail, MapPin, Facebook, Instagram, MessageCircle, Settings as SettingsIcon } from 'lucide-react';
+import { Save, Phone, Mail, MapPin, Globe, Link2, MessageCircle, Settings as SettingsIcon } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 export default function AdminSettingsPage() {
@@ -56,8 +56,8 @@ export default function AdminSettingsPage() {
     {
       title: 'Redes Sociales',
       fields: [
-        { key: 'shop_facebook', label: 'URL de Facebook', icon: Facebook, placeholder: 'https://facebook.com/...' },
-        { key: 'shop_instagram', label: 'URL de Instagram', icon: Instagram, placeholder: 'https://instagram.com/...' },
+        { key: 'shop_facebook', label: 'URL de Facebook', icon: Link2, placeholder: 'https://facebook.com/...' },
+        { key: 'shop_instagram', label: 'URL de Instagram', icon: Globe, placeholder: 'https://instagram.com/...' },
         { key: 'shop_whatsapp', label: 'Número de WhatsApp (solo números)', icon: MessageCircle, placeholder: '573001234567' },
       ]
     }
