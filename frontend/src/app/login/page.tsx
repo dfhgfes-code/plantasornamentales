@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
+import { Mail, Lock, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { LuxuryGiftSurprise } from '@/components/LuxuryGiftSurprise';
+import { EpicGarden } from '@/components/EpicGarden';
 import toast from 'react-hot-toast';
 
 const schema = z.object({
@@ -50,89 +51,107 @@ export default function LoginPage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden">
-      {/* Fondo con textura sutil */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/clean-gray-paper.png")' }} />
+    <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden py-20 bg-slate-50">
+      {/* FONDO FOTOGRÁFICO DE ALTA CALIDAD */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat scale-105 animate-slow-zoom"
+        style={{ backgroundImage: "url('/images/boutique-bg.png')" }}
+      />
+      <div className="absolute inset-0 z-10 bg-white/20 backdrop-blur-[1px]" />
+      <div className="absolute inset-0 z-20 bg-gradient-to-t from-white via-transparent to-white/40" />
 
-      <div className="w-full max-w-lg z-10">
-        {/* LA SORPRESA DE LUJO */}
-        <LuxuryGiftSurprise />
+      {/* JARDÍN ÉPICO (FLORES CRECIENDO) */}
+      <EpicGarden />
 
-        <div className="text-center mb-10 relative">
-          <h1 className="text-4xl font-serif italic text-gray-900 tracking-tight">Janneth Acevedo</h1>
-          <div className="flex items-center justify-center gap-3 mt-2">
-            <span className="h-[1px] w-8 bg-pink-200" />
-            <p className="text-pink-500 font-bold uppercase tracking-[0.3em] text-[10px]">Boutique Floral</p>
-            <span className="h-[1px] w-8 bg-pink-200" />
-          </div>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes slow-zoom {
+          from { transform: scale(1); }
+          to { transform: scale(1.08); }
+        }
+        .animate-slow-zoom {
+          animation: slow-zoom 30s ease-in-out infinite alternate;
+        }
+        .luxury-glass {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(25px);
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.12);
+        }
+      `}} />
+
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+        className="w-full max-w-[460px] z-30 relative"
+      >
+        <div className="text-center mb-10">
+           <h1 className="text-5xl font-serif italic text-gray-900 tracking-tight drop-shadow-sm">Janneth Acevedo</h1>
+           <p className="text-[11px] font-black uppercase tracking-[0.4em] text-rose-500 mt-3 border-t border-rose-100 pt-3 inline-block">
+             Boutique Floral de Lujo
+           </p>
         </div>
 
-        <div className="bg-white rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.08)] border border-gray-100 p-12 relative group">
-          {/* Brillo decorativo en la esquina de la tarjeta */}
-          <div className="absolute top-0 right-0 p-6 opacity-20 text-pink-300">
-            <Sparkles className="w-8 h-8" />
-          </div>
+        <div className="luxury-glass rounded-[3.5rem] p-12 relative overflow-hidden group">
+          {/* Luz interna decorativa */}
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-rose-200/20 rounded-full blur-3xl group-hover:bg-rose-300/30 transition-colors" />
 
           <div className="mb-10 text-center">
             <h2 className="text-2xl font-bold text-gray-800 tracking-tight">Bienvenida de vuelta</h2>
-            <p className="text-gray-400 text-sm mt-2">Es un placer tenerte nuevamente en nuestro jardín.</p>
+            <p className="text-gray-500 mt-2 text-sm">Tu espacio personal en nuestro jardín.</p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 mb-1 block">Tu Cuenta</label>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 relative z-10">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Tu Cuenta</label>
               <Input
                 type="email"
                 placeholder="tu@email.com"
-                icon={<Mail className="w-4 h-4 text-pink-400" />}
-                className="rounded-2xl border-gray-100 focus:border-pink-300 h-14 transition-all bg-gray-50/30"
+                icon={<Mail className="w-5 h-5 text-rose-300" />}
+                className="bg-white/40 border-white/60 rounded-3xl h-14 focus:bg-white transition-all pl-12"
                 error={errors.email?.message}
                 {...register('email')}
               />
             </div>
             
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 mb-1 block">Tu Contraseña</label>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Tu Contraseña</label>
               <Input
                 type="password"
                 placeholder="••••••••"
-                icon={<Lock className="w-4 h-4 text-pink-400" />}
-                className="rounded-2xl border-gray-100 focus:border-pink-300 h-14 transition-all bg-gray-50/30"
+                icon={<Lock className="w-5 h-5 text-rose-300" />}
+                className="bg-white/40 border-white/60 rounded-3xl h-14 focus:bg-white transition-all pl-12"
                 error={errors.password?.message}
                 {...register('password')}
               />
             </div>
-            
-            <div className="pt-4">
-              <Button 
-                type="submit" 
-                loading={loading} 
-                className="w-full h-16 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-black hover:to-gray-900 text-white rounded-2xl text-lg font-bold shadow-2xl transition-all active:scale-95 group"
-              >
-                <span className="flex items-center justify-center gap-3">
-                  Ingresar a la Boutique
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </Button>
-            </div>
+
+            <Button 
+              type="submit" 
+              loading={loading} 
+              className="w-full h-18 bg-gray-900 hover:bg-black text-white rounded-3xl text-lg font-bold shadow-2xl transition-all active:scale-95 group/btn overflow-hidden"
+              size="lg"
+            >
+              <span className="flex items-center justify-center gap-3 relative z-10">
+                Ingresar al Jardín
+                <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-1 transition-transform" />
+              </span>
+            </Button>
           </form>
 
-          <div className="mt-12 text-center pt-8 border-t border-gray-50">
-            <p className="text-sm text-gray-400">
-              ¿Aún no eres parte del club?{' '}
-              <Link href="/registro" className="text-gray-900 font-bold border-b-2 border-pink-200 hover:border-pink-500 transition-all pb-0.5">
-                Regístrate ahora
-              </Link>
-            </p>
+          <div className="mt-12 text-center relative z-10">
+            <Link href="/registro" className="text-sm font-medium text-gray-500 hover:text-rose-600 transition-colors">
+              ¿Nueva en la boutique? <span className="text-gray-900 font-bold border-b border-gray-900 pb-0.5">Regístrate aquí</span>
+            </Link>
           </div>
         </div>
         
-        <div className="mt-16 text-center">
-           <p className="text-[9px] font-black uppercase tracking-[0.5em] text-gray-300">
-             Luxury Experiences · Handmade with Love
+        <div className="mt-14 text-center opacity-40">
+           <p className="text-[9px] font-black uppercase tracking-[0.5em] text-gray-400">
+             Luxury Flower Boutique · Experiencias Reales
            </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
