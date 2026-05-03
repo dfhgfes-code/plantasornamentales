@@ -31,14 +31,17 @@ export class SettingsService implements OnModuleInit {
     
     for (const key of keys) {
       const value = settings[key];
-      if (value === undefined) continue;
+      // Ignorar claves con valor undefined o null
+      if (value === undefined || value === null) continue;
+      // Ignorar claves vacías
+      if (key.trim() === '') continue;
 
       let setting = await this.settingsRepository.findOne({ where: { key } });
       
       if (setting) {
-        setting.value = value;
+        setting.value = String(value);
       } else {
-        setting = this.settingsRepository.create({ key, value });
+        setting = this.settingsRepository.create({ key, value: String(value) });
       }
       
       await this.settingsRepository.save(setting);
