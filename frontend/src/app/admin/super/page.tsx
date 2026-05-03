@@ -44,8 +44,10 @@ export default function SuperAdminPage() {
 
   const save = async () => {
     const id = toast.loading('Guardando cambios...');
+    console.log('[SuperAdmin] Payload to save:', settings);
     try {
-      await settingsApi.update(settings);
+      const res = await settingsApi.update(settings);
+      console.log('[SuperAdmin] Save response:', res.data);
       toast.success('¡Guardado correctamente! Aplicando cambios...', { id });
       // Reload after 1.5s so Footer/Navbar/Popup pick up the new values
       setTimeout(() => window.location.reload(), 1500);

@@ -58,7 +58,7 @@ export const plansApi = {
 };
 
 export const settingsApi = {
-  getAll: () => api.get('/settings'),
+  getAll: () => api.get(`/settings?t=${Date.now()}`),
   update: (data: Record<string, string>) => api.patch('/settings', data),
 };
 
