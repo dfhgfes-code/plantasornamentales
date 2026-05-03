@@ -10,7 +10,6 @@ import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { BloomingBouquet } from '@/components/BloomingBouquet';
 import toast from 'react-hot-toast';
 
 const schema = z.object({
@@ -38,7 +37,7 @@ export default function LoginPage() {
       const res = await authApi.login(data);
       const { user, accessToken } = res.data.data;
       setAuth(user, accessToken);
-      toast.success(`¡Bienvenida, ${user.firstName}! 🌸`);
+      toast.success(`¡Bienvenida de vuelta! 🌸`);
       router.push(user.role === 'admin' || user.role === 'super_admin' ? '/admin' : '/perfil');
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Error al iniciar sesión');
@@ -50,89 +49,61 @@ export default function LoginPage() {
   if (!mounted) return null;
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-slate-50">
-      {/* Fondo Animado de Flores */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-sky-50 animate-gradient" />
-        
-        {/* Pétalos/Flores flotantes (CSS Puro) */}
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute animate-float-random opacity-20 pointer-events-none"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              fontSize: `${20 + Math.random() * 30}px`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${10 + Math.random() * 20}s`
-            }}
-          >
-            {['🌸', '🌷', '🌹', '🌻', '🍃'][i % 5]}
-          </div>
-        ))}
-      </div>
+    <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-transform duration-[10s] scale-110 animate-subtle-zoom"
+        style={{ backgroundImage: "url('/images/login-bg.png')" }}
+      />
+      <div className="absolute inset-0 z-10 bg-white/20 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 z-20 bg-gradient-to-t from-white via-white/40 to-transparent" />
 
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes gradient {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+        @keyframes subtle-zoom {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.1); }
         }
-        @keyframes float-random {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          33% { transform: translate(30px, 50px) rotate(120deg); }
-          66% { transform: translate(-20px, 100px) rotate(240deg); }
-          100% { transform: translate(0, 0) rotate(360deg); }
+        .animate-subtle-zoom {
+          animation: subtle-zoom 20s ease-in-out infinite alternate;
         }
-        .animate-gradient {
-          background-size: 200% 200%;
-          animation: gradient 15s ease infinite;
-        }
-        .animate-float-random {
-          animation: float-random linear infinite;
-        }
-        .glass-card {
-          background: rgba(255, 255, 255, 0.7);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.5);
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+        .glass-container {
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.6);
+          box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.15);
         }
       `}} />
 
-      <div className="w-full max-w-md z-10">
-        <div className="text-center mb-6">
-          <div className="scale-110 drop-shadow-2xl">
-            <BloomingBouquet />
-          </div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Bienvenida de vuelta</h1>
-          <p className="text-gray-500 mt-2 font-medium">Tu jardín personal te espera 🌸</p>
+      <div className="w-full max-w-[440px] z-30">
+        <div className="text-center mb-10">
+           <div className="inline-block p-4 bg-white/80 backdrop-blur-md rounded-full shadow-sm mb-6 border border-white">
+             <span className="text-4xl">🌸</span>
+           </div>
+           <h1 className="text-4xl font-serif italic text-gray-900 leading-tight">Bienvenida</h1>
+           <p className="text-gray-500 mt-3 font-medium tracking-wide uppercase text-[10px]">Inicia sesión en tu cuenta</p>
         </div>
 
-        <div className="glass-card rounded-[2.5rem] p-10 relative overflow-hidden group">
-          {/* Brillo decorativo */}
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-rose-200/30 rounded-full blur-3xl group-hover:bg-rose-300/40 transition-colors" />
-          
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 relative z-10">
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4 mb-1 block">Identidad</label>
+        <div className="glass-container rounded-[3rem] p-12 relative overflow-hidden">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 relative z-10">
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 ml-1">Email</label>
               <Input
                 type="email"
                 placeholder="tu@email.com"
-                icon={<Mail className="w-4 h-4 text-rose-400" />}
-                className="bg-white/50 border-white/50 rounded-2xl focus:bg-white transition-all h-12"
+                icon={<Mail className="w-4 h-4 text-pink-300" />}
+                className="bg-transparent border-b-2 border-x-0 border-t-0 border-gray-100 rounded-none focus:ring-0 focus:border-pink-500 transition-all px-0 h-12 text-lg"
                 error={errors.email?.message}
                 {...register('email')}
               />
             </div>
             
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4 mb-1 block">Llave de acceso</label>
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 ml-1">Contraseña</label>
               <Input
                 type="password"
                 placeholder="••••••••"
-                icon={<Lock className="w-4 h-4 text-rose-400" />}
-                className="bg-white/50 border-white/50 rounded-2xl focus:bg-white transition-all h-12"
+                icon={<Lock className="w-4 h-4 text-pink-300" />}
+                className="bg-transparent border-b-2 border-x-0 border-t-0 border-gray-100 rounded-none focus:ring-0 focus:border-pink-500 transition-all px-0 h-12 text-lg"
                 error={errors.password?.message}
                 {...register('password')}
               />
@@ -141,29 +112,29 @@ export default function LoginPage() {
             <Button 
               type="submit" 
               loading={loading} 
-              className="w-full h-14 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white rounded-2xl text-lg font-bold shadow-xl shadow-rose-200 hover:shadow-rose-300 transition-all group/btn"
-              size="lg"
+              className="w-full h-16 bg-gray-900 hover:bg-black text-white rounded-full text-lg font-medium shadow-2xl transition-all active:scale-95 group"
             >
-              <span className="flex items-center justify-center gap-2">
-                Entrar al Jardín
-                <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+              <span className="flex items-center justify-center gap-3">
+                Ingresar ahora
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </span>
             </Button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-gray-100/50 text-center relative z-10">
-            <p className="text-sm text-gray-500">
-              ¿Nueva en el club?{' '}
-              <Link href="/registro" className="text-rose-500 hover:text-rose-600 font-bold underline-offset-4 hover:underline">
-                Crea tu cuenta aquí
-              </Link>
-            </p>
+          <div className="mt-10 text-center relative z-10">
+            <Link href="/registro" className="text-sm text-gray-400 hover:text-pink-500 transition-colors font-medium">
+              ¿No tienes cuenta? <span className="text-gray-900 font-bold border-b border-gray-900 pb-0.5">Regístrate gratis</span>
+            </Link>
           </div>
         </div>
         
-        <p className="text-center mt-8 text-[10px] font-black uppercase tracking-[0.3em] text-gray-300">
-          Janneth Acevedo · Flores & Plantas
-        </p>
+        <div className="mt-12 flex items-center justify-center gap-8 opacity-40">
+           <span className="h-[1px] w-12 bg-gray-300" />
+           <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-gray-400 whitespace-nowrap">
+             Janneth Acevedo · Luxury Flowers
+           </p>
+           <span className="h-[1px] w-12 bg-gray-300" />
+        </div>
       </div>
     </div>
   );
