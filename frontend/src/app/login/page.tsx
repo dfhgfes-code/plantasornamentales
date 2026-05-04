@@ -330,7 +330,7 @@ export default function LoginPage() {
         >
           {/* Panel Izquierdo */}
           <div className="left-panel">
-            <img src="/images/login_bg.png" alt="Flor & Vida" />
+            <img src="/images/login_bg.png" alt="Janneth Acevedo" />
             <div className="left-overlay" />
             <div className="left-content">
               <h2>Cada flor<br />cuenta una<br /><span>historia</span></h2>

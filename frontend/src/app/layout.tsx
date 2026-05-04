@@ -7,7 +7,7 @@ import { WhatsAppButton } from '@/components/ui/WhatsAppButton';
 import { MaintenanceGate } from '@/components/MaintenanceGate';
 
 export const metadata: Metadata = {
-  title: 'FLOR & VIDA | Flores & Suscripciones',
+  title: 'Janneth Acevedo | Flores & Suscripciones',
   description: 'Flores frescas a domicilio. Suscripciones semanales y mensuales.',
   other: {
     'referrer': 'no-referrer-when-downgrade',

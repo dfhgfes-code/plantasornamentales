@@ -103,7 +103,7 @@ export function Footer() {
 
       <div className="border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-white/20">© {new Date().getFullYear()} FLOR & VIDA - Florería Boutique</p>
+          <p className="text-xs text-white/20">© {new Date().getFullYear()} Janneth Acevedo - Plantas Ornamentales</p>
           <div className="flex gap-4 text-xs text-white/20">
             <a href="#" className="hover:text-white/40 transition-colors">Privacidad</a>
             <a href="#" className="hover:text-white/40 transition-colors">Términos</a>

@@ -69,7 +69,7 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
         </div>
 
         <p className="text-xs text-gray-400 mt-10">
-          © FLOR & VIDA - Florería Boutique
+          © Janneth Acevedo - Plantas Ornamentales
         </p>
       </div>
     </div>
