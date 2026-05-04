@@ -11,7 +11,6 @@ import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
 import toast from 'react-hot-toast';
 import { Logo } from '@/components/ui/Logo';
-import { AnimatedGardenLogo } from '@/components/ui/AnimatedGardenLogo';
 
 const schema = z.object({
   email: z.string().email('Correo inválido'),
@@ -381,8 +380,8 @@ export default function LoginPage() {
             />
 
             <div className="form-container">
-              <div className="logo-wrapper flex justify-center">
-                <AnimatedGardenLogo />
+              <div className="logo-wrapper flex justify-center scale-110">
+                <Logo size="xl" />
               </div>
 
               <div className="form-header">

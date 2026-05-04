@@ -34,7 +34,7 @@ export const Logo = ({
       centered && !horizontal ? "text-center" : "",
       className
     )}>
-      {/* Dynamic Blooming Rose SVG */}
+      {/* Professional Boutique Blooming Rose SVG */}
       <svg 
         width={currentSize.icon} 
         height={currentSize.icon} 
@@ -46,50 +46,57 @@ export const Logo = ({
           isLight ? "text-rose-200/90" : "text-rose-400"
         )}
       >
+        <defs>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="1.5" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
         {/* Stem - Growing Animation */}
         <path 
-          d="M50 90C50 90 49 70 50 45" 
+          d="M50 92C50 92 48 75 50 48" 
           stroke="currentColor" 
           strokeWidth="1.2" 
           strokeLinecap="round" 
           className="animate-bloom-stem"
         />
 
-        {/* Leaf 1 */}
+        {/* Leaves - Emerging after stem */}
         <path 
-          d="M50 75C42 72 38 78 42 82C46 86 50 82 50 75Z" 
+          d="M50 78C40 75 35 82 40 88C45 92 50 88 50 78Z" 
           fill="currentColor" 
-          fillOpacity="0.2" 
+          fillOpacity="0.15" 
           stroke="currentColor" 
           strokeWidth="0.8" 
           className="animate-bloom-leaf"
           style={{ animationDelay: '0.4s', opacity: 0 }}
         />
-
-        {/* Leaf 2 */}
         <path 
-          d="M50 65C58 62 62 68 58 72C54 76 50 72 50 65Z" 
+          d="M50 62C60 58 65 65 60 70C55 75 50 70 50 62Z" 
           fill="currentColor" 
-          fillOpacity="0.2" 
+          fillOpacity="0.15" 
           stroke="currentColor" 
           strokeWidth="0.8" 
           className="animate-bloom-leaf"
           style={{ animationDelay: '0.6s', opacity: 0 }}
         />
 
-        {/* Petals - Blooming Animation */}
-        <g className="animate-bloom-petal" style={{ animationDelay: '1s', opacity: 0 }}>
-          {/* Outer Petals */}
-          <path d="M50 45C35 45 30 30 40 20C45 15 55 15 60 20C70 30 65 45 50 45Z" fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.8" />
+        {/* The Blooming Flower - Multi-layered petals */}
+        <g className="animate-bloom-petal" style={{ animationDelay: '1s', opacity: 0, filter: 'url(#glow)' }}>
+          {/* Outer Layer Petals - Opening wide */}
+          <path d="M50 48C30 48 25 35 35 22C40 15 60 15 65 22C75 35 70 48 50 48Z" fill="currentColor" fillOpacity="0.08" stroke="currentColor" strokeWidth="0.6" />
           
-          {/* Middle Petals - Slightly offset for depth */}
-          <path d="M50 45C42 45 38 38 42 32C45 28 55 28 58 32C62 38 58 45 50 45Z" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+          {/* Secondary Layer - Delicate petals */}
+          <path d="M50 48C38 48 35 40 40 32C44 26 56 26 60 32C65 40 62 48 50 48Z" fill="currentColor" fillOpacity="0.12" stroke="currentColor" strokeWidth="0.6" />
+          <path d="M50 48C45 48 42 45 42 40C42 36 58 36 58 40C58 45 55 48 50 48Z" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="0.6" />
+
+          {/* Core Bud - Reaching upwards */}
+          <path d="M50 40C48 40 46 38 46 35C46 32 54 32 54 35C54 38 52 40 50 40Z" fill="currentColor" fillOpacity="0.3" stroke="currentColor" strokeWidth="0.6" />
           
-          {/* Core - The heart of the rose */}
-          <path d="M50 40C47 40 45 37 45 35C45 33 55 33 55 35C55 37 53 40 50 40Z" fill="currentColor" fillOpacity="0.4" stroke="currentColor" strokeWidth="0.8" />
-          
-          {/* Opening Details */}
-          <path d="M45 32C45 32 48 28 50 28C52 28 55 32 55 32" stroke="currentColor" strokeWidth="0.6" strokeLinecap="round" />
+          {/* Detail lines for depth */}
+          <path d="M44 34C44 34 47 30 50 30C53 30 56 34 56 34" stroke="currentColor" strokeWidth="0.5" strokeLinecap="round" opacity="0.6" />
+          <path d="M48 38C48 38 49 36 50 36C51 36 52 38 52 38" stroke="currentColor" strokeWidth="0.4" strokeLinecap="round" opacity="0.4" />
         </g>
       </svg>
 
