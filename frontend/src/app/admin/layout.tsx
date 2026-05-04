@@ -35,6 +35,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: '/admin/configuracion', label: 'Configuración', icon: Settings },
   ];
 
+  if (user?.role === 'super_admin') {
+    navItems.push({ href: '/admin/super', label: 'Super Admin', icon: ShieldCheck });
+  }
+
   return (
     <div className="flex min-h-screen bg-[#fcfcfd]">
       {/* Sidebar */}

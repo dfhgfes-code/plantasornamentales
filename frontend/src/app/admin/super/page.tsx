@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { adminApi, settingsApi } from '@/lib/api';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import { ShieldCheck, Layout, Users, Globe, BarChart2, Save, Plus, Trash2, Image as Img, ToggleLeft, ToggleRight, UserPlus, TrendingUp, TrendingDown, DollarSign, ShoppingBag, Phone, Mail, MapPin, MessageCircle, Link2, Wrench, Bell, Smile } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -95,21 +95,33 @@ export default function SuperAdminPage() {
   const up = Number(pct) >= 0;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12">
+    <div className="p-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+      <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-8 mb-12">
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-2">
             <ShieldCheck className="w-5 h-5 text-indigo-600" />
-            <span className="text-indigo-600 font-bold text-xs tracking-widest uppercase">Super Admin</span>
+            <span className="text-indigo-600 font-bold text-[10px] tracking-[0.2em] uppercase">Control Maestro</span>
           </div>
-          <h1 className="text-4xl font-black text-gray-900">Control del Sitio</h1>
+          <h1 className="text-4xl font-bold text-gray-900 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+            Super Admin
+          </h1>
+          <p className="text-gray-500 text-sm mt-2 max-w-lg">
+            Gestión global de analíticas, contenido dinámico, configuración técnica y equipo administrativo.
+          </p>
         </div>
-        <nav className="flex bg-gray-100 p-1 rounded-2xl gap-1 flex-wrap">
+        
+        <nav className="flex bg-white border border-gray-100 p-1.5 rounded-2xl gap-1 shadow-sm w-fit">
           {tabs.map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${tab === t.id ? 'bg-white text-indigo-600 shadow' : 'text-gray-500 hover:text-gray-800'}`}>
-              <t.icon className="w-3.5 h-3.5" />{t.label}
+              className={cn(
+                "flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap",
+                tab === t.id 
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" 
+                  : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+              )}>
+              <t.icon className="w-4 h-4" />
+              {t.label}
             </button>
           ))}
         </nav>

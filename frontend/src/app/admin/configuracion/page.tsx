@@ -64,35 +64,40 @@ export default function AdminSettingsPage() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-8">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="p-3 bg-rose-100 rounded-2xl">
-          <SettingsIcon className="w-6 h-6 text-rose-600" />
-        </div>
+  return (
+    <div className="p-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Configuración de Tienda</h1>
-          <p className="text-gray-500 text-sm">Gestiona la información pública que ven tus clientes</p>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+            Configuración Global
+          </h1>
+          <p className="text-gray-500 text-sm mt-2 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-pink-500" />
+            Gestione la información pública y contactos de su marca
+          </p>
         </div>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-8">
+      <form onSubmit={handleSave} className="space-y-8 max-w-4xl">
         {sections.map((section) => (
-          <div key={section.title} className="bg-white rounded-3xl shadow-card border border-rose-50 overflow-hidden">
-            <div className="px-6 py-4 bg-rose-50/30 border-b border-rose-50">
-              <h2 className="font-semibold text-gray-800">{section.title}</h2>
+          <div key={section.title} className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
+            <div className="px-8 py-6 bg-[#fcfcfd] border-b border-gray-100">
+              <h2 className="font-bold text-gray-800 tracking-tight">{section.title}</h2>
             </div>
-            <div className="p-6 grid gap-6">
+            <div className="p-8 grid gap-8">
               {section.fields.map((field) => (
                 <div key={field.key}>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">{field.label}</label>
-                  <div className="relative">
-                    <field.icon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-3">{field.label}</label>
+                  <div className="relative group">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-focus-within:bg-pink-50 group-focus-within:text-pink-500 transition-all">
+                      <field.icon className="w-4 h-4" />
+                    </div>
                     <input
                       type="text"
                       value={settings[field.key] || ''}
                       onChange={(e) => handleChange(field.key, e.target.value)}
                       placeholder={field.placeholder}
-                      className="w-full pl-11 pr-4 py-3 bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-rose-200 focus:border-rose-300 rounded-2xl text-sm transition-all"
+                      className="w-full pl-16 pr-6 py-4 bg-gray-50 border-transparent focus:bg-white focus:ring-2 focus:ring-pink-100 focus:border-pink-200 rounded-2xl text-sm transition-all"
                     />
                   </div>
                 </div>
