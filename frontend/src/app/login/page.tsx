@@ -38,7 +38,7 @@ export default function LoginPage() {
       const res = await authApi.login(data);
       const { user, accessToken } = res.data.data;
       setAuth(user, accessToken);
-      toast.success(`Bienvenida, ${user.firstName} 🌹`);
+      toast.success(`Bienvenido, ${user.firstName} 🌹`);
       router.push(user.role === 'admin' || user.role === 'super_admin' ? '/admin' : '/perfil');
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Correo o contraseña incorrectos');
@@ -70,31 +70,30 @@ export default function LoginPage() {
           box-shadow: 0 40px 100px rgba(0,0,0,0.06);
           display: flex;
           overflow: hidden;
-          min-height: 700px;
+          min-height: 750px;
           position: relative;
         }
 
-        /* Panel Izquierdo - Curva muy pronunciada */
+        /* Panel Izquierdo - Ahora es el fondo */
         .left-panel {
-          width: 50%;
+          width: 45%;
           position: relative;
-          background: #1a1a1a;
+          background: #f3f4f6;
           overflow: hidden;
-          /* Curva orgánica como en el diseño de referencia */
-          clip-path: ellipse(110% 110% at 0% 50%);
+          z-index: 0;
         }
 
         .left-panel img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          opacity: 0.95;
+          opacity: 1;
         }
 
         .left-content {
           position: absolute;
           top: 60px;
-          left: 60px;
+          left: 50px;
           z-index: 10;
           color: #fff;
           max-width: 320px;
@@ -102,11 +101,11 @@ export default function LoginPage() {
 
         .left-content h2 {
           font-family: 'Playfair Display', serif;
-          font-size: 3.8rem;
+          font-size: 3.5rem;
           line-height: 1.1;
           margin-bottom: 20px;
           font-weight: 500;
-          text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+          text-shadow: 0 4px 30px rgba(0,0,0,0.4);
         }
 
         .left-content h2 span {
@@ -115,14 +114,14 @@ export default function LoginPage() {
         }
 
         .left-content p {
-          font-size: 1.15rem;
-          opacity: 0.9;
+          font-size: 1.1rem;
+          opacity: 0.95;
           line-height: 1.6;
-          font-weight: 300;
-          text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+          font-weight: 400;
+          text-shadow: 0 2px 15px rgba(0,0,0,0.3);
         }
 
-        /* Panel Derecho */
+        /* Panel Derecho - El que tiene la CURVA hacia la izquierda */
         .right-panel {
           flex: 1;
           padding: 60px;
@@ -132,40 +131,52 @@ export default function LoginPage() {
           justify-content: center;
           position: relative;
           background: #fff;
+          z-index: 1;
+          /* Curva que "entra" en la imagen */
+          border-top-left-radius: 50% 100%;
+          border-bottom-left-radius: 50% 100%;
+          margin-left: -120px;
+          padding-left: 140px; /* Compensar el margen negativo */
         }
 
-        /* Ramas Decorativas en las esquinas de la tarjeta blanca */
+        @media (max-width: 1024px) {
+          .left-panel { display: none; }
+          .right-panel { margin-left: 0; padding-left: 32px; border-radius: 32px; }
+          .login-card { max-width: 500px; min-height: unset; border-radius: 32px; }
+        }
+
+        /* Ramas Decorativas */
         .branch-decor {
           position: absolute;
           width: 250px;
-          opacity: 0.15;
+          opacity: 0.1;
           pointer-events: none;
         }
-        .branch-tl { top: -40px; right: -40px; transform: scaleX(-1) rotate(20deg); }
-        .branch-br { bottom: -40px; left: -40px; transform: rotate(-15deg); }
+        .branch-tr { top: 0; right: 0; transform: scaleX(-1); }
+        .branch-bl { bottom: 0; left: 0; opacity: 0.08; }
 
         .form-container {
           width: 100%;
           max-width: 400px;
-          z-index: 1;
+          z-index: 10;
         }
 
         .form-header {
           text-align: center;
-          margin-bottom: 40px;
+          margin-bottom: 45px;
         }
 
         .form-header h1 {
           font-size: 2.8rem;
           font-weight: 500;
           color: #111827;
-          margin-bottom: 8px;
+          margin-bottom: 10px;
           font-family: 'Playfair Display', serif;
         }
 
         .form-header p {
           color: #6b7280;
-          font-size: 1.05rem;
+          font-size: 1rem;
         }
 
         .input-group {
@@ -174,9 +185,9 @@ export default function LoginPage() {
 
         .input-label {
           display: block;
-          font-size: 0.95rem;
+          font-size: 0.9rem;
           font-weight: 500;
-          color: #4b5563;
+          color: #374151;
           margin-bottom: 10px;
         }
 
@@ -215,30 +226,10 @@ export default function LoginPage() {
           box-shadow: 0 0 0 4px rgba(93, 109, 94, 0.1);
         }
 
-        .show-password {
-          position: absolute;
-          right: 18px;
-          color: #d1d5db;
-          cursor: pointer;
-          background: none;
-          border: none;
-          padding: 8px;
-        }
-
-        .forgot-password {
-          display: block;
-          text-align: right;
-          font-size: 0.85rem;
-          color: #fca5a5;
-          margin-top: 10px;
-          text-decoration: none;
-          font-weight: 500;
-        }
-
         .btn-login {
           width: 100%;
           padding: 18px;
-          background: #5d6d5e; /* Verde oliva premium */
+          background: #5d6d5e;
           color: #fff;
           border: none;
           border-radius: 16px;
@@ -253,7 +244,6 @@ export default function LoginPage() {
         .btn-login:hover {
           background: #4a574b;
           transform: translateY(-1px);
-          box-shadow: 0 15px 35px rgba(93, 109, 94, 0.3);
         }
 
         .divider {
@@ -271,7 +261,7 @@ export default function LoginPage() {
 
         .btn-google {
           width: 100%;
-          padding: 14px;
+          padding: 15px;
           background: #fff;
           border: 1.5px solid #f3f4f6;
           border-radius: 16px;
@@ -283,7 +273,6 @@ export default function LoginPage() {
           font-weight: 500;
           color: #4b5563;
           cursor: pointer;
-          transition: all 0.2s;
         }
 
         .footer-text {
@@ -298,27 +287,18 @@ export default function LoginPage() {
           font-weight: 600;
           text-decoration: none;
         }
-
-        /* RESPONSIVIDAD */
-        @media (max-width: 1024px) {
-          .left-panel { display: none; }
-          .login-card { max-width: 500px; min-height: unset; border-radius: 32px; }
-          .right-panel { padding: 48px 32px; }
-          .branch-decor { display: none; }
-        }
       `}</style>
 
       <div className="login-page">
         <motion.div 
           className="login-card"
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           {/* Panel Izquierdo */}
           <div className="left-panel">
             <img src="/images/login_bg.png" alt="Janneth Acevedo" />
-            <div className="left-overlay" />
             <div className="left-content">
               <h2>Cada flor<br />cuenta una<br /><span>historia</span></h2>
               <p>Ramos únicos para momentos inolvidables.</p>
@@ -327,9 +307,8 @@ export default function LoginPage() {
 
           {/* Panel Derecho */}
           <div className="right-panel">
-            {/* Ramas decorativas */}
-            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-decor branch-tl" alt="" />
-            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-decor branch-br" alt="" />
+            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-decor branch-tr" alt="" />
+            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-decor branch-bl" alt="" />
 
             <div className="form-container">
               <div className="flex justify-center mb-10">
@@ -337,7 +316,7 @@ export default function LoginPage() {
               </div>
 
               <div className="form-header">
-                <h1>Bienvenida</h1>
+                <h1>Bienvenido</h1>
                 <p>Inicia sesión para gestionar tu tienda</p>
               </div>
 
@@ -381,7 +360,7 @@ export default function LoginPage() {
                 </div>
 
                 <button type="submit" disabled={loading} className="btn-login">
-                  {loading ? 'Validando...' : 'Iniciar sesión'}
+                  {loading ? 'Entrando...' : 'Iniciar sesión'}
                 </button>
               </form>
 
