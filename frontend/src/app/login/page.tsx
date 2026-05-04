@@ -91,17 +91,17 @@ export default function LoginPage() {
           z-index: 1;
           /* Tighter, more elegant curve */
           border-radius: 0 42% 42% 0 / 0 50% 50% 0;
-          filter: none; /* No shadow as requested */
+          filter: none;
         }
 
         .left-overlay {
           position: absolute;
           inset: 0;
-          width: 132%;
-          background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+          width: 100%; /* Only over the left panel part */
+          background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, transparent 100%);
           z-index: 2;
           pointer-events: none;
-          border-radius: 0 42% 42% 0 / 0 50% 50% 0;
+          /* No border radius needed if it doesn't overlap the curve */
         }
 
         .left-content {
