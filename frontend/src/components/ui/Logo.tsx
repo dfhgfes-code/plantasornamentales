@@ -34,45 +34,21 @@ export const Logo = ({
       centered && !horizontal ? "text-center" : "",
       className
     )}>
-      {/* Fine-Line Art Rose SVG - Minimalist & Professional */}
-      <div className="relative">
-        <svg 
-          width={currentSize.icon} 
-          height={currentSize.icon} 
-          viewBox="0 0 100 100" 
-          fill="none" 
-          xmlns="http://www.w3.org/2000/svg"
+      {/* Photorealistic Rose - High-End Realistic Branding */}
+      <div className="relative overflow-hidden flex items-center justify-center" style={{ width: currentSize.icon, height: currentSize.icon }}>
+        <img 
+          src="/images/rose_real.png" 
+          alt="Rose" 
           className={cn(
-            "transition-all duration-1000",
-            isLight ? "text-rose-200/80" : "text-rose-300"
+            "w-full h-full object-contain animate-real-bloom",
+            isLight ? "brightness-110 contrast-110" : ""
           )}
-        >
-          {/* Detailed Fine-Line Rose - Drawn effect */}
-          <g className="animate-draw-rose">
-            {/* Stem & Leaves - Single elegant line */}
-            <path 
-              d="M50 95C50 95 48 85 49 75C50 65 50 55 50 45M50 82C45 80 40 82 38 88C36 94 45 95 50 82M50 72C55 70 60 72 62 78C64 84 55 85 50 72" 
-              stroke="currentColor" 
-              strokeWidth="0.5" 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-            />
-            
-            {/* Rose Head - Concentric delicate petals */}
-            <path d="M50 45C55 45 60 42 62 38C65 32 60 25 50 25C40 25 35 32 38 38C40 42 45 45 50 45Z" stroke="currentColor" strokeWidth="0.6" />
-            <path d="M50 42C53 42 56 40 57 37C59 33 56 28 50 28C44 28 41 33 43 37C44 40 47 42 50 42Z" stroke="currentColor" strokeWidth="0.5" />
-            <path d="M50 38C52 38 53 37 54 35C55 33 53 30 50 30C47 30 45 33 46 35C47 37 48 38 50 38Z" stroke="currentColor" strokeWidth="0.4" />
-            
-            {/* Outer Petal Accents - Fine details */}
-            <path d="M38 35C35 32 32 28 35 22C38 16 45 18 50 22C55 18 62 16 65 22C68 28 65 32 62 35" stroke="currentColor" strokeWidth="0.4" strokeDasharray="2 2" />
-            <path d="M42 22C42 22 45 15 50 15C55 15 58 22 58 22" stroke="currentColor" strokeWidth="0.3" strokeDasharray="1 2" />
-          </g>
-        </svg>
+        />
         
-        {/* Subtle radial glow for depth */}
+        {/* Subtle radial glow to blend with the realistic image */}
         <div className={cn(
-          "absolute inset-0 rounded-full blur-2xl opacity-20 -z-10 animate-soft-glow",
-          isLight ? "bg-white" : "bg-rose-200"
+          "absolute inset-0 rounded-full blur-xl opacity-30 -z-10 animate-soft-glow",
+          isLight ? "bg-white" : "bg-rose-100"
         )} />
       </div>
 

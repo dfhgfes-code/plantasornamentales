@@ -62,10 +62,10 @@ body {
   to { stroke-dashoffset: 0; opacity: 1; }
 }
 
-@keyframes drawRose {
-  0% { stroke-dashoffset: 300; opacity: 0; transform: scale(0.98); }
-  30% { opacity: 0.5; }
-  100% { stroke-dashoffset: 0; opacity: 1; transform: scale(1); }
+@keyframes realBloom {
+  0% { transform: scale(0.7) rotate(-10deg); opacity: 0; filter: brightness(0.6) blur(4px); }
+  40% { opacity: 0.8; filter: brightness(0.8) blur(2px); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; filter: brightness(1) blur(0); }
 }
 
 @keyframes softGlow {
@@ -80,16 +80,8 @@ body {
 .animate-float     { animation: float 3s ease-in-out infinite; }
 .animate-marquee   { animation: marquee 25s linear infinite; }
 
-.animate-bloom-stem {
-  stroke-dasharray: 200;
-  stroke-dashoffset: 200;
-  animation: bloomStem 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.animate-draw-rose path {
-  stroke-dasharray: 300;
-  stroke-dashoffset: 300;
-  animation: drawRose 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.animate-real-bloom {
+  animation: realBloom 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-soft-glow {
