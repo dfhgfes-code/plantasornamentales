@@ -95,6 +95,16 @@ export default function LoginPage() {
           transform: translateX(0);
         }
 
+        .left-overlay {
+          position: absolute;
+          inset: 0;
+          width: 130%;
+          background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+          z-index: 2;
+          pointer-events: none;
+          border-radius: 0 45% 45% 0 / 0 50% 50% 0;
+        }
+
         .left-content {
           position: absolute;
           top: 80px;
@@ -109,8 +119,8 @@ export default function LoginPage() {
           font-size: 3.5rem;
           line-height: 1;
           margin-bottom: 20px;
-          font-weight: 400;
-          text-shadow: 0 4px 20px rgba(0,0,0,0.6); /* Much stronger shadow */
+          font-weight: 700; /* Bolder */
+          text-shadow: 0 2px 15px rgba(0,0,0,0.8);
         }
 
         .left-content .script-text {
@@ -351,6 +361,7 @@ export default function LoginPage() {
         >
           <div className="left-panel">
             <img src="/images/login_bg.png" alt="Janneth Acevedo" />
+            <div className="left-overlay" />
             <div className="left-content">
               <h2>Cada flor<br />cuenta una<br />
                 <span className="script-text">
