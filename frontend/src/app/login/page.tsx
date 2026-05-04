@@ -65,47 +65,49 @@ export default function LoginPage() {
 
         .login-card {
           width: 100%;
-          max-width: 1050px;
+          max-width: 1100px;
           background: #fff;
-          border-radius: 24px;
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+          border-radius: 40px;
+          box-shadow: 0 40px 100px rgba(0,0,0,0.06);
           display: flex;
           overflow: hidden;
-          min-height: 680px;
+          min-height: 700px;
           position: relative;
           z-index: 10;
         }
 
-        /* The convex curve effect - Pushing INTO the login side */
-        .left-panel::after {
-          content: "";
-          position: absolute;
-          top: -10%;
-          bottom: -10%;
-          right: -100px;
-          width: 200px;
-          background: inherit; /* Matches the left-panel background/image */
-          background-image: url('/images/login_bg.png');
-          background-size: cover;
-          background-position: right center;
-          border-radius: 100%;
-          z-index: 2;
-          box-shadow: 20px 0 30px rgba(0,0,0,0.05);
-        }
-
         .left-panel {
-          width: 45%;
+          width: 42%;
           position: relative;
-          background: #f3f4f6;
-          overflow: visible; /* Allow curve to push out */
+          background: #fdfaf7;
+          overflow: visible;
+          z-index: 20;
         }
 
         .left-panel img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          position: relative;
+          position: absolute;
+          inset: 0;
           z-index: 1;
+        }
+
+        /* Large Convex Curve "Barriga" */
+        .left-panel::after {
+          content: "";
+          position: absolute;
+          top: -5%;
+          bottom: -5%;
+          right: -140px;
+          width: 280px;
+          background: inherit;
+          background-image: url('/images/login_bg.png');
+          background-size: cover;
+          background-position: 85% center;
+          border-radius: 100%;
+          z-index: 2;
+          box-shadow: 20px 0 40px rgba(0,0,0,0.08);
         }
 
         .left-content {
@@ -159,7 +161,7 @@ export default function LoginPage() {
 
         .right-panel {
           flex: 1;
-          padding: 60px 80px;
+          padding: 60px 60px 60px 180px; /* Increased left padding for the curve */
           display: flex;
           flex-direction: column;
           align-items: center;
