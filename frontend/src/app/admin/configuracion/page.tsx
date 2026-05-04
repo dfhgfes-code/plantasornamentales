@@ -17,7 +17,7 @@ export default function AdminSettingsPage() {
   const loadSettings = async () => {
     try {
       const res = await settingsApi.getAll();
-      setSettings(res.data);
+      setSettings(res.data.data || res.data || {});
     } catch (error) {
       toast.error('Error al cargar configuraciones');
     } finally {

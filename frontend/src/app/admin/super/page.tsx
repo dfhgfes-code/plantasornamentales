@@ -36,9 +36,9 @@ export default function SuperAdminPage() {
         adminApi.getUsers({ limit: 100 }),
         adminApi.getSuperAnalytics(),
       ]);
-      if (sRes.status === 'fulfilled') setSettings(sRes.value.data.data || {});
-      if (aRes.status === 'fulfilled') setAdmins((aRes.value.data.data?.data || []).filter((u: any) => u.role === 'admin'));
-      if (anRes.status === 'fulfilled') setAnalytics(anRes.value.data.data);
+      if (sRes.status === 'fulfilled') setSettings(sRes.value.data.data || sRes.value.data || {});
+      if (aRes.status === 'fulfilled') setAdmins((aRes.value.data.data?.data || aRes.value.data.data || aRes.value.data || []).filter((u: any) => u.role === 'admin'));
+      if (anRes.status === 'fulfilled') setAnalytics(anRes.value.data.data || anRes.value.data);
     } finally { setLoading(false); }
   };
 
