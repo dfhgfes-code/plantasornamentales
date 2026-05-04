@@ -80,7 +80,7 @@ export default function LoginPage() {
   if (!mounted) return null;
 
   return (
-    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}>
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '606760776980-rn49qk52hum9m39cb21puvnqslh5uboc7.apps.googleusercontent.com'}>
       <style>{`
         .login-page {
           min-height: 100vh;
