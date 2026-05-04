@@ -74,7 +74,6 @@ export default function LoginPage() {
           position: relative;
         }
 
-        /* Panel Izquierdo - Ahora es el fondo */
         .left-panel {
           width: 45%;
           position: relative;
@@ -90,38 +89,51 @@ export default function LoginPage() {
           opacity: 1;
         }
 
+        .left-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 70%);
+        }
+
         .left-content {
           position: absolute;
-          top: 60px;
-          left: 50px;
+          top: 70px;
+          left: 60px;
           z-index: 10;
           color: #fff;
-          max-width: 320px;
+          max-width: 350px;
         }
 
         .left-content h2 {
           font-family: 'Playfair Display', serif;
-          font-size: 3.5rem;
+          font-size: 3.4rem;
           line-height: 1.1;
-          margin-bottom: 20px;
+          margin-bottom: 24px;
           font-weight: 500;
-          text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+          text-shadow: 0 2px 20px rgba(0,0,0,0.3);
         }
 
         .left-content h2 span {
-          color: #fda4af;
           font-style: italic;
+          opacity: 0.95;
+        }
+
+        .left-content .decor-line {
+          width: 40px;
+          height: 1px;
+          background: #fff;
+          margin-bottom: 16px;
+          opacity: 0.6;
         }
 
         .left-content p {
-          font-size: 1.1rem;
-          opacity: 0.95;
+          font-size: 1rem;
+          opacity: 0.9;
           line-height: 1.6;
-          font-weight: 400;
-          text-shadow: 0 2px 15px rgba(0,0,0,0.3);
+          font-weight: 300;
+          letter-spacing: 0.02em;
         }
 
-        /* Panel Derecho - El que tiene la CURVA hacia la izquierda */
         .right-panel {
           flex: 1;
           padding: 60px;
@@ -132,11 +144,10 @@ export default function LoginPage() {
           position: relative;
           background: #fff;
           z-index: 1;
-          /* Curva que "entra" en la imagen */
-          border-top-left-radius: 50% 100%;
-          border-bottom-left-radius: 50% 100%;
+          border-top-left-radius: 45% 100%;
+          border-bottom-left-radius: 45% 100%;
           margin-left: -120px;
-          padding-left: 140px; /* Compensar el margen negativo */
+          padding-left: 140px;
         }
 
         @media (max-width: 1024px) {
@@ -145,15 +156,14 @@ export default function LoginPage() {
           .login-card { max-width: 500px; min-height: unset; border-radius: 32px; }
         }
 
-        /* Ramas Decorativas */
         .branch-decor {
           position: absolute;
           width: 250px;
-          opacity: 0.1;
+          opacity: 0.08;
           pointer-events: none;
         }
-        .branch-tr { top: 0; right: 0; transform: scaleX(-1); }
-        .branch-bl { bottom: 0; left: 0; opacity: 0.08; }
+        .branch-tr { top: -20px; right: -20px; transform: scaleX(-1); }
+        .branch-bl { bottom: -20px; left: -20px; opacity: 0.06; }
 
         .form-container {
           width: 100%;
@@ -167,16 +177,20 @@ export default function LoginPage() {
         }
 
         .form-header h1 {
-          font-size: 2.8rem;
-          font-weight: 500;
+          font-size: 2.6rem;
+          font-weight: 400;
           color: #111827;
-          margin-bottom: 10px;
+          margin-bottom: 8px;
           font-family: 'Playfair Display', serif;
+          letter-spacing: -0.01em;
         }
 
         .form-header p {
-          color: #6b7280;
-          font-size: 1rem;
+          color: #9ca3af;
+          font-size: 0.9rem;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          font-weight: 500;
         }
 
         .input-group {
@@ -185,10 +199,12 @@ export default function LoginPage() {
 
         .input-label {
           display: block;
-          font-size: 0.9rem;
-          font-weight: 500;
-          color: #374151;
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #4b5563;
           margin-bottom: 10px;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
         }
 
         .input-wrapper {
@@ -223,7 +239,19 @@ export default function LoginPage() {
         .input-field:focus {
           outline: none;
           border-color: #5d6d5e;
-          box-shadow: 0 0 0 4px rgba(93, 109, 94, 0.1);
+          box-shadow: 0 0 0 4px rgba(93, 109, 94, 0.08);
+        }
+
+        .forgot-password {
+          display: block;
+          text-align: right;
+          font-size: 0.8rem;
+          color: #fca5a5;
+          margin-top: 12px;
+          font-weight: 600;
+          text-decoration: none;
+          text-transform: uppercase;
+          letter-spacing: 0.02em;
         }
 
         .btn-login {
@@ -233,30 +261,35 @@ export default function LoginPage() {
           color: #fff;
           border: none;
           border-radius: 16px;
-          font-size: 1.1rem;
-          font-weight: 600;
+          font-size: 1rem;
+          font-weight: 700;
           margin-top: 36px;
           cursor: pointer;
-          transition: all 0.2s;
-          box-shadow: 0 10px 25px rgba(93, 109, 94, 0.2);
+          transition: all 0.3s;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          box-shadow: 0 10px 25px rgba(93, 109, 94, 0.15);
         }
 
         .btn-login:hover {
           background: #4a574b;
           transform: translateY(-1px);
+          box-shadow: 0 15px 35px rgba(93, 109, 94, 0.25);
         }
 
         .divider {
           display: flex;
           align-items: center;
           margin: 36px 0;
-          color: #e5e7eb;
+          color: #f3f4f6;
         }
 
         .divider span {
           padding: 0 16px;
-          font-size: 0.85rem;
-          color: #9ca3af;
+          font-size: 0.75rem;
+          color: #d1d5db;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
         }
 
         .btn-google {
@@ -269,22 +302,23 @@ export default function LoginPage() {
           align-items: center;
           justify-content: center;
           gap: 12px;
-          font-size: 0.95rem;
-          font-weight: 500;
+          font-size: 0.9rem;
+          font-weight: 600;
           color: #4b5563;
           cursor: pointer;
+          transition: all 0.2s;
         }
 
         .footer-text {
           margin-top: 45px;
           text-align: center;
-          font-size: 0.95rem;
-          color: #6b7280;
+          font-size: 0.9rem;
+          color: #9ca3af;
         }
 
         .footer-text a {
           color: #fca5a5;
-          font-weight: 600;
+          font-weight: 700;
           text-decoration: none;
         }
       `}</style>
@@ -299,8 +333,10 @@ export default function LoginPage() {
           {/* Panel Izquierdo */}
           <div className="left-panel">
             <img src="/images/login_bg.png" alt="Janneth Acevedo" />
+            <div className="left-overlay" />
             <div className="left-content">
               <h2>Cada flor<br />cuenta una<br /><span>historia</span></h2>
+              <div className="decor-line" />
               <p>Ramos únicos para momentos inolvidables.</p>
             </div>
           </div>
