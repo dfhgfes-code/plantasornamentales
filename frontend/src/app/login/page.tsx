@@ -77,37 +77,22 @@ export default function LoginPage() {
         }
 
         .left-panel {
-          width: 42%;
+          width: 45%;
           position: relative;
-          background: #fdfaf7;
-          overflow: visible;
           z-index: 20;
+          overflow: visible;
         }
 
         .left-panel img {
-          width: 100%;
+          width: 130%; /* Overlap to create the "barriga" */
           height: 100%;
           object-fit: cover;
-          position: absolute;
-          inset: 0;
+          position: relative;
           z-index: 1;
-        }
-
-        /* Large Convex Curve "Barriga" */
-        .left-panel::after {
-          content: "";
-          position: absolute;
-          top: -5%;
-          bottom: -5%;
-          right: -140px;
-          width: 280px;
-          background: inherit;
-          background-image: url('/images/login_bg.png');
-          background-size: cover;
-          background-position: 85% center;
-          border-radius: 100%;
-          z-index: 2;
-          box-shadow: 20px 0 40px rgba(0,0,0,0.08);
+          /* Convex Curve */
+          border-radius: 0 45% 45% 0 / 0 50% 50% 0;
+          box-shadow: 20px 0 40px rgba(0,0,0,0.1);
+          transform: translateX(0);
         }
 
         .left-content {
@@ -125,7 +110,7 @@ export default function LoginPage() {
           line-height: 1;
           margin-bottom: 20px;
           font-weight: 400;
-          text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .left-content .script-text {
@@ -157,11 +142,12 @@ export default function LoginPage() {
           line-height: 1.4;
           font-weight: 300;
           max-width: 200px;
+          text-shadow: 0 1px 4px rgba(0,0,0,0.2);
         }
 
         .right-panel {
           flex: 1;
-          padding: 60px 60px 60px 180px; /* Increased left padding for the curve */
+          padding: 60px 60px 60px 200px; /* Adjust for image overlap */
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -237,7 +223,7 @@ export default function LoginPage() {
         .input-field {
           width: 100%;
           padding: 14px 16px 14px 48px;
-          background: #fff;
+          background: #f9fafb; /* Light background for inputs like in screenshot */
           border: 1px solid #e5e7eb;
           border-radius: 12px;
           font-size: 1rem;
@@ -247,8 +233,8 @@ export default function LoginPage() {
 
         .input-field:focus {
           outline: none;
-          border-color: #5d6d5e;
-          box-shadow: 0 0 0 3px rgba(93, 109, 94, 0.1);
+          border-color: #ec4899;
+          box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
         }
 
         .show-password {
@@ -274,7 +260,7 @@ export default function LoginPage() {
         .btn-login {
           width: 100%;
           padding: 16px;
-          background: #5d6d5e;
+          background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
           color: #fff;
           border: none;
           border-radius: 12px;
@@ -283,12 +269,12 @@ export default function LoginPage() {
           margin-top: 30px;
           cursor: pointer;
           transition: all 0.2s;
+          box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);
         }
 
         .btn-login:hover {
-          background: #4a574b;
           transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
         }
 
         .divider {
@@ -449,6 +435,9 @@ export default function LoginPage() {
           </div>
         </motion.div>
       </div>
+    </>
+  );
+}
     </>
   );
 }
