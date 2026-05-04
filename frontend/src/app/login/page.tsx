@@ -74,48 +74,39 @@ export default function LoginPage() {
           position: relative;
         }
 
-        /* Panel Izquierdo */
+        /* Panel Izquierdo - Curva muy pronunciada */
         .left-panel {
           width: 50%;
           position: relative;
           background: #1a1a1a;
           overflow: hidden;
+          /* Curva orgánica como en el diseño de referencia */
           clip-path: ellipse(110% 110% at 0% 50%);
-        }
-
-        @media (max-width: 1024px) {
-          .left-panel { display: none; }
-          .login-card { max-width: 500px; min-height: unset; border-radius: 32px; }
         }
 
         .left-panel img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          opacity: 0.9;
-        }
-
-        .left-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%);
+          opacity: 0.95;
         }
 
         .left-content {
           position: absolute;
-          bottom: 60px;
+          top: 60px;
           left: 60px;
           z-index: 10;
           color: #fff;
-          max-width: 400px;
+          max-width: 320px;
         }
 
         .left-content h2 {
           font-family: 'Playfair Display', serif;
-          font-size: 3.5rem;
+          font-size: 3.8rem;
           line-height: 1.1;
           margin-bottom: 20px;
           font-weight: 500;
+          text-shadow: 0 2px 20px rgba(0,0,0,0.3);
         }
 
         .left-content h2 span {
@@ -124,10 +115,11 @@ export default function LoginPage() {
         }
 
         .left-content p {
-          font-size: 1.1rem;
+          font-size: 1.15rem;
           opacity: 0.9;
           line-height: 1.6;
           font-weight: 300;
+          text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         /* Panel Derecho */
@@ -142,26 +134,15 @@ export default function LoginPage() {
           background: #fff;
         }
 
-        /* Ramas Decorativas (Inspiradas en la referencia) */
-        .branch-left {
+        /* Ramas Decorativas en las esquinas de la tarjeta blanca */
+        .branch-decor {
           position: absolute;
-          bottom: -30px;
-          left: -40px;
-          width: 200px;
-          opacity: 0.12;
-          transform: rotate(45deg);
+          width: 250px;
+          opacity: 0.15;
           pointer-events: none;
         }
-
-        .branch-right {
-          position: absolute;
-          top: -30px;
-          right: -40px;
-          width: 200px;
-          opacity: 0.12;
-          transform: rotate(-135deg);
-          pointer-events: none;
-        }
+        .branch-tl { top: -40px; right: -40px; transform: scaleX(-1) rotate(20deg); }
+        .branch-br { bottom: -40px; left: -40px; transform: rotate(-15deg); }
 
         .form-container {
           width: 100%;
@@ -175,17 +156,16 @@ export default function LoginPage() {
         }
 
         .form-header h1 {
-          font-size: 2.4rem;
+          font-size: 2.8rem;
           font-weight: 500;
           color: #111827;
-          margin-bottom: 12px;
+          margin-bottom: 8px;
           font-family: 'Playfair Display', serif;
         }
 
         .form-header p {
           color: #6b7280;
           font-size: 1.05rem;
-          font-weight: 400;
         }
 
         .input-group {
@@ -194,9 +174,9 @@ export default function LoginPage() {
 
         .input-label {
           display: block;
-          font-size: 0.9rem;
+          font-size: 0.95rem;
           font-weight: 500;
-          color: #374151;
+          color: #4b5563;
           margin-bottom: 10px;
         }
 
@@ -210,7 +190,7 @@ export default function LoginPage() {
           position: absolute;
           left: 18px;
           color: #d1d5db;
-          width: 20px;
+          width: 18px;
         }
 
         .input-field {
@@ -242,7 +222,7 @@ export default function LoginPage() {
           cursor: pointer;
           background: none;
           border: none;
-          padding: 5px;
+          padding: 8px;
         }
 
         .forgot-password {
@@ -250,30 +230,30 @@ export default function LoginPage() {
           text-align: right;
           font-size: 0.85rem;
           color: #fca5a5;
-          margin-top: 12px;
-          font-weight: 500;
+          margin-top: 10px;
           text-decoration: none;
+          font-weight: 500;
         }
 
         .btn-login {
           width: 100%;
           padding: 18px;
-          background: #5d6d5e;
+          background: #5d6d5e; /* Verde oliva premium */
           color: #fff;
           border: none;
           border-radius: 16px;
-          font-size: 1.05rem;
+          font-size: 1.1rem;
           font-weight: 600;
           margin-top: 36px;
           cursor: pointer;
           transition: all 0.2s;
-          box-shadow: 0 10px 20px rgba(93, 109, 94, 0.2);
+          box-shadow: 0 10px 25px rgba(93, 109, 94, 0.2);
         }
 
-        .btn-login:hover:not(:disabled) {
+        .btn-login:hover {
           background: #4a574b;
           transform: translateY(-1px);
-          box-shadow: 0 15px 30px rgba(93, 109, 94, 0.3);
+          box-shadow: 0 15px 35px rgba(93, 109, 94, 0.3);
         }
 
         .divider {
@@ -291,7 +271,7 @@ export default function LoginPage() {
 
         .btn-google {
           width: 100%;
-          padding: 15px;
+          padding: 14px;
           background: #fff;
           border: 1.5px solid #f3f4f6;
           border-radius: 16px;
@@ -301,7 +281,7 @@ export default function LoginPage() {
           gap: 12px;
           font-size: 0.95rem;
           font-weight: 500;
-          color: #374151;
+          color: #4b5563;
           cursor: pointer;
           transition: all 0.2s;
         }
@@ -317,7 +297,14 @@ export default function LoginPage() {
           color: #fca5a5;
           font-weight: 600;
           text-decoration: none;
-          margin-left: 5px;
+        }
+
+        /* RESPONSIVIDAD */
+        @media (max-width: 1024px) {
+          .left-panel { display: none; }
+          .login-card { max-width: 500px; min-height: unset; border-radius: 32px; }
+          .right-panel { padding: 48px 32px; }
+          .branch-decor { display: none; }
         }
       `}</style>
 
@@ -340,8 +327,9 @@ export default function LoginPage() {
 
           {/* Panel Derecho */}
           <div className="right-panel">
-            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-left" alt="" />
-            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-right" alt="" />
+            {/* Ramas decorativas */}
+            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-decor branch-tl" alt="" />
+            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-decor branch-br" alt="" />
 
             <div className="form-container">
               <div className="flex justify-center mb-10">
@@ -349,7 +337,7 @@ export default function LoginPage() {
               </div>
 
               <div className="form-header">
-                <h1>Bienvenido</h1>
+                <h1>Bienvenida</h1>
                 <p>Inicia sesión para gestionar tu tienda</p>
               </div>
 
