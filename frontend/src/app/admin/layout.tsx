@@ -9,7 +9,8 @@ import {
   Users, 
   ShoppingBag,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  ShieldCheck
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 import { useRouter } from 'next/navigation';
