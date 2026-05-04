@@ -34,71 +34,47 @@ export const Logo = ({
       centered && !horizontal ? "text-center" : "",
       className
     )}>
-      {/* Professional Boutique Blooming Rose SVG */}
-      <svg 
-        width={currentSize.icon} 
-        height={currentSize.icon} 
-        viewBox="0 0 100 100" 
-        fill="none" 
-        xmlns="http://www.w3.org/2000/svg"
-        className={cn(
-          "transition-transform duration-700",
-          isLight ? "text-rose-200/90" : "text-rose-400"
-        )}
-      >
-        <defs>
-          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="1.5" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-
-        {/* Stem - Growing Animation */}
-        <path 
-          d="M50 92C50 92 48 75 50 48" 
-          stroke="currentColor" 
-          strokeWidth="1.2" 
-          strokeLinecap="round" 
-          className="animate-bloom-stem"
-        />
-
-        {/* Leaves - Emerging after stem */}
-        <path 
-          d="M50 78C40 75 35 82 40 88C45 92 50 88 50 78Z" 
-          fill="currentColor" 
-          fillOpacity="0.15" 
-          stroke="currentColor" 
-          strokeWidth="0.8" 
-          className="animate-bloom-leaf"
-          style={{ animationDelay: '0.4s', opacity: 0 }}
-        />
-        <path 
-          d="M50 62C60 58 65 65 60 70C55 75 50 70 50 62Z" 
-          fill="currentColor" 
-          fillOpacity="0.15" 
-          stroke="currentColor" 
-          strokeWidth="0.8" 
-          className="animate-bloom-leaf"
-          style={{ animationDelay: '0.6s', opacity: 0 }}
-        />
-
-        {/* The Blooming Flower - Multi-layered petals */}
-        <g className="animate-bloom-petal" style={{ animationDelay: '1s', opacity: 0, filter: 'url(#glow)' }}>
-          {/* Outer Layer Petals - Opening wide */}
-          <path d="M50 48C30 48 25 35 35 22C40 15 60 15 65 22C75 35 70 48 50 48Z" fill="currentColor" fillOpacity="0.08" stroke="currentColor" strokeWidth="0.6" />
-          
-          {/* Secondary Layer - Delicate petals */}
-          <path d="M50 48C38 48 35 40 40 32C44 26 56 26 60 32C65 40 62 48 50 48Z" fill="currentColor" fillOpacity="0.12" stroke="currentColor" strokeWidth="0.6" />
-          <path d="M50 48C45 48 42 45 42 40C42 36 58 36 58 40C58 45 55 48 50 48Z" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="0.6" />
-
-          {/* Core Bud - Reaching upwards */}
-          <path d="M50 40C48 40 46 38 46 35C46 32 54 32 54 35C54 38 52 40 50 40Z" fill="currentColor" fillOpacity="0.3" stroke="currentColor" strokeWidth="0.6" />
-          
-          {/* Detail lines for depth */}
-          <path d="M44 34C44 34 47 30 50 30C53 30 56 34 56 34" stroke="currentColor" strokeWidth="0.5" strokeLinecap="round" opacity="0.6" />
-          <path d="M48 38C48 38 49 36 50 36C51 36 52 38 52 38" stroke="currentColor" strokeWidth="0.4" strokeLinecap="round" opacity="0.4" />
-        </g>
-      </svg>
+      {/* Fine-Line Art Rose SVG - Minimalist & Professional */}
+      <div className="relative">
+        <svg 
+          width={currentSize.icon} 
+          height={currentSize.icon} 
+          viewBox="0 0 100 100" 
+          fill="none" 
+          xmlns="http://www.w3.org/2000/svg"
+          className={cn(
+            "transition-all duration-1000",
+            isLight ? "text-rose-200/80" : "text-rose-300"
+          )}
+        >
+          {/* Detailed Fine-Line Rose - Drawn effect */}
+          <g className="animate-draw-rose">
+            {/* Stem & Leaves - Single elegant line */}
+            <path 
+              d="M50 95C50 95 48 85 49 75C50 65 50 55 50 45M50 82C45 80 40 82 38 88C36 94 45 95 50 82M50 72C55 70 60 72 62 78C64 84 55 85 50 72" 
+              stroke="currentColor" 
+              strokeWidth="0.5" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+            />
+            
+            {/* Rose Head - Concentric delicate petals */}
+            <path d="M50 45C55 45 60 42 62 38C65 32 60 25 50 25C40 25 35 32 38 38C40 42 45 45 50 45Z" stroke="currentColor" strokeWidth="0.6" />
+            <path d="M50 42C53 42 56 40 57 37C59 33 56 28 50 28C44 28 41 33 43 37C44 40 47 42 50 42Z" stroke="currentColor" strokeWidth="0.5" />
+            <path d="M50 38C52 38 53 37 54 35C55 33 53 30 50 30C47 30 45 33 46 35C47 37 48 38 50 38Z" stroke="currentColor" strokeWidth="0.4" />
+            
+            {/* Outer Petal Accents - Fine details */}
+            <path d="M38 35C35 32 32 28 35 22C38 16 45 18 50 22C55 18 62 16 65 22C68 28 65 32 62 35" stroke="currentColor" strokeWidth="0.4" strokeDasharray="2 2" />
+            <path d="M42 22C42 22 45 15 50 15C55 15 58 22 58 22" stroke="currentColor" strokeWidth="0.3" strokeDasharray="1 2" />
+          </g>
+        </svg>
+        
+        {/* Subtle radial glow for depth */}
+        <div className={cn(
+          "absolute inset-0 rounded-full blur-2xl opacity-20 -z-10 animate-soft-glow",
+          isLight ? "bg-white" : "bg-rose-200"
+        )} />
+      </div>
 
       <div className={cn("flex flex-col", horizontal ? "items-start" : "items-center")}>
         <h1 className={cn(
