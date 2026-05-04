@@ -5,12 +5,17 @@ import Link from 'next/link';
 import { settingsApi } from '@/lib/api';
 import { Logo } from '@/components/ui/Logo';
 
+import { usePathname } from 'next/navigation';
+
 export function Footer() {
+  const pathname = usePathname();
   const [settings, setSettings] = useState<Record<string, string>>({});
 
   useEffect(() => {
     settingsApi.getAll().then(res => setSettings(res.data.data || {})).catch(() => {});
   }, []);
+
+  if (pathname?.startsWith('/admin')) return null;
 
   const trustBadges = [
     { Icon: ShieldCheck, title: 'Pago 100% Seguro', desc: 'Protección de datos' },

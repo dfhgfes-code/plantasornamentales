@@ -25,6 +25,8 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
+  if (pathname?.startsWith('/admin')) return null;
+
 
   const handleLogout = () => { logout(); router.push('/'); };
 

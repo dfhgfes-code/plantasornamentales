@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import api from '@/lib/api';
 import { productsApi } from '@/lib/api';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, Upload, X, Check, Tag } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -84,77 +84,100 @@ export default function AdminProductosPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestión de Productos</h1>
-          <p className="text-gray-500 text-sm mt-0.5">{products.length} productos en total</p>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+            Gestión de Inventario
+          </h1>
+          <p className="text-gray-500 text-sm mt-1 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-pink-500" />
+            {products.length} productos registrados
+          </p>
         </div>
         <button onClick={openCreate}
-          className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm">
-          <Plus className="w-4 h-4" /> Nuevo producto
+          className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg font-semibold text-xs transition-all shadow-sm shadow-pink-100 uppercase tracking-wider">
+          <Plus className="w-3.5 h-3.5" /> Nuevo producto
         </button>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-32 skeleton rounded-2xl" />)}
+        <div className="bg-white border border-gray-100 rounded-3xl p-8 space-y-4 animate-pulse">
+          <div className="h-10 bg-gray-50 rounded-xl w-full" />
+          {Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-16 bg-gray-50 rounded-xl w-full" />)}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-100">
-              <tr>
-                <th className="text-left px-4 py-3 text-gray-600 font-semibold">Producto</th>
-                <th className="text-left px-4 py-3 text-gray-600 font-semibold hidden md:table-cell">Categoría</th>
-                <th className="text-left px-4 py-3 text-gray-600 font-semibold">Precio</th>
-                <th className="text-left px-4 py-3 text-gray-600 font-semibold hidden sm:table-cell">Stock</th>
-                <th className="text-left px-4 py-3 text-gray-600 font-semibold">Estado</th>
-                <th className="text-right px-4 py-3 text-gray-600 font-semibold">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {products.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl overflow-hidden bg-pink-50 shrink-0">
-                        {p.imageUrl && <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" />}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900 line-clamp-1">{p.name}</p>
-                        <p className="text-xs text-gray-400">{p.sku}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-gray-500 hidden md:table-cell">{p.category || '—'}</td>
-                  <td className="px-4 py-3 font-semibold text-pink-600">{formatCurrency(Number(p.price))}</td>
-                  <td className="px-4 py-3 hidden sm:table-cell">
-                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${p.stock < 5 ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-700'}`}>
-                      {p.stock} uds
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button onClick={() => handleToggle(p.id)} className="flex items-center gap-1.5 text-xs font-medium">
-                      {p.isAvailable
-                        ? <><ToggleRight className="w-5 h-5 text-green-500" /><span className="text-green-600 hidden sm:block">Activo</span></>
-                        : <><ToggleLeft className="w-5 h-5 text-gray-400" /><span className="text-gray-400 hidden sm:block">Inactivo</span></>}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-end gap-1">
-                      <button onClick={() => openEdit(p)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => handleDelete(p.id, p.name)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
+        <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm shadow-gray-100/50">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-[#fcfcfd] border-b border-gray-100">
+                <tr>
+                  <th className="text-left px-6 py-4 text-gray-400 font-bold uppercase tracking-widest text-[10px]">Detalle de Producto</th>
+                  <th className="text-left px-6 py-4 text-gray-400 font-bold uppercase tracking-widest text-[10px] hidden md:table-cell">Categoría</th>
+                  <th className="text-left px-6 py-4 text-gray-400 font-bold uppercase tracking-widest text-[10px]">Precio</th>
+                  <th className="text-left px-6 py-4 text-gray-400 font-bold uppercase tracking-widest text-[10px] hidden sm:table-cell">Disponibilidad</th>
+                  <th className="text-left px-6 py-4 text-gray-400 font-bold uppercase tracking-widest text-[10px]">Estado</th>
+                  <th className="text-right px-6 py-4 text-gray-400 font-bold uppercase tracking-widest text-[10px]">Gestión</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {products.map((p) => (
+                  <tr key={p.id} className="hover:bg-gray-50/30 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 shrink-0 group-hover:scale-105 transition-transform">
+                          {p.imageUrl ? (
+                            <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-200">
+                              <Tag className="w-5 h-5" />
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-bold text-gray-900 group-hover:text-pink-600 transition-colors leading-tight">{p.name}</p>
+                          <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mt-0.5">{p.sku || 'SIN SKU'}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 hidden md:table-cell">
+                      <span className="px-2.5 py-1 bg-gray-50 text-gray-500 rounded-lg text-[11px] font-semibold border border-gray-100">
+                        {p.category || 'Sin Cat.'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 font-bold text-gray-900">{formatCurrency(Number(p.price))}</td>
+                    <td className="px-6 py-4 hidden sm:table-cell">
+                      <div className="flex flex-col gap-1">
+                        <span className={cn(
+                          "text-[10px] font-bold px-2 py-0.5 rounded-md inline-block w-fit uppercase tracking-tighter",
+                          p.stock < 5 ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'
+                        )}>
+                          {p.stock} unidades
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button onClick={() => handleToggle(p.id)} className="transition-all hover:scale-110 active:scale-95">
+                        {p.isAvailable
+                          ? <ToggleRight className="w-6 h-6 text-emerald-500" />
+                          : <ToggleLeft className="w-6 h-6 text-gray-300" />}
+                      </button>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => openEdit(p)} className="p-2 text-gray-400 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all">
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => handleDelete(p.id, p.name)} className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
