@@ -7,7 +7,7 @@ import { adminApi } from '@/lib/api';
 import { formatCurrency, formatDate, cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { Users, Package, RefreshCw, DollarSign, AlertTriangle, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Users, Package, RefreshCw, DollarSign, AlertTriangle, ShoppingBag, ArrowRight, ShieldCheck, Settings, Check } from 'lucide-react';
 
 import Link from 'next/link';
 
