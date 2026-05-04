@@ -110,7 +110,7 @@ export default function LoginPage() {
           line-height: 1;
           margin-bottom: 20px;
           font-weight: 400;
-          text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+          text-shadow: 0 4px 20px rgba(0,0,0,0.6); /* Much stronger shadow */
         }
 
         .left-content .script-text {
@@ -120,6 +120,7 @@ export default function LoginPage() {
           display: block;
           margin-top: -10px;
           position: relative;
+          text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .heart-icon {
@@ -127,27 +128,29 @@ export default function LoginPage() {
           vertical-align: middle;
           margin-left: 10px;
           color: #fca5a5;
+          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
         .decor-line {
           width: 40px;
           height: 1px;
-          background: rgba(255, 255, 255, 0.6);
+          background: #fff;
           margin: 25px 0;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.3);
         }
 
         .left-content p {
           font-size: 1.1rem;
-          opacity: 0.9;
+          opacity: 1;
           line-height: 1.4;
-          font-weight: 300;
+          font-weight: 400;
           max-width: 200px;
-          text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+          text-shadow: 0 2px 10px rgba(0,0,0,0.6); /* Stronger shadow */
         }
 
         .right-panel {
           flex: 1;
-          padding: 60px 60px 60px 200px; /* Adjust for image overlap */
+          padding: 60px 60px 60px 140px; /* Reduced padding to close the gap */
           display: flex;
           flex-direction: column;
           align-items: center;
