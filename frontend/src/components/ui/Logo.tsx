@@ -20,64 +20,55 @@ const RoseIcon = ({ color, delay, size }: { color: string, delay: number, size: 
     xmlns="http://www.w3.org/2000/svg"
     initial={{ scale: 0, opacity: 0 }}
     animate={{ scale: 1, opacity: 1 }}
-    transition={{ duration: 1, delay, ease: "easeOut" }}
+    transition={{ duration: 1.5, delay, ease: [0.22, 1, 0.36, 1] }}
     className={color}
   >
-    {/* Elegant Curved Stem */}
+    {/* Graceful Stem with Thorn */}
     <motion.path 
-      d="M50 95C50 95 45 80 50 60" 
-      stroke="currentColor" 
-      strokeWidth="1.2" 
-      strokeLinecap="round" 
-      initial={{ pathLength: 0 }}
-      animate={{ pathLength: 1 }}
-      transition={{ duration: 1, delay: delay - 0.3 }}
+      d="M50 95C50 85 46 75 48 65M48 78L45 76" 
+      stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" 
+      initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, delay: delay - 0.3 }}
     />
 
-    {/* Leaves at the base */}
+    {/* Realistic Leaves */}
     <motion.path 
-      d="M50 75C42 72 38 78 42 82C46 86 50 82 50 75Z" 
-      fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.5"
+      d="M48 85C40 82 35 86 38 92C42 95 48 92 48 85Z" 
+      fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.4"
       initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: delay + 0.2 }}
     />
-    <motion.path 
-      d="M50 68C58 65 62 72 58 75C54 78 50 75 50 68Z" 
-      fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.5"
-      initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: delay + 0.3 }}
-    />
     
-    {/* Organic Unfolding Petals */}
-    <g transform="translate(50, 60)">
-      {/* Outer Petal 1 */}
+    {/* The Rose - Detailed Multi-Petal Structure */}
+    <g transform="translate(48, 65)">
+      {/* Outer Petals - Wavy & Organic */}
       <motion.path 
-        d="M0 0C-15 -5 -25 -25 -10 -40C0 -50 10 -50 20 -40C35 -25 25 -5 0 0Z" 
-        fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.6"
-        initial={{ rotate: -20, scale: 0.5 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 1.5, delay: delay + 0.1 }}
+        d="M0 0C-15 -2 -28 -15 -22 -32C-15 -45 5 -45 15 -35C25 -25 15 -5 0 0Z" 
+        fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeWidth="0.5"
+        initial={{ rotate: -15, scale: 0.8 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 2, delay: delay + 0.1 }}
       />
-      {/* Outer Petal 2 */}
       <motion.path 
-        d="M0 0C15 -5 25 -25 10 -40C0 -50 -10 -50 -20 -40C-35 -25 -25 -5 0 0Z" 
-        fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.6"
-        initial={{ rotate: 20, scale: 0.5 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 1.5, delay: delay + 0.2 }}
+        d="M0 0C15 -2 28 -15 22 -32C15 -45 -5 -45 -15 -35C-25 -25 -15 -5 0 0Z" 
+        fill="currentColor" fillOpacity="0.05" stroke="currentColor" strokeWidth="0.5"
+        initial={{ rotate: 15, scale: 0.8 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 2, delay: delay + 0.2 }}
       />
-      {/* Mid Petal 1 */}
+
+      {/* Mid Petals - Overlapping for depth */}
       <motion.path 
-        d="M0 0C-10 -5 -18 -18 -8 -30C0 -38 8 -38 18 -30C28 -18 18 -5 0 0Z" 
-        fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="0.6"
-        initial={{ rotate: -10, scale: 0.4 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 1.2, delay: delay + 0.4 }}
+        d="M0 0C-10 -5 -18 -20 -10 -30C-5 -35 5 -35 12 -30C20 -22 15 -5 0 0Z" 
+        fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.5"
+        initial={{ rotate: -10, scale: 0.7 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 1.8, delay: delay + 0.4 }}
       />
-      {/* Mid Petal 2 */}
       <motion.path 
-        d="M0 0C10 -5 18 -18 8 -30C0 -38 -8 -38 -18 -30C-28 -18 -18 -5 0 0Z" 
-        fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="0.6"
-        initial={{ rotate: 10, scale: 0.4 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 1.2, delay: delay + 0.5 }}
+        d="M0 0C10 -5 18 -20 10 -30C5 -35 -5 -35 -12 -30C-20 -22 -15 -5 0 0Z" 
+        fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.5"
+        initial={{ rotate: 10, scale: 0.7 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 1.8, delay: delay + 0.5 }}
       />
-      {/* Center Bud */}
-      <motion.path 
-        d="M0 0C-5 -2 -8 -10 -4 -18C0 -22 0 -22 4 -18C8 -10 5 -2 0 0Z" 
-        fill="currentColor" fillOpacity="0.4" stroke="currentColor" strokeWidth="0.8"
-        initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 1, delay: delay + 0.7 }}
-      />
+
+      {/* The Core - Spiral Bud */}
+      <motion.g initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 1.2, delay: delay + 0.8 }}>
+        <path d="M0 -5C-5 -5 -8 -12 -5 -18C-2 -24 8 -24 10 -18C12 -12 8 -5 0 -5Z" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="0.6" />
+        <path d="M-3 -15C-3 -15 -1 -18 2 -18C5 -18 7 -15 7 -15" stroke="currentColor" strokeWidth="0.4" strokeLinecap="round" />
+        <path d="M-1 -12C-1 -12 0 -14 2 -14C4 -14 5 -12 5 -12" stroke="currentColor" strokeWidth="0.4" strokeLinecap="round" />
+      </motion.g>
     </g>
   </motion.svg>
 );
