@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { settingsApi } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { Save, Phone, Mail, MapPin, Facebook, Instagram, MessageCircle, CheckCircle2 } from 'lucide-react';
+import { Save, Phone, Mail, MapPin, Globe, Camera, MessageCircle, CheckCircle2 } from 'lucide-react';
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Record<string, string>>({});
@@ -75,8 +75,8 @@ export default function AdminSettingsPage() {
       border: 'border-purple-100',
       iconBg: 'bg-purple-100 text-purple-600',
       fields: [
-        { key: 'shop_facebook', label: 'Facebook', icon: Facebook, placeholder: 'https://facebook.com/jannethplants', type: 'url' },
-        { key: 'shop_instagram', label: 'Instagram', icon: Instagram, placeholder: 'https://instagram.com/jannethplants', type: 'url' },
+        { key: 'shop_facebook', label: 'Facebook', icon: Globe, placeholder: 'https://facebook.com/jannethplants', type: 'url' },
+        { key: 'shop_instagram', label: 'Instagram', icon: Camera, placeholder: 'https://instagram.com/jannethplants', type: 'url' },
         { key: 'shop_whatsapp', label: 'WhatsApp (solo números con código de país)', icon: MessageCircle, placeholder: '573001234567', type: 'tel' },
       ]
     },
