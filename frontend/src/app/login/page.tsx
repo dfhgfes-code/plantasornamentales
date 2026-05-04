@@ -77,31 +77,31 @@ export default function LoginPage() {
         }
 
         .left-panel {
-          width: 48%;
+          width: 45%;
           position: relative;
           z-index: 20;
           overflow: visible;
         }
 
         .left-panel img {
-          width: 140%; /* More overlap for smoother transition */
+          width: 132%; /* Balanced overlap */
           height: 100%;
           object-fit: cover;
           position: relative;
           z-index: 1;
-          /* Refined Convex Curve */
-          border-radius: 0 100% 100% 0 / 0 50% 50% 0;
-          box-shadow: 10px 0 30px rgba(0,0,0,0.05); /* Softer shadow */
+          /* Tighter, more elegant curve */
+          border-radius: 0 42% 42% 0 / 0 50% 50% 0;
+          filter: drop-shadow(15px 0 15px rgba(0,0,0,0.08)); /* Clean, professional shadow */
         }
 
         .left-overlay {
           position: absolute;
           inset: 0;
-          width: 140%;
+          width: 132%;
           background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
           z-index: 2;
           pointer-events: none;
-          border-radius: 0 100% 100% 0 / 0 50% 50% 0;
+          border-radius: 0 42% 42% 0 / 0 50% 50% 0;
         }
 
         .left-content {
@@ -159,7 +159,7 @@ export default function LoginPage() {
 
         .right-panel {
           flex: 1;
-          padding: 60px 60px 60px 250px; /* Adjusted for deeper overlap */
+          padding: 60px 60px 60px 180px; /* Perfect balance for the refined curve */
           display: flex;
           flex-direction: column;
           align-items: center;
