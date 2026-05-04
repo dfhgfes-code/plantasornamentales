@@ -15,6 +15,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { GoogleLoginDto } from './dto/google-login.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
 import { UserRole } from '../../common/enums/user-role.enum';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   // ─── REGISTRO ───────────────────────────────────────────────
@@ -45,6 +47,9 @@ export class AuthService {
     });
 
     await this.userRepository.save(user);
+
+    // Enviar correo de bienvenida (no bloquea el flujo principal)
+    this.mailService.sendWelcomeEmail(user.email, user.firstName);
 
     const token = this.generateToken(user);
 
@@ -120,6 +125,7 @@ export class AuthService {
           isActive: true
         });
         await this.userRepository.save(user);
+        this.mailService.sendWelcomeEmail(user.email, user.firstName);
       } else if (user.authProvider === 'local') {
         user.authProvider = 'google';
         user.googleId = payload.sub;

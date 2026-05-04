@@ -23,6 +23,7 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { SettingsModule } from './modules/settings/settings.module';
     PaymentsModule,
     AdminModule,
     SettingsModule,
+    MailModule,
   ],
 })
 export class AppModule {}
