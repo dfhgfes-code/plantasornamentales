@@ -53,7 +53,7 @@ export default function LoginPage() {
     <>
       <style>{`
         .login-page {
-          min-height: calc(100vh - 80px); /* Ajuste por el Navbar */
+          min-height: calc(100vh - 80px);
           background: #fdfaf7;
           display: flex;
           align-items: center;
@@ -70,13 +70,14 @@ export default function LoginPage() {
           box-shadow: 0 40px 100px rgba(0,0,0,0.06);
           display: flex;
           overflow: hidden;
-          min-height: 620px; /* Reducido para que quepa en pantalla */
+          min-height: 620px;
           max-height: 85vh;
           position: relative;
         }
 
+        /* Panel Izquierdo */
         .left-panel {
-          width: 42%;
+          width: 45%;
           position: relative;
           background: #f3f4f6;
           overflow: hidden;
@@ -128,9 +129,10 @@ export default function LoginPage() {
           font-weight: 300;
         }
 
+        /* Panel Derecho con CURVA HACIA AFUERA (Convexa hacia la izquierda) */
         .right-panel {
           flex: 1;
-          padding: 40px 60px; /* Reducido padding vertical */
+          padding: 40px 60px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -138,15 +140,15 @@ export default function LoginPage() {
           position: relative;
           background: #fff;
           z-index: 1;
-          border-top-left-radius: 45% 100%;
-          border-bottom-left-radius: 45% 100%;
-          margin-left: -100px;
-          padding-left: 120px;
+          /* Usamos clip-path para lograr la curva perfecta hacia la izquierda */
+          clip-path: ellipse(150% 100% at 145% 50%);
+          margin-left: -15%; /* Montado sobre la imagen */
+          padding-left: 15%; /* Compensar el montaje */
         }
 
         @media (max-width: 1024px) {
           .left-panel { display: none; }
-          .right-panel { margin-left: 0; padding: 40px 24px; border-radius: 32px; }
+          .right-panel { margin-left: 0; padding: 40px 24px; clip-path: none; border-radius: 32px; }
           .login-card { max-width: 480px; min-height: unset; border-radius: 32px; max-height: unset; }
         }
 
@@ -157,7 +159,7 @@ export default function LoginPage() {
           pointer-events: none;
         }
         .branch-tr { top: -10px; right: -10px; transform: scaleX(-1); }
-        .branch-bl { bottom: -10px; left: -10px; }
+        .branch-bl { bottom: -10px; left: 0; }
 
         .form-container {
           width: 100%;
@@ -167,11 +169,11 @@ export default function LoginPage() {
 
         .form-header {
           text-align: center;
-          margin-bottom: 30px; /* Reducido */
+          margin-bottom: 30px;
         }
 
         .form-header h1 {
-          font-size: 2.2rem; /* Reducido */
+          font-size: 2.2rem;
           font-weight: 400;
           color: #111827;
           margin-bottom: 6px;
@@ -186,7 +188,8 @@ export default function LoginPage() {
         }
 
         .input-group {
-          margin-bottom: 18px; /* Reducido */
+          margin-bottom: 20px;
+          position: relative;
         }
 
         .input-label {
@@ -194,33 +197,80 @@ export default function LoginPage() {
           font-size: 0.8rem;
           font-weight: 600;
           color: #4b5563;
-          margin-bottom: 6px;
+          margin-bottom: 8px;
           text-transform: uppercase;
         }
 
         .input-field {
           width: 100%;
-          padding: 12px 16px 12px 48px; /* Reducido */
+          padding: 14px 16px 14px 48px;
           background: #fff !important;
           border: 1.5px solid #f3f4f6;
           border-radius: 14px;
           font-size: 0.95rem;
           color: #111827;
+          transition: all 0.25s;
+        }
+
+        .input-field:-webkit-autofill {
+          -webkit-box-shadow: 0 0 0 50px white inset !important;
+          -webkit-text-fill-color: #111827 !important;
+        }
+
+        .input-field:focus {
+          outline: none;
+          border-color: #5d6d5e;
+          box-shadow: 0 0 0 4px rgba(93, 109, 94, 0.08);
+        }
+
+        .input-icon {
+          position: absolute;
+          left: 18px;
+          top: 40px; /* Ajustado para la etiqueta */
+          color: #d1d5db;
+        }
+
+        .show-password {
+          position: absolute;
+          right: 16px;
+          top: 38px;
+          color: #d1d5db;
+          cursor: pointer;
+          background: none;
+          border: none;
+          padding: 5px;
+          z-index: 10;
+        }
+
+        .forgot-password {
+          display: block;
+          text-align: right;
+          font-size: 0.8rem;
+          color: #fca5a5;
+          margin-top: 8px;
+          font-weight: 600;
+          text-decoration: none;
         }
 
         .btn-login {
           width: 100%;
-          padding: 15px; /* Reducido */
+          padding: 15px;
           background: #5d6d5e;
           color: #fff;
           border: none;
           border-radius: 14px;
-          font-size: 0.95rem;
+          font-size: 1rem;
           font-weight: 700;
-          margin-top: 24px; /* Reducido */
+          margin-top: 24px;
           cursor: pointer;
           text-transform: uppercase;
           letter-spacing: 0.05em;
+          box-shadow: 0 10px 20px rgba(93, 109, 94, 0.2);
+        }
+
+        .btn-login:hover {
+          background: #4a574b;
+          transform: translateY(-1px);
         }
 
         .divider {
@@ -228,6 +278,13 @@ export default function LoginPage() {
           align-items: center;
           margin: 24px 0;
           color: #f3f4f6;
+        }
+
+        .divider span {
+          padding: 0 16px;
+          font-size: 0.75rem;
+          color: #d1d5db;
+          text-transform: uppercase;
         }
 
         .btn-google {
@@ -271,14 +328,14 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Panel Derecho */}
+          {/* Panel Derecho con Curva Convexa */}
           <div className="right-panel">
             <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-decor branch-tr" alt="" />
             <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-decor branch-bl" alt="" />
 
             <div className="form-container">
               <div className="flex justify-center mb-6">
-                <Logo size="lg" centered /> {/* Logo más pequeño */}
+                <Logo size="lg" centered />
               </div>
 
               <div className="form-header">
@@ -289,43 +346,40 @@ export default function LoginPage() {
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="input-group">
                   <label className="input-label">Correo electrónico</label>
-                  <div className="input-wrapper">
-                    <Mail className="input-icon" size={18} />
-                    <input 
-                      type="email" 
-                      placeholder="ejemplo@correo.com" 
-                      className="input-field"
-                      {...register('email')}
-                    />
-                  </div>
+                  <Mail className="input-icon" size={18} />
+                  <input 
+                    type="email" 
+                    placeholder="ejemplo@correo.com" 
+                    className="input-field"
+                    {...register('email')}
+                  />
                   {errors.email && <p className="text-red-400 text-xs mt-1.5">{errors.email.message}</p>}
                 </div>
 
                 <div className="input-group">
                   <label className="input-label">Contraseña</label>
-                  <div className="input-wrapper">
-                    <Lock className="input-icon" size={18} />
-                    <input 
-                      type={showPassword ? 'text' : 'password'} 
-                      placeholder="••••••••" 
-                      className="input-field"
-                      {...register('password')}
-                    />
-                    <button 
-                      type="button" 
-                      className="absolute right-4 text-gray-300 hover:text-gray-500"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
+                  <Lock className="input-icon" size={18} />
+                  <input 
+                    type={showPassword ? 'text' : 'password'} 
+                    placeholder="••••••••" 
+                    className="input-field"
+                    {...register('password')}
+                  />
+                  <button 
+                    type="button" 
+                    className="show-password"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                  {errors.password && <p className="text-red-400 text-xs mt-1.5">{errors.password.message}</p>}
                   <Link href="/recuperar" className="forgot-password">
                     ¿Olvidaste tu contraseña?
                   </Link>
                 </div>
 
                 <button type="submit" disabled={loading} className="btn-login">
-                  {loading ? 'Cargando...' : 'Iniciar sesión'}
+                  {loading ? 'Entrando...' : 'Iniciar sesión'}
                 </button>
               </form>
 
