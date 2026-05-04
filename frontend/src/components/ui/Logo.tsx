@@ -34,7 +34,7 @@ export const Logo = ({
       centered && !horizontal ? "text-center" : "",
       className
     )}>
-      {/* Refined Rose Bud SVG - Thinner lines */}
+      {/* Dynamic Blooming Rose SVG */}
       <svg 
         width={currentSize.icon} 
         height={currentSize.icon} 
@@ -42,15 +42,55 @@ export const Logo = ({
         fill="none" 
         xmlns="http://www.w3.org/2000/svg"
         className={cn(
-          "transition-transform duration-700 group-hover:rotate-12",
-          isLight ? "text-rose-200/60" : "text-rose-300"
+          "transition-transform duration-700",
+          isLight ? "text-rose-200/90" : "text-rose-400"
         )}
       >
-        <path d="M50 82C50 82 49 65 50 48" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" />
-        <path d="M50 48C56 48 64 40 62 30C60 20 54 24 50 32C46 24 40 20 38 30C36 40 44 48 50 48Z" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M50 32C52 28 58 26 58 32C58 38 52 42 50 42C48 42 42 38 42 32C42 26 48 28 50 32Z" stroke="currentColor" strokeWidth="0.6" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M50 65C50 65 38 62 34 68C30 74 42 74 50 65Z" stroke="currentColor" strokeWidth="0.6" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M50 58C50 58 62 55 66 61C70 67 58 67 50 58Z" stroke="currentColor" strokeWidth="0.6" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Stem - Growing Animation */}
+        <path 
+          d="M50 90C50 90 49 70 50 45" 
+          stroke="currentColor" 
+          strokeWidth="1.2" 
+          strokeLinecap="round" 
+          className="animate-bloom-stem"
+        />
+
+        {/* Leaf 1 */}
+        <path 
+          d="M50 75C42 72 38 78 42 82C46 86 50 82 50 75Z" 
+          fill="currentColor" 
+          fillOpacity="0.2" 
+          stroke="currentColor" 
+          strokeWidth="0.8" 
+          className="animate-bloom-leaf"
+          style={{ animationDelay: '0.4s', opacity: 0 }}
+        />
+
+        {/* Leaf 2 */}
+        <path 
+          d="M50 65C58 62 62 68 58 72C54 76 50 72 50 65Z" 
+          fill="currentColor" 
+          fillOpacity="0.2" 
+          stroke="currentColor" 
+          strokeWidth="0.8" 
+          className="animate-bloom-leaf"
+          style={{ animationDelay: '0.6s', opacity: 0 }}
+        />
+
+        {/* Petals - Blooming Animation */}
+        <g className="animate-bloom-petal" style={{ animationDelay: '1s', opacity: 0 }}>
+          {/* Outer Petals */}
+          <path d="M50 45C35 45 30 30 40 20C45 15 55 15 60 20C70 30 65 45 50 45Z" fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.8" />
+          
+          {/* Middle Petals - Slightly offset for depth */}
+          <path d="M50 45C42 45 38 38 42 32C45 28 55 28 58 32C62 38 58 45 50 45Z" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="0.8" />
+          
+          {/* Core - The heart of the rose */}
+          <path d="M50 40C47 40 45 37 45 35C45 33 55 33 55 35C55 37 53 40 50 40Z" fill="currentColor" fillOpacity="0.4" stroke="currentColor" strokeWidth="0.8" />
+          
+          {/* Opening Details */}
+          <path d="M45 32C45 32 48 28 50 28C52 28 55 32 55 32" stroke="currentColor" strokeWidth="0.6" strokeLinecap="round" />
+        </g>
       </svg>
 
       <div className={cn("flex flex-col", horizontal ? "items-start" : "items-center")}>
