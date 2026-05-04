@@ -18,39 +18,67 @@ const RoseIcon = ({ color, delay, size }: { color: string, delay: number, size: 
     viewBox="0 0 100 100" 
     fill="none" 
     xmlns="http://www.w3.org/2000/svg"
-    initial={{ scale: 0, opacity: 0, rotate: -10 }}
-    animate={{ scale: 1, opacity: 1, rotate: 0 }}
-    transition={{ 
-      duration: 1.2, 
-      delay, 
-      ease: [0.34, 1.56, 0.64, 1] 
-    }}
+    initial={{ scale: 0, opacity: 0 }}
+    animate={{ scale: 1, opacity: 1 }}
+    transition={{ duration: 1, delay, ease: "easeOut" }}
     className={color}
   >
-    {/* Stem */}
+    {/* Elegant Curved Stem */}
     <motion.path 
-      d="M50 95C50 95 48 80 50 55" 
+      d="M50 95C50 95 45 80 50 60" 
       stroke="currentColor" 
-      strokeWidth="1.5" 
+      strokeWidth="1.2" 
       strokeLinecap="round" 
       initial={{ pathLength: 0 }}
       animate={{ pathLength: 1 }}
-      transition={{ duration: 1, delay: delay - 0.2 }}
+      transition={{ duration: 1, delay: delay - 0.3 }}
+    />
+
+    {/* Leaves at the base */}
+    <motion.path 
+      d="M50 75C42 72 38 78 42 82C46 86 50 82 50 75Z" 
+      fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.5"
+      initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: delay + 0.2 }}
+    />
+    <motion.path 
+      d="M50 68C58 65 62 72 58 75C54 78 50 75 50 68Z" 
+      fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.5"
+      initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: delay + 0.3 }}
     />
     
-    {/* Petals blooming sequence */}
-    <motion.g
-      initial={{ scale: 0.5, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 1, delay }}
-    >
-      {/* Outer Petals */}
-      <path d="M50 55C35 55 30 40 40 30C45 25 55 25 60 30C70 40 65 55 50 55Z" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="0.8" />
-      {/* Middle Petals */}
-      <path d="M50 55C42 55 38 48 42 42C45 38 55 38 58 42C62 48 58 55 50 55Z" fill="currentColor" fillOpacity="0.25" stroke="currentColor" strokeWidth="0.8" />
-      {/* Core */}
-      <path d="M50 50C47 50 45 47 45 45C45 43 55 43 55 45C55 47 53 50 50 50Z" fill="currentColor" fillOpacity="0.5" stroke="currentColor" strokeWidth="1" />
-    </motion.g>
+    {/* Organic Unfolding Petals */}
+    <g transform="translate(50, 60)">
+      {/* Outer Petal 1 */}
+      <motion.path 
+        d="M0 0C-15 -5 -25 -25 -10 -40C0 -50 10 -50 20 -40C35 -25 25 -5 0 0Z" 
+        fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.6"
+        initial={{ rotate: -20, scale: 0.5 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 1.5, delay: delay + 0.1 }}
+      />
+      {/* Outer Petal 2 */}
+      <motion.path 
+        d="M0 0C15 -5 25 -25 10 -40C0 -50 -10 -50 -20 -40C-35 -25 -25 -5 0 0Z" 
+        fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="0.6"
+        initial={{ rotate: 20, scale: 0.5 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 1.5, delay: delay + 0.2 }}
+      />
+      {/* Mid Petal 1 */}
+      <motion.path 
+        d="M0 0C-10 -5 -18 -18 -8 -30C0 -38 8 -38 18 -30C28 -18 18 -5 0 0Z" 
+        fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="0.6"
+        initial={{ rotate: -10, scale: 0.4 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 1.2, delay: delay + 0.4 }}
+      />
+      {/* Mid Petal 2 */}
+      <motion.path 
+        d="M0 0C10 -5 18 -18 8 -30C0 -38 -8 -38 -18 -30C-28 -18 -18 -5 0 0Z" 
+        fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="0.6"
+        initial={{ rotate: 10, scale: 0.4 }} animate={{ rotate: 0, scale: 1 }} transition={{ duration: 1.2, delay: delay + 0.5 }}
+      />
+      {/* Center Bud */}
+      <motion.path 
+        d="M0 0C-5 -2 -8 -10 -4 -18C0 -22 0 -22 4 -18C8 -10 5 -2 0 0Z" 
+        fill="currentColor" fillOpacity="0.4" stroke="currentColor" strokeWidth="0.8"
+        initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 1, delay: delay + 0.7 }}
+      />
+    </g>
   </motion.svg>
 );
 
