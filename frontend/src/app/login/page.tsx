@@ -77,32 +77,31 @@ export default function LoginPage() {
         }
 
         .left-panel {
-          width: 45%;
+          width: 48%;
           position: relative;
           z-index: 20;
           overflow: visible;
         }
 
         .left-panel img {
-          width: 130%; /* Overlap to create the "barriga" */
+          width: 140%; /* More overlap for smoother transition */
           height: 100%;
           object-fit: cover;
           position: relative;
           z-index: 1;
-          /* Convex Curve */
-          border-radius: 0 45% 45% 0 / 0 50% 50% 0;
-          box-shadow: 20px 0 40px rgba(0,0,0,0.1);
-          transform: translateX(0);
+          /* Refined Convex Curve */
+          border-radius: 0 100% 100% 0 / 0 50% 50% 0;
+          box-shadow: 10px 0 30px rgba(0,0,0,0.05); /* Softer shadow */
         }
 
         .left-overlay {
           position: absolute;
           inset: 0;
-          width: 130%;
+          width: 140%;
           background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
           z-index: 2;
           pointer-events: none;
-          border-radius: 0 45% 45% 0 / 0 50% 50% 0;
+          border-radius: 0 100% 100% 0 / 0 50% 50% 0;
         }
 
         .left-content {
@@ -160,7 +159,7 @@ export default function LoginPage() {
 
         .right-panel {
           flex: 1;
-          padding: 60px 60px 60px 140px; /* Reduced padding to close the gap */
+          padding: 60px 60px 60px 250px; /* Adjusted for deeper overlap */
           display: flex;
           flex-direction: column;
           align-items: center;
