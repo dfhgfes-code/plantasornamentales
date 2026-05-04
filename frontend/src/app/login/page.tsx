@@ -5,11 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
-import { Input } from '@/components/ui/Input';
 import toast from 'react-hot-toast';
 import { Logo } from '@/components/ui/Logo';
 
@@ -58,26 +57,28 @@ export default function LoginPage() {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 40px 16px;
+          padding: 20px;
           font-family: 'Inter', sans-serif;
+          position: relative;
+          overflow: hidden;
         }
 
         .login-card {
           width: 100%;
-          max-width: 1100px;
+          max-width: 1050px;
           background: #fff;
-          border-radius: 40px;
-          box-shadow: 0 40px 100px rgba(0,0,0,0.06);
+          border-radius: 24px;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
           display: flex;
           overflow: hidden;
-          min-height: 650px;
+          min-height: 680px;
           position: relative;
+          z-index: 10;
         }
 
         .left-panel {
-          width: 42%;
+          width: 45%;
           position: relative;
-          background: #f3f4f6;
           overflow: hidden;
         }
 
@@ -87,15 +88,22 @@ export default function LoginPage() {
           object-fit: cover;
         }
 
-        .left-overlay {
+        /* The convex curve effect */
+        .left-panel::after {
+          content: "";
           position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 70%);
+          top: 0;
+          bottom: 0;
+          right: -80px;
+          width: 160px;
+          background: #fff;
+          border-radius: 100% 0 0 100%;
+          z-index: 2;
         }
 
         .left-content {
           position: absolute;
-          top: 70px;
+          top: 80px;
           left: 60px;
           z-index: 10;
           color: #fff;
@@ -104,74 +112,75 @@ export default function LoginPage() {
 
         .left-content h2 {
           font-family: 'Playfair Display', serif;
-          font-size: 3.2rem;
-          line-height: 1.1;
+          font-size: 3.5rem;
+          line-height: 1;
           margin-bottom: 20px;
-          font-weight: 500;
-          text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+          font-weight: 400;
+          text-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .left-content .decor-line {
-          width: 35px;
+        .left-content .script-text {
+          font-family: 'Alex Brush', cursive;
+          color: #fca5a5;
+          font-size: 4rem;
+          display: block;
+          margin-top: -10px;
+          position: relative;
+        }
+
+        .heart-icon {
+          display: inline-block;
+          vertical-align: middle;
+          margin-left: 10px;
+          color: #fca5a5;
+        }
+
+        .decor-line {
+          width: 40px;
           height: 1px;
-          background: #fff;
-          margin-bottom: 16px;
-          opacity: 0.7;
+          background: rgba(255, 255, 255, 0.6);
+          margin: 25px 0;
         }
 
         .left-content p {
-          font-size: 1rem;
+          font-size: 1.1rem;
           opacity: 0.9;
-          line-height: 1.6;
+          line-height: 1.4;
           font-weight: 300;
+          max-width: 200px;
         }
 
-        /* Panel Derecho con ARCO PERFECTO */
         .right-panel {
           flex: 1;
-          padding: 60px;
+          padding: 60px 80px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           position: relative;
           background: #fff;
-          margin-left: -80px; /* Montado sobre la imagen */
+          z-index: 5;
         }
 
-        /* El círculo que hace la curva suave */
-        .right-panel::before {
-          content: "";
+        .floral-bg-decor {
           position: absolute;
-          top: -10%;
-          bottom: -10%;
-          left: -180px; /* Ajustado para el arco */
-          width: 360px;
-          background: #fff;
-          border-radius: 100%;
-          z-index: -1;
-        }
-
-        @media (max-width: 1024px) {
-          .left-panel { display: none; }
-          .right-panel { margin-left: 0; padding: 40px 24px; }
-          .right-panel::before { display: none; }
-          .login-card { max-width: 480px; min-height: unset; border-radius: 32px; }
-        }
-
-        .branch-decor {
-          position: absolute;
-          width: 220px;
-          opacity: 0.06;
+          bottom: -20px;
+          right: -20px;
+          width: 300px;
+          opacity: 0.2;
           pointer-events: none;
+          z-index: 1;
         }
-        .branch-tr { top: 0; right: 0; transform: scaleX(-1); }
-        .branch-bl { bottom: 0; left: 0; opacity: 0.04; }
 
         .form-container {
           width: 100%;
-          max-width: 360px;
+          max-width: 400px;
           position: relative;
+          z-index: 10;
+        }
+
+        .logo-wrapper {
+          margin-bottom: 40px;
         }
 
         .form-header {
@@ -180,33 +189,28 @@ export default function LoginPage() {
         }
 
         .form-header h1 {
-          font-size: 2.5rem;
+          font-size: 2.2rem;
           font-weight: 400;
-          color: #111827;
+          color: #374151;
           margin-bottom: 8px;
           font-family: 'Playfair Display', serif;
         }
 
         .form-header p {
-          color: #9ca3af;
-          font-size: 0.8rem;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          font-weight: 500;
+          color: #6b7280;
+          font-size: 1rem;
         }
 
         .input-group {
-          margin-bottom: 18px;
+          margin-bottom: 20px;
         }
 
         .input-label {
           display: block;
-          font-size: 0.8rem;
-          font-weight: 600;
-          color: #4b5563;
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: #374151;
           margin-bottom: 8px;
-          text-transform: uppercase;
-          letter-spacing: 0.02em;
         }
 
         .input-wrapper {
@@ -218,34 +222,30 @@ export default function LoginPage() {
         .input-icon {
           position: absolute;
           left: 16px;
-          color: #d1d5db;
+          color: #9ca3af;
         }
 
         .input-field {
           width: 100%;
           padding: 14px 16px 14px 48px;
-          background: #fff !important;
-          border: 1.5px solid #f3f4f6;
-          border-radius: 14px;
+          background: #fff;
+          border: 1px solid #e5e7eb;
+          border-radius: 12px;
           font-size: 1rem;
-          color: #111827;
-          transition: border-color 0.2s;
-        }
-
-        .input-field:-webkit-autofill {
-          -webkit-box-shadow: 0 0 0 50px white inset !important;
-          -webkit-text-fill-color: #111827 !important;
+          color: #1f2937;
+          transition: all 0.2s;
         }
 
         .input-field:focus {
           outline: none;
           border-color: #5d6d5e;
+          box-shadow: 0 0 0 3px rgba(93, 109, 94, 0.1);
         }
 
         .show-password {
           position: absolute;
           right: 14px;
-          color: #d1d5db;
+          color: #9ca3af;
           cursor: pointer;
           background: none;
           border: none;
@@ -255,12 +255,11 @@ export default function LoginPage() {
         .forgot-password {
           display: block;
           text-align: right;
-          font-size: 0.75rem;
+          font-size: 0.85rem;
           color: #fca5a5;
-          margin-top: 8px;
-          font-weight: 700;
+          margin-top: 10px;
+          font-weight: 500;
           text-decoration: none;
-          text-transform: uppercase;
         }
 
         .btn-login {
@@ -269,81 +268,111 @@ export default function LoginPage() {
           background: #5d6d5e;
           color: #fff;
           border: none;
-          border-radius: 14px;
-          font-size: 0.95rem;
-          font-weight: 700;
-          margin-top: 24px;
+          border-radius: 12px;
+          font-size: 1rem;
+          font-weight: 600;
+          margin-top: 30px;
           cursor: pointer;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          box-shadow: 0 10px 20px rgba(93, 109, 94, 0.15);
+          transition: all 0.2s;
         }
 
         .btn-login:hover {
           background: #4a574b;
           transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .divider {
           display: flex;
           align-items: center;
-          margin: 24px 0;
-          color: #f3f4f6;
+          margin: 25px 0;
+          color: #e5e7eb;
+        }
+
+        .divider::before, .divider::after {
+          content: "";
+          flex: 1;
+          height: 1px;
+          background: #e5e7eb;
         }
 
         .divider span {
-          padding: 0 16px;
-          font-size: 0.75rem;
-          color: #d1d5db;
-          text-transform: uppercase;
+          padding: 0 15px;
+          font-size: 0.85rem;
+          color: #9ca3af;
         }
 
         .btn-google {
           width: 100%;
           padding: 12px;
           background: #fff;
-          border: 1.5px solid #f3f4f6;
-          border-radius: 14px;
+          border: 1px solid #e5e7eb;
+          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: #4b5563;
+          gap: 12px;
+          font-size: 0.95rem;
+          font-weight: 500;
+          color: #374151;
+          transition: all 0.2s;
+        }
+
+        .btn-google:hover {
+          background: #f9fafb;
+          border-color: #d1d5db;
         }
 
         .footer-text {
-          margin-top: 35px;
+          margin-top: 40px;
           text-align: center;
-          font-size: 0.85rem;
-          color: #9ca3af;
+          font-size: 0.95rem;
+          color: #6b7280;
+        }
+
+        .footer-text a {
+          color: #fca5a5;
+          font-weight: 600;
+          text-decoration: none;
+        }
+
+        @media (max-width: 1024px) {
+          .left-panel { display: none; }
+          .login-card { max-width: 500px; border-radius: 0; min-height: 100vh; }
+          .right-panel { padding: 40px 24px; }
+          .login-page { padding: 0; }
         }
       `}</style>
 
       <div className="login-page">
         <motion.div 
           className="login-card"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
           <div className="left-panel">
             <img src="/images/login_bg.png" alt="Janneth Acevedo" />
-            <div className="left-overlay" />
             <div className="left-content">
-              <h2>Cada flor<br />cuenta una<br /><span>historia</span></h2>
+              <h2>Cada flor<br />cuenta una<br />
+                <span className="script-text">
+                  historia <Heart className="heart-icon" size={32} fill="#fca5a5" />
+                </span>
+              </h2>
               <div className="decor-line" />
               <p>Ramos únicos para momentos inolvidables.</p>
             </div>
           </div>
 
           <div className="right-panel">
-            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-decor branch-tr" alt="" />
-            <img src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" className="branch-decor branch-bl" alt="" />
+            <img 
+              src="https://www.transparentpng.com/download/floral/floral-sketch-png-15.png" 
+              className="floral-bg-decor" 
+              alt="" 
+            />
 
             <div className="form-container">
-              <div className="flex justify-center mb-6">
+              <div className="logo-wrapper flex justify-center">
                 <Logo size="lg" centered />
               </div>
 
@@ -356,7 +385,7 @@ export default function LoginPage() {
                 <div className="input-group">
                   <label className="input-label">Correo electrónico</label>
                   <div className="input-wrapper">
-                    <Mail className="input-icon" size={18} />
+                    <Mail className="input-icon" size={20} />
                     <input 
                       type="email" 
                       placeholder="ejemplo@correo.com" 
@@ -364,13 +393,13 @@ export default function LoginPage() {
                       {...register('email')}
                     />
                   </div>
-                  {errors.email && <p className="text-red-400 text-xs mt-1.5">{errors.email.message}</p>}
+                  {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
                 </div>
 
                 <div className="input-group">
                   <label className="input-label">Contraseña</label>
                   <div className="input-wrapper">
-                    <Lock className="input-icon" size={18} />
+                    <Lock className="input-icon" size={20} />
                     <input 
                       type={showPassword ? 'text' : 'password'} 
                       placeholder="••••••••" 
@@ -382,7 +411,7 @@ export default function LoginPage() {
                       className="show-password"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
                   <Link href="/recuperar" className="forgot-password">
@@ -400,7 +429,7 @@ export default function LoginPage() {
               </div>
 
               <button className="btn-google" type="button">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" alt="Google" />
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="Google" />
                 Continuar con Google
               </button>
 
