@@ -21,9 +21,15 @@ export class User extends BaseEntity {
   @Column({ unique: true, length: 150 })
   email: string;
 
-  @Column({ length: 255 })
+  @Column({ length: 255, nullable: true })
   @Exclude()
-  password: string;
+  password?: string;
+
+  @Column({ name: 'auth_provider', default: 'local' })
+  authProvider: string;
+
+  @Column({ name: 'google_id', nullable: true })
+  googleId?: string;
 
   @Column({ name: 'phone', length: 20, nullable: true })
   phone: string;
@@ -66,6 +72,7 @@ export class User extends BaseEntity {
   }
 
   async validatePassword(password: string): Promise<boolean> {
+    if (!this.password) return false;
     return bcrypt.compare(password, this.password);
   }
 

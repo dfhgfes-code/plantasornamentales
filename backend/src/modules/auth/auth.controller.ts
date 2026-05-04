@@ -17,6 +17,7 @@ import {
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { GoogleLoginDto } from './dto/google-login.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Public } from './decorators/public.decorator';
@@ -47,6 +48,16 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Credenciales incorrectas' })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
+  }
+
+  @Post('google')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Iniciar sesión con Google' })
+  @ApiResponse({ status: 200, description: 'Login exitoso, retorna JWT' })
+  @ApiResponse({ status: 401, description: 'Token de Google inválido' })
+  googleLogin(@Body() dto: GoogleLoginDto) {
+    return this.authService.googleLogin(dto);
   }
 
   @Get('profile')

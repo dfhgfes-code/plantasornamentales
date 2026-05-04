@@ -12,6 +12,7 @@ import { User } from '../users/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { GoogleLoginDto } from './dto/google-login.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
 import { UserRole } from '../../common/enums/user-role.enum';
 
@@ -84,6 +85,64 @@ export class AuthService {
         accessToken: token,
       },
     };
+  }
+
+  // ─── GOOGLE LOGIN ───────────────────────────────────────────
+  async googleLogin(dto: GoogleLoginDto) {
+    try {
+      // Usar fetch nativo de Node 18+ para obtener el perfil del usuario con el access_token
+      const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${dto.token}` },
+      });
+      
+      if (!response.ok) {
+        throw new UnauthorizedException('Token de Google inválido');
+      }
+
+      const payload = await response.json();
+      
+      if (!payload || !payload.email) {
+        throw new UnauthorizedException('No se pudo obtener el correo de Google');
+      }
+
+      let user = await this.userRepository.findOne({
+        where: { email: payload.email.toLowerCase() },
+      });
+
+      if (!user) {
+        user = this.userRepository.create({
+          firstName: payload.given_name || 'Usuario',
+          lastName: payload.family_name || 'Google',
+          email: payload.email.toLowerCase(),
+          authProvider: 'google',
+          googleId: payload.sub,
+          emailVerified: payload.email_verified || true,
+          isActive: true
+        });
+        await this.userRepository.save(user);
+      } else if (user.authProvider === 'local') {
+        user.authProvider = 'google';
+        user.googleId = payload.sub;
+        await this.userRepository.save(user);
+      }
+
+      if (!user.isActive) {
+        throw new UnauthorizedException('Tu cuenta está desactivada. Contacta al soporte.');
+      }
+
+      const token = this.generateToken(user);
+
+      return {
+        message: 'Sesión iniciada con Google correctamente',
+        data: {
+          user: this.sanitizeUser(user),
+          accessToken: token,
+        },
+      };
+    } catch (error) {
+      console.error('Google Auth Error:', error);
+      throw new UnauthorizedException('Error al verificar el token de Google');
+    }
   }
 
   // ─── PERFIL ─────────────────────────────────────────────────

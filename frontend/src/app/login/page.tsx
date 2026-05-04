@@ -12,11 +12,42 @@ import { useAuthStore } from '@/store/auth.store';
 import toast from 'react-hot-toast';
 import { Logo } from '@/components/ui/Logo';
 
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
+
 const schema = z.object({
   email: z.string().email('Correo inválido'),
   password: z.string().min(1, 'Contraseña requerida'),
 });
 type FormData = z.infer<typeof schema>;
+
+const GoogleLoginButton = ({ setLoading, setAuth, router }: { setLoading: (v: boolean) => void, setAuth: any, router: any }) => {
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setLoading(true);
+      try {
+        const res = await authApi.googleLogin({ token: tokenResponse.access_token });
+        const { user, accessToken } = res.data.data;
+        setAuth(user, accessToken);
+        toast.success(`Bienvenido, ${user.firstName} 🌹`);
+        router.push(user.role === 'admin' || user.role === 'super_admin' ? '/admin' : '/perfil');
+      } catch (err: any) {
+        toast.error(err.response?.data?.message || 'Error al iniciar sesión con Google');
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: () => {
+      toast.error('Inicio de sesión con Google cancelado o fallido');
+    }
+  });
+
+  return (
+    <button className="btn-google" type="button" onClick={() => login()}>
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="Google" />
+      Continuar con Google
+    </button>
+  );
+};
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -49,7 +80,7 @@ export default function LoginPage() {
   if (!mounted) return null;
 
   return (
-    <>
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}>
       <style>{`
         .login-page {
           min-height: 100vh;
@@ -435,11 +466,7 @@ export default function LoginPage() {
               <div className="divider">
                 <span>o continúa con</span>
               </div>
-
-              <button className="btn-google" type="button">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="Google" />
-                Continuar con Google
-              </button>
+              <GoogleLoginButton setLoading={setLoading} setAuth={setAuth} router={router} />
 
               <p className="footer-text">
                 ¿No tienes cuenta? <Link href="/contacto">Contáctanos</Link>
@@ -448,6 +475,6 @@ export default function LoginPage() {
           </div>
         </motion.div>
       </div>
-    </>
+    </GoogleOAuthProvider>
   );
 }
