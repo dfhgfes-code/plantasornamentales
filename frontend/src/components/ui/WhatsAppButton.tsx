@@ -6,7 +6,10 @@ export function WhatsAppButton() {
   const [whatsapp, setWhatsapp] = useState('');
 
   useEffect(() => {
-    settingsApi.getAll().then(res => setWhatsapp(res.data.shop_whatsapp || '')).catch(() => {});
+    settingsApi.getAll().then(res => {
+      const data = res.data.data || res.data || {};
+      setWhatsapp(data.shop_whatsapp || '');
+    }).catch(() => {});
   }, []);
 
   if (!whatsapp) return null;

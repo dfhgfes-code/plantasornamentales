@@ -35,6 +35,8 @@ export default function AdminSettingsPage() {
     try {
       await settingsApi.update(settings);
       toast.success('Configuraciones guardadas correctamente 🌸');
+      // Recargar desde el servidor para confirmar que los datos se guardaron
+      await loadSettings();
     } catch (error) {
       toast.error('Error al guardar configuraciones');
     } finally {
