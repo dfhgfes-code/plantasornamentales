@@ -76,29 +76,36 @@ export default function LoginPage() {
           z-index: 10;
         }
 
+        /* The convex curve effect - Pushing INTO the login side */
+        .left-panel::after {
+          content: "";
+          position: absolute;
+          top: -10%;
+          bottom: -10%;
+          right: -100px;
+          width: 200px;
+          background: inherit; /* Matches the left-panel background/image */
+          background-image: url('/images/login_bg.png');
+          background-size: cover;
+          background-position: right center;
+          border-radius: 100%;
+          z-index: 2;
+          box-shadow: 20px 0 30px rgba(0,0,0,0.05);
+        }
+
         .left-panel {
           width: 45%;
           position: relative;
-          overflow: hidden;
+          background: #f3f4f6;
+          overflow: visible; /* Allow curve to push out */
         }
 
         .left-panel img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-        }
-
-        /* The convex curve effect */
-        .left-panel::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          right: -80px;
-          width: 160px;
-          background: #fff;
-          border-radius: 100% 0 0 100%;
-          z-index: 2;
+          position: relative;
+          z-index: 1;
         }
 
         .left-content {
