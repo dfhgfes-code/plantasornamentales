@@ -77,7 +77,7 @@ export default function HomePage() {
       <HeroCarousel />
 
       {/* ── BANDA DE CONFIANZA (DINÁMICA) ── */}
-      <div className="bg-pink-500 py-3 overflow-hidden">
+      <div className="bg-sage-600 py-3 overflow-hidden">
         <div
           className="flex whitespace-nowrap"
           style={{ animation: 'marquee2 30s linear infinite' }}
@@ -145,7 +145,7 @@ export default function HomePage() {
       </section>
 
       {/* ── PRODUCTOS DESTACADOS ── */}
-      <section className="py-16 bg-pink-50/40">
+      <section className="py-20 bg-cream-dark/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-pink-500 text-xs font-semibold tracking-[0.2em] uppercase mb-2">Más vendidos</p>
@@ -169,21 +169,21 @@ export default function HomePage() {
                 ))
               : products.map((product) => (
                   <div key={product.id}
-                    className="group bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-soft transition-all duration-300 hover:-translate-y-1">
-                    <div className="relative h-60 overflow-hidden">
+                    className="group bg-white rounded-[2rem] overflow-hidden shadow-card hover:shadow-glass transition-all duration-500 hover:-translate-y-2 border border-transparent hover:border-pink-100">
+                    <div className="relative h-72 overflow-hidden">
                       <img
                         src={product.imageUrl || '/flowers/f-rosas-rojas.jpg'}
                         alt={product.name}
                         loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-end p-4 opacity-0 group-hover:opacity-100">
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 flex items-end p-5 opacity-0 group-hover:opacity-100">
                         <button onClick={() => handleAdd(product)}
-                          className="w-full bg-white text-pink-600 font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-pink-50 transition-colors shadow-lg">
+                          className="w-full bg-white/90 backdrop-blur-md text-pink-600 font-bold py-3.5 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-white transition-colors shadow-glass transform translate-y-4 group-hover:translate-y-0 duration-500">
                           <ShoppingCart className="w-4 h-4" /> Agregar al carrito
                         </button>
                       </div>
-                      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-pink-600 text-[10px] font-bold px-3 py-1.5 rounded-full">
+                      <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-md text-pink-600 text-[10px] font-bold px-4 py-1.5 rounded-full shadow-sm">
                         {product.category}
                       </div>
                     </div>
@@ -206,7 +206,7 @@ export default function HomePage() {
 
           <div className="text-center mt-10">
             <Link href="/tienda"
-              className="inline-flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-bold px-8 py-4 rounded-2xl transition-all shadow-pink hover:shadow-lg hover:-translate-y-0.5 text-sm">
+              className="inline-flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-bold px-10 py-4 rounded-2xl transition-all shadow-pink hover:shadow-glass hover:-translate-y-1 text-sm tracking-wide">
               Ver toda la tienda <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -218,7 +218,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative">
-              <div className="rounded-3xl overflow-hidden aspect-[4/5] shadow-[0_20px_60px_rgba(240,67,110,0.15)]">
+              <div className="rounded-[2.5rem] overflow-hidden aspect-[4/5] shadow-glass">
                 <img src="/flowers/f-rosas-rosadas.jpg" alt="suscripción" className="w-full h-full object-cover" />
               </div>
               <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-soft p-6 max-w-[220px] border border-pink-100">
@@ -261,7 +261,7 @@ export default function HomePage() {
               </ul>
 
               <Link href="/planes"
-                className="inline-flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-bold px-8 py-4 rounded-2xl transition-all shadow-pink hover:shadow-lg hover:-translate-y-0.5 text-sm">
+                className="inline-flex items-center gap-2 bg-sage-600 hover:bg-sage-700 text-white font-bold px-10 py-4 rounded-2xl transition-all shadow-glass hover:shadow-lg hover:-translate-y-1 text-sm tracking-wide">
                 Ver planes disponibles <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -270,9 +270,9 @@ export default function HomePage() {
       </section>
 
       {/* CTA FINAL */}
-      <section className="relative py-24 overflow-hidden bg-pink-500">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-pink-400/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-600/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <section className="relative py-32 overflow-hidden bg-sage-900">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-sage-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
         <div className="relative max-w-3xl mx-auto px-4 text-center">
           <div className="text-5xl mb-6 animate-float inline-block">🌸</div>
@@ -284,7 +284,7 @@ export default function HomePage() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/registro"
-              className="inline-flex items-center gap-2 bg-white text-pink-600 hover:bg-pink-50 font-bold px-10 py-5 rounded-2xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 text-sm">
+              className="inline-flex items-center gap-2 bg-white text-sage-900 hover:bg-cream font-bold px-10 py-5 rounded-2xl transition-all shadow-xl hover:shadow-glass hover:-translate-y-1 text-sm tracking-wide">
               Crear cuenta gratis <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
