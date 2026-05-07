@@ -15,18 +15,19 @@ export class SettingsController {
   @Public()
   @Get()
   @ApiOperation({ summary: 'Obtener todas las configuraciones de la tienda' })
-  findAll() {
-    return this.settingsService.findAll();
+  async findAll() {
+    const data = await this.settingsService.findAll();
+    return { message: 'Configuraciones obtenidas', data };
   }
 
   @Patch()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
-  // Usamos un ValidationPipe sin whitelist para permitir claves dinámicas
   @UsePipes(new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false, transform: true }))
   @ApiOperation({ summary: 'Actualizar configuraciones (Solo Admin)' })
-  update(@Body() settings: Record<string, string>) {
-    return this.settingsService.updateMany(settings);
+  async update(@Body() settings: Record<string, string>) {
+    const data = await this.settingsService.updateMany(settings);
+    return { message: 'Configuraciones actualizadas', data };
   }
 }
