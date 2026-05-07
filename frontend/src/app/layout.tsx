@@ -8,7 +8,15 @@ import { MaintenanceGate } from '@/components/MaintenanceGate';
 
 export const metadata: Metadata = {
   title: 'Janneth Acevedo | Flores & Suscripciones',
-  description: 'Flores frescas a domicilio. Suscripciones semanales y mensuales.',
+  description: 'Flores frescas a domicilio en Colombia. Ramos únicos, arreglos florales y suscripciones semanales y mensuales. Entrega rápida en Bogotá.',
+  keywords: 'flores a domicilio, ramos de flores, suscripción floral, flores Bogotá, plantas ornamentales, arreglos florales Colombia',
+  openGraph: {
+    title: 'Janneth Acevedo | Flores & Suscripciones',
+    description: 'Flores frescas a domicilio. Suscripciones semanales y mensuales. Ramos únicos para momentos inolvidables.',
+    images: ['/flowers/f-rosas-rosadas.jpg'],
+    type: 'website',
+    locale: 'es_CO',
+  },
   other: {
     'referrer': 'no-referrer-when-downgrade',
   },

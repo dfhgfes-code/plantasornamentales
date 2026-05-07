@@ -9,6 +9,7 @@ import { formatCurrency } from '@/lib/utils';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
 import toast from 'react-hot-toast';
+import { ProductReviews } from '@/components/ui/ProductReviews';
 
 /* ─── Componente de imagen con zoom ─────────────────────────── */
 function ZoomImage({ src, alt }: { src: string; alt: string }) {
@@ -469,6 +470,11 @@ export default function ProductDetailPage() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Sección de reseñas */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <ProductReviews productId={id} />
       </div>
     </div>
   );

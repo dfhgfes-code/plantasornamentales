@@ -81,7 +81,7 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold text-sm mb-4">Navegación</h4>
             <ul className="space-y-2.5">
-              {[['/', 'Inicio'], ['/tienda', 'Tienda'], ['/planes', 'Suscripciones'], ['/carrito', 'Carrito'], ['/perfil', 'Mi cuenta']].map(([href, label]) => (
+              {[['/', 'Inicio'], ['/tienda', 'Tienda'], ['/planes', 'Suscripciones'], ['/carrito', 'Carrito'], ['/perfil', 'Mi cuenta'], ['/contacto', 'Contacto']].map(([href, label]) => (
                 <li key={href}>
                   <Link href={href} className="text-sm text-white/35 hover:text-pink-300 transition-colors">{label}</Link>
                 </li>
@@ -110,8 +110,9 @@ export function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-white/20">© {new Date().getFullYear()} Janneth Acevedo - Plantas Ornamentales</p>
           <div className="flex gap-4 text-xs text-white/20">
-            <a href="#" className="hover:text-white/40 transition-colors">Privacidad</a>
-            <a href="#" className="hover:text-white/40 transition-colors">Términos</a>
+            <Link href="/privacidad" className="hover:text-white/40 transition-colors">Privacidad</Link>
+            <Link href="/terminos" className="hover:text-white/40 transition-colors">Términos</Link>
+            <Link href="/contacto" className="hover:text-white/40 transition-colors">Contacto</Link>
           </div>
         </div>
       </div>

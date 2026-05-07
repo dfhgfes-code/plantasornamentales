@@ -34,10 +34,39 @@ export default function CarritoPage() {
   if (items.length === 0) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <ShoppingBag className="w-16 h-16 mx-auto text-gray-200 mb-4" />
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">Tu carrito está vacío</h2>
-        <p className="text-gray-400 mb-6">Agrega algunas flores para continuar</p>
-        <Link href="/tienda"><Button>Ir a la tienda</Button></Link>
+        <div className="w-24 h-24 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6">
+          <ShoppingBag className="w-10 h-10 text-rose-300" />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+          Tu carrito está vacío
+        </h2>
+        <p className="text-gray-400 mb-8 text-sm leading-relaxed max-w-xs mx-auto">
+          Aún no has agregado ninguna flor. Explora nuestra colección y encuentra el ramo perfecto.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Link href="/tienda">
+            <Button size="lg" className="w-full sm:w-auto">
+              Ver flores disponibles
+            </Button>
+          </Link>
+          <Link href="/planes"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-rose-200 text-rose-600 hover:bg-rose-50 rounded-2xl font-semibold text-sm transition-all">
+            Ver suscripciones
+          </Link>
+        </div>
+        <div className="mt-12 grid grid-cols-3 gap-4 max-w-sm mx-auto">
+          {[
+            { emoji: '🌹', label: 'Rosas' },
+            { emoji: '🌻', label: 'Girasoles' },
+            { emoji: '💐', label: 'Arreglos' },
+          ].map(item => (
+            <Link key={item.label} href={`/tienda?category=${item.label}`}
+              className="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-gray-100 hover:border-rose-200 hover:shadow-sm transition-all group">
+              <span className="text-2xl group-hover:scale-110 transition-transform">{item.emoji}</span>
+              <span className="text-xs text-gray-500 font-medium">{item.label}</span>
+            </Link>
+          ))}
+        </div>
       </div>
     );
   }

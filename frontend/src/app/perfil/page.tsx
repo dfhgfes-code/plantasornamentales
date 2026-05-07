@@ -6,8 +6,54 @@ import { ordersApi, subscriptionsApi } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { User, Package, RefreshCw, MapPin, LogOut } from 'lucide-react';
+import { User, Package, RefreshCw, MapPin, LogOut, CheckCircle, Clock, Truck, PackageCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+// Componente de tracking visual de pedido
+function OrderTracking({ status }: { status: string }) {
+  const steps = [
+    { key: 'pending', label: 'Recibido', icon: Clock },
+    { key: 'confirmed', label: 'Confirmado', icon: CheckCircle },
+    { key: 'preparing', label: 'Preparando', icon: Package },
+    { key: 'shipped', label: 'En camino', icon: Truck },
+    { key: 'delivered', label: 'Entregado', icon: PackageCheck },
+  ];
+
+  const statusOrder = ['pending', 'confirmed', 'preparing', 'shipped', 'delivered'];
+  const currentIdx = statusOrder.indexOf(status);
+  if (currentIdx === -1 || status === 'cancelled') return null;
+
+  return (
+    <div className="mt-4 pt-4 border-t border-gray-100">
+      <div className="flex items-center justify-between relative">
+        {/* Línea de progreso */}
+        <div className="absolute left-0 right-0 top-4 h-0.5 bg-gray-100 z-0" />
+        <div
+          className="absolute left-0 top-4 h-0.5 bg-rose-400 z-0 transition-all duration-500"
+          style={{ width: `${(currentIdx / (steps.length - 1)) * 100}%` }}
+        />
+        {steps.map((step, i) => {
+          const Icon = step.icon;
+          const done = i <= currentIdx;
+          return (
+            <div key={step.key} className="flex flex-col items-center gap-1 z-10 relative">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all ${
+                done
+                  ? 'bg-rose-500 border-rose-500 text-white'
+                  : 'bg-white border-gray-200 text-gray-300'
+              }`}>
+                <Icon className="w-3.5 h-3.5" />
+              </div>
+              <span className={`text-[9px] font-medium whitespace-nowrap ${done ? 'text-rose-600' : 'text-gray-300'}`}>
+                {step.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export default function PerfilPage() {
   const { user, isAuthenticated, logout } = useAuthStore();
@@ -120,6 +166,8 @@ export default function PerfilPage() {
                   <p className="text-xs text-gray-400">{order.isAutomatic ? 'Suscripción' : 'Compra directa'}</p>
                 </div>
               </div>
+              {/* Tracking visual */}
+              <OrderTracking status={order.status} />
             </Card>
           ))}
         </div>
