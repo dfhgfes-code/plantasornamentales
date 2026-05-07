@@ -7,7 +7,7 @@ import { formatCurrency, cn } from '@/lib/utils';
 import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, Upload, X, Check, Tag } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const EMPTY = { name: '', description: '', price: '', category: '', sku: '', stock: '0', isAvailable: true, imageUrl: '' };
+const EMPTY = { name: '', description: '', price: '', category: '', sku: '', stock: '0', isAvailable: true, imageUrl: '', images: '[]', additionals: '[]' };
 
 export default function AdminProductosPage() {
   const { authorized } = useAuthGuard(['admin', 'super_admin']);
@@ -35,7 +35,12 @@ export default function AdminProductosPage() {
   const openCreate = () => { setEditing(null); setForm(EMPTY); setModal(true); };
   const openEdit = (p: any) => {
     setEditing(p);
-    setForm({ name: p.name, description: p.description || '', price: p.price, category: p.category || '', sku: p.sku || '', stock: p.stock, isAvailable: p.isAvailable, imageUrl: p.imageUrl || '' });
+    setForm({
+      name: p.name, description: p.description || '', price: p.price,
+      category: p.category || '', sku: p.sku || '', stock: p.stock,
+      isAvailable: p.isAvailable, imageUrl: p.imageUrl || '',
+      images: p.images || '[]', additionals: p.additionals || '[]',
+    });
     setModal(true);
   };
 
@@ -278,6 +283,81 @@ export default function AdminProductosPage() {
                   {form.isAvailable ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
                   {form.isAvailable ? 'Disponible' : 'No disponible'}
                 </button>
+              </div>
+
+              {/* ── Galería de imágenes ── */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  📸 Galería de imágenes <span className="text-gray-400 font-normal text-xs">(URLs separadas por coma)</span>
+                </label>
+                <textarea
+                  value={(() => { try { return JSON.parse(form.images || '[]').join('\n'); } catch { return ''; } })()}
+                  onChange={e => {
+                    const urls = e.target.value.split('\n').map((u: string) => u.trim()).filter(Boolean);
+                    setForm((f: any) => ({ ...f, images: JSON.stringify(urls) }));
+                  }}
+                  placeholder="https://url-imagen-1.jpg&#10;https://url-imagen-2.jpg&#10;https://url-imagen-3.jpg"
+                  rows={3}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none font-mono text-xs"
+                />
+                <p className="text-[10px] text-gray-400 mt-1">Una URL por línea. La imagen principal va arriba.</p>
+              </div>
+
+              {/* ── Complementos/Adicionales ── */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    🎁 Complementos adicionales
+                  </label>
+                  <button type="button"
+                    onClick={() => {
+                      const arr = (() => { try { return JSON.parse(form.additionals || '[]'); } catch { return []; } })();
+                      arr.push({ name: '', price: 0, imageUrl: '' });
+                      setForm((f: any) => ({ ...f, additionals: JSON.stringify(arr) }));
+                    }}
+                    className="text-xs text-pink-600 hover:text-pink-700 font-semibold flex items-center gap-1">
+                    <Plus className="w-3.5 h-3.5" /> Agregar
+                  </button>
+                </div>
+                {(() => {
+                  let arr: any[] = [];
+                  try { arr = JSON.parse(form.additionals || '[]'); } catch {}
+                  return arr.map((a: any, i: number) => (
+                    <div key={i} className="flex gap-2 mb-2 items-start">
+                      <div className="flex-1 grid grid-cols-2 gap-2">
+                        <input value={a.name} placeholder="Nombre (ej: Chocolates)"
+                          onChange={e => {
+                            const next = [...arr]; next[i] = { ...next[i], name: e.target.value };
+                            setForm((f: any) => ({ ...f, additionals: JSON.stringify(next) }));
+                          }}
+                          className="border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-pink-300" />
+                        <input type="number" value={a.price} placeholder="Precio"
+                          onChange={e => {
+                            const next = [...arr]; next[i] = { ...next[i], price: Number(e.target.value) };
+                            setForm((f: any) => ({ ...f, additionals: JSON.stringify(next) }));
+                          }}
+                          className="border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-pink-300" />
+                        <input value={a.imageUrl} placeholder="URL imagen (opcional)"
+                          onChange={e => {
+                            const next = [...arr]; next[i] = { ...next[i], imageUrl: e.target.value };
+                            setForm((f: any) => ({ ...f, additionals: JSON.stringify(next) }));
+                          }}
+                          className="col-span-2 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-pink-300" />
+                      </div>
+                      <button type="button"
+                        onClick={() => {
+                          const next = arr.filter((_: any, j: number) => j !== i);
+                          setForm((f: any) => ({ ...f, additionals: JSON.stringify(next) }));
+                        }}
+                        className="p-2 text-gray-300 hover:text-red-500 transition-colors mt-0.5">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ));
+                })()}
+                {(() => { try { return JSON.parse(form.additionals || '[]').length === 0; } catch { return true; } })() && (
+                  <p className="text-xs text-gray-400 italic">Sin complementos. Haz clic en "Agregar" para añadir chocolates, velas, etc.</p>
+                )}
               </div>
             </div>
             <div className="flex gap-3 p-6 border-t border-gray-100">

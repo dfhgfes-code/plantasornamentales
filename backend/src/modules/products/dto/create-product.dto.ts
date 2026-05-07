@@ -58,4 +58,14 @@ export class CreateProductDto {
   @IsString()
   @MaxLength(50)
   sku?: string;
+
+  @ApiPropertyOptional({ example: '["url1","url2"]', description: 'Galería de imágenes (JSON array)' })
+  @IsOptional()
+  @IsString()
+  images?: string;
+
+  @ApiPropertyOptional({ example: '[{"name":"Chocolates","price":35000,"imageUrl":"..."}]', description: 'Complementos adicionales (JSON array)' })
+  @IsOptional()
+  @IsString()
+  additionals?: string;
 }

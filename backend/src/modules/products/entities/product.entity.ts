@@ -15,6 +15,14 @@ export class Product extends BaseEntity {
   @Column({ name: 'image_url', type: 'text', nullable: true })
   imageUrl: string;
 
+  // Galería de imágenes adicionales (JSON array de URLs)
+  @Column({ name: 'images', type: 'text', nullable: true })
+  images: string;
+
+  // Complementos/adicionales (JSON array de {name, price, imageUrl})
+  @Column({ name: 'additionals', type: 'text', nullable: true })
+  additionals: string;
+
   @Column({ name: 'stock', default: 0 })
   stock: number;
 
@@ -32,10 +40,4 @@ export class Product extends BaseEntity {
 
   @Column({ name: 'reviews_count', default: 0 })
   reviewsCount: number;
-
-  // @OneToMany(() => OrderItem, (item) => item.product)
-  // orderItems: OrderItem[];
-
-  // @OneToMany(() => PlanProduct, (pp) => pp.product)
-  // planProducts: PlanProduct[];
 }
