@@ -226,43 +226,71 @@ export default function PlanesPage() {
             <p className="text-gray-500">No hay planes disponibles en este momento.</p>
           </div>
         ) : (
-          <>
-            {/* Planes semanales */}
-            {weekly.length > 0 && (
-              <div className="mb-12">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="h-px flex-1 bg-gray-200" />
-                  <span className="flex items-center gap-2 text-sm font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">
-                    <span className="text-base">📅</span> Planes Semanales
-                  </span>
-                  <div className="h-px flex-1 bg-gray-200" />
-                </div>
-                <div className={`grid gap-6 ${weekly.length === 1 ? 'max-w-sm mx-auto' : weekly.length === 2 ? 'sm:grid-cols-2 max-w-2xl mx-auto' : 'sm:grid-cols-2 lg:grid-cols-3'}`}>
-                  {weekly.map((plan, i) => (
-                    <PlanCard key={plan.id} plan={plan} featured={i === 1 && weekly.length > 1} index={i} />
-                  ))}
-                </div>
-              </div>
-            )}
+          /* ── Layout lado a lado con divisor vertical ── */
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="flex flex-col lg:flex-row">
 
-            {/* Planes mensuales */}
-            {monthly.length > 0 && (
-              <div>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="h-px flex-1 bg-gray-200" />
-                  <span className="flex items-center gap-2 text-sm font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">
-                    <span className="text-base">🗓️</span> Planes Mensuales
-                  </span>
-                  <div className="h-px flex-1 bg-gray-200" />
+              {/* Columna semanales */}
+              {weekly.length > 0 && (
+                <div className="flex-1 p-8">
+                  {/* Header columna */}
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center text-xl shrink-0">📅</div>
+                    <div>
+                      <p className="font-bold text-gray-900 text-base">Planes Semanales</p>
+                      <p className="text-xs text-gray-400">Flores cada semana</p>
+                    </div>
+                  </div>
+                  <div className="space-y-5">
+                    {weekly.map((plan, i) => (
+                      <PlanCard key={plan.id} plan={plan} featured={i === 0 && weekly.length === 1 ? false : i === 1} index={i} />
+                    ))}
+                  </div>
                 </div>
-                <div className={`grid gap-6 ${monthly.length === 1 ? 'max-w-sm mx-auto' : monthly.length === 2 ? 'sm:grid-cols-2 max-w-2xl mx-auto' : 'sm:grid-cols-2 lg:grid-cols-3'}`}>
-                  {monthly.map((plan, i) => (
-                    <PlanCard key={plan.id} plan={plan} featured={i === 1 && monthly.length > 1} index={i} />
-                  ))}
+              )}
+
+              {/* Divisor vertical */}
+              {weekly.length > 0 && monthly.length > 0 && (
+                <div className="hidden lg:flex flex-col items-center justify-center py-8 px-2">
+                  <div className="w-px flex-1 bg-gradient-to-b from-transparent via-gray-200 to-transparent" />
+                  <div className="my-4 w-8 h-8 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center">
+                    <span className="text-xs">🌸</span>
+                  </div>
+                  <div className="w-px flex-1 bg-gradient-to-b from-transparent via-gray-200 to-transparent" />
                 </div>
-              </div>
-            )}
-          </>
+              )}
+
+              {/* Divisor horizontal en móvil */}
+              {weekly.length > 0 && monthly.length > 0 && (
+                <div className="lg:hidden flex items-center gap-4 px-8 py-2">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                  <div className="w-8 h-8 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center shrink-0">
+                    <span className="text-xs">🌸</span>
+                  </div>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                </div>
+              )}
+
+              {/* Columna mensuales */}
+              {monthly.length > 0 && (
+                <div className="flex-1 p-8">
+                  {/* Header columna */}
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center text-xl shrink-0">🗓️</div>
+                    <div>
+                      <p className="font-bold text-gray-900 text-base">Planes Mensuales</p>
+                      <p className="text-xs text-gray-400">Flores cada mes</p>
+                    </div>
+                  </div>
+                  <div className="space-y-5">
+                    {monthly.map((plan, i) => (
+                      <PlanCard key={plan.id} plan={plan} featured={i === 0 && monthly.length === 1 ? false : i === 1} index={i} />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         )}
       </div>
 
