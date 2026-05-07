@@ -88,10 +88,10 @@ export default function LoginPage() {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 20px;
+          padding: 40px 20px;
           font-family: 'Inter', sans-serif;
           position: relative;
-          overflow: auto;
+          overflow-y: auto;
         }
 
         .login-card {
@@ -101,11 +101,21 @@ export default function LoginPage() {
           border-radius: 40px;
           box-shadow: 0 40px 100px rgba(0,0,0,0.06);
           display: flex;
-          overflow: hidden;
-          height: 700px;
+          overflow: visible;
+          min-height: 700px;
           position: relative;
           z-index: 10;
           flex-shrink: 0;
+        }
+
+        /* Clip only the card background, not the logo overflow */
+        .login-card::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 40px;
+          background: #fff;
+          z-index: -1;
         }
 
         .left-panel {
@@ -113,8 +123,9 @@ export default function LoginPage() {
           min-width: 495px;
           position: relative;
           z-index: 20;
-          overflow: visible;
+          overflow: hidden;
           flex-shrink: 0;
+          border-radius: 40px 0 0 40px;
         }
 
         .left-panel img {
@@ -201,8 +212,9 @@ export default function LoginPage() {
           position: relative;
           background: #fff;
           z-index: 5;
-          overflow-y: auto;
+          overflow: visible;
           min-width: 0;
+          border-radius: 0 40px 40px 0;
         }
 
         .floral-bg-decor {
@@ -409,8 +421,8 @@ export default function LoginPage() {
             />
 
             <div className="form-container">
-              <div className="logo-wrapper flex justify-center scale-110">
-                <Logo size="xl" />
+              <div className="logo-wrapper flex justify-center">
+                <Logo size="lg" />
               </div>
 
               <div className="form-header">
