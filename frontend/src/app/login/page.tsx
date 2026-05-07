@@ -91,25 +91,26 @@ export default function LoginPage() {
           padding: 20px;
           font-family: 'Inter', sans-serif;
           position: relative;
-          overflow-y: auto;
+          overflow: auto;
         }
 
         .login-card {
-          width: 100%;
-          max-width: 1100px;
+          width: 1100px;
+          min-width: 1100px;
           background: #fff;
           border-radius: 40px;
           box-shadow: 0 40px 100px rgba(0,0,0,0.06);
           display: flex;
           overflow: hidden;
-          min-height: min(700px, 90vh);
+          height: 700px;
           position: relative;
           z-index: 10;
+          flex-shrink: 0;
         }
 
         .left-panel {
           width: 45%;
-          min-width: 300px;
+          min-width: 495px;
           position: relative;
           z-index: 20;
           overflow: visible;
@@ -376,42 +377,6 @@ export default function LoginPage() {
           color: #fca5a5;
           font-weight: 600;
           text-decoration: none;
-        }
-
-        @media (max-width: 1100px) {
-          .login-card { max-width: 900px; }
-          .right-panel { padding: 40px 40px 40px 120px; }
-        }
-
-        @media (max-width: 900px) {
-          .left-panel { width: 40%; }
-          .right-panel { padding: 40px 32px 40px 80px; }
-          .left-content h2 { font-size: 2.6rem; }
-          .left-content .script-text { font-size: 3rem; }
-        }
-
-        @media (max-width: 768px) {
-          .left-panel { display: none; }
-          .login-card { max-width: 480px; border-radius: 24px; min-height: unset; }
-          .right-panel { padding: 40px 32px; }
-          .login-page { padding: 16px; align-items: flex-start; padding-top: 40px; }
-        }
-
-        @media (max-width: 480px) {
-          .login-card { border-radius: 20px; max-width: 100%; }
-          .right-panel { padding: 28px 16px; }
-          .form-header h1 { font-size: 1.6rem; }
-          .form-container { max-width: 100%; }
-          .login-page { padding: 12px; padding-top: 20px; }
-          .input-field { font-size: 0.95rem; padding: 12px 12px 12px 44px; }
-          .btn-login { padding: 13px; }
-        }
-
-        @media (max-width: 360px) {
-          .right-panel { padding: 24px 12px; }
-          .form-header h1 { font-size: 1.4rem; }
-          .logo-wrapper { margin-bottom: 16px; }
-          .form-header { margin-bottom: 16px; }
         }
       `}</style>
 
