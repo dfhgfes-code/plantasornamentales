@@ -14,6 +14,7 @@ export default function TiendaPage() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [sortBy, setSortBy] = useState('createdAt');
+  const [sortOrder, setSortOrder] = useState('DESC');
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -27,13 +28,21 @@ export default function TiendaPage() {
 
   useEffect(() => {
     setLoading(true);
-    productsApi.getAll({ search, category, sortBy, page, limit: LIMIT, isAvailable: true })
+    productsApi.getAll({ search, category, sortBy, sortOrder, page, limit: LIMIT, isAvailable: true })
       .then((r) => { 
         setProducts(r.data.data.data || []); 
         setTotal(r.data.data.total || 0); 
       })
       .finally(() => setLoading(false));
-  }, [search, category, sortBy, page]);
+  }, [search, category, sortBy, sortOrder, page]);
+
+  // Manejar cambio de ordenamiento — el valor del select codifica sortBy:sortOrder
+  const handleSortChange = (value: string) => {
+    const [field, order] = value.split(':');
+    setSortBy(field);
+    setSortOrder(order);
+    setPage(1);
+  };
 
   const handleAdd = (product: any) => {
     addItem({ id: product.id, name: product.name, price: Number(product.price), imageUrl: product.imageUrl });
@@ -94,11 +103,12 @@ export default function TiendaPage() {
               </button>
             ))}
             <div className="ml-auto flex items-center gap-2">
-              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}
+              <select value={`${sortBy}:${sortOrder}`} onChange={(e) => handleSortChange(e.target.value)}
                 className="bg-gray-100 border-none rounded-lg px-2 py-1 text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-rose-300 transition-all">
-                <option value="createdAt">Más recientes</option>
-                <option value="price">Menor precio</option>
-                <option value="name">A - Z</option>
+                <option value="createdAt:DESC">Más recientes</option>
+                <option value="price:ASC">Menor precio</option>
+                <option value="price:DESC">Mayor precio</option>
+                <option value="name:ASC">A - Z</option>
               </select>
               <span className="text-xs text-gray-400 font-medium whitespace-nowrap">{total} flores</span>
             </div>
