@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ShoppingCart, ArrowLeft, Star, Package, Tag, Pencil, X, Check, Upload, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Star, Package, Tag, Pencil, X, Check, Upload, ChevronLeft, ChevronRight, ZoomIn, Plus, Minus } from 'lucide-react';
 import { productsApi } from '@/lib/api';
 import api from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
@@ -59,6 +59,7 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
+  const [selectedAdditionals, setSelectedAdditionals] = useState<Set<number>>(new Set());
 
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
   const [editing, setEditing] = useState(false);
@@ -96,6 +97,23 @@ export default function ProductDetailPage() {
 
   const images = gallery.length > 0 ? gallery : ['/flowers/f-rosas-rojas.jpg'];
 
+  // Adicionales
+  const additionals: { name: string; price: number; imageUrl?: string; description?: string }[] = (() => {
+    try { return JSON.parse(product?.additionals || '[]'); }
+    catch { return []; }
+  })();
+
+  const toggleAdditional = (i: number) => {
+    setSelectedAdditionals(prev => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
+  };
+
+  const additionalsTotal = Array.from(selectedAdditionals).reduce((sum, i) => sum + (additionals[i]?.price || 0), 0);
+  const totalPrice = Number(product?.price || 0) * qty + additionalsTotal;
+
   const prevImg = () => setActiveImg(i => (i - 1 + images.length) % images.length);
   const nextImg = () => setActiveImg(i => (i + 1) % images.length);
 
@@ -104,7 +122,13 @@ export default function ProductDetailPage() {
     for (let i = 0; i < qty; i++) {
       addItem({ id: product.id, name: product.name, price: Number(product.price), imageUrl: product.imageUrl });
     }
-    toast.success(`${qty > 1 ? qty + 'x ' : ''}${product.name} agregado 🌸`);
+    // Agregar adicionales seleccionados
+    Array.from(selectedAdditionals).forEach(i => {
+      const a = additionals[i];
+      if (a) addItem({ id: `${product.id}-add-${i}`, name: a.name, price: a.price, imageUrl: a.imageUrl || '' });
+    });
+    const addNames = Array.from(selectedAdditionals).map(i => additionals[i]?.name).filter(Boolean);
+    toast.success(`${product.name}${addNames.length ? ' + ' + addNames.join(', ') : ''} agregado 🌸`);
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -260,6 +284,62 @@ export default function ProductDetailPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* ── Complementa tu pedido ── */}
+                {additionals.length > 0 && (
+                  <div className="mb-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-lg">🎁</span>
+                      <h3 className="font-bold text-gray-800 text-sm">Complementa tu pedido floral</h3>
+                    </div>
+                    <p className="text-xs text-gray-400 mb-3 leading-relaxed">
+                      Agrega un detalle especial para hacer el regalo aún más memorable. El precio se actualizará automáticamente.
+                    </p>
+                    <div className="grid grid-cols-2 gap-2.5">
+                      {additionals.map((a, i) => (
+                        <button
+                          key={i}
+                          onClick={() => toggleAdditional(i)}
+                          className={`relative rounded-2xl border-2 p-3 text-left transition-all hover:-translate-y-0.5 ${
+                            selectedAdditionals.has(i)
+                              ? 'border-rose-500 bg-rose-50 shadow-md'
+                              : 'border-gray-100 hover:border-rose-200 bg-white shadow-sm'
+                          }`}
+                        >
+                          {a.imageUrl && (
+                            <img src={a.imageUrl} alt={a.name}
+                              className="w-full h-20 object-cover rounded-xl mb-2"
+                              onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                            />
+                          )}
+                          <p className="text-xs font-bold text-gray-800 line-clamp-1">{a.name}</p>
+                          {a.description && (
+                            <p className="text-[10px] text-gray-400 mt-0.5 line-clamp-1">{a.description}</p>
+                          )}
+                          <p className="text-xs font-bold text-rose-600 mt-1">+{formatCurrency(a.price)}</p>
+                          {/* Check de selección */}
+                          <div className={`absolute top-2.5 right-2.5 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                            selectedAdditionals.has(i)
+                              ? 'bg-rose-500 border-rose-500'
+                              : 'border-gray-200 bg-white'
+                          }`}>
+                            {selectedAdditionals.has(i) && <Check className="w-3 h-3 text-white" />}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                    {selectedAdditionals.size > 0 && (
+                      <div className="mt-3 p-3 bg-rose-50 rounded-xl border border-rose-100 flex items-center justify-between">
+                        <span className="text-xs text-gray-600 font-medium">
+                          {selectedAdditionals.size} adicional{selectedAdditionals.size > 1 ? 'es' : ''} seleccionado{selectedAdditionals.size > 1 ? 's' : ''}
+                        </span>
+                        <span className="text-sm font-bold text-rose-600">
+                          Total: {formatCurrency(totalPrice)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Cantidad */}
                 <div className="flex items-center gap-4 mb-5">
