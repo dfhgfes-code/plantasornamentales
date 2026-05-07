@@ -13,19 +13,46 @@ export function HeroCarousel() {
   const fetchSettings = useCallback(async () => {
     try {
       const res = await settingsApi.getAll();
-      const carouselData = JSON.parse(res.data.home_hero_carousel || '[]');
+      // La respuesta tiene estructura: { data: { data: { home_hero_carousel: '...' } } }
+      const settings = res.data?.data || res.data || {};
+      const raw = typeof settings === 'string' ? JSON.parse(settings) : settings;
+      const carouselData = JSON.parse(raw.home_hero_carousel || '[]');
       if (carouselData.length > 0) {
         setSlides(carouselData);
       } else {
-        // Fallback default slides if empty
         setSlides([
           {
-            image: '/hero/field.png',
-            title: 'Flores frescas para momentos inolvidables',
-            subtitle: 'Enviamos amor en cada ramo a todo el país',
+            image: 'https://images.unsplash.com/photo-1490750967868-88df5691cc5e?w=2400&q=95&auto=format&fit=crop',
+            tag: 'Boutique Floral de Lujo',
+            title: 'Flores que hablan por ti',
+            subtitle: 'Ramos únicos elaborados a mano con las flores más frescas.',
             buttonText: 'Ver Colección',
             buttonLink: '/tienda',
-          }
+          },
+          {
+            image: 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=2400&q=95&auto=format&fit=crop',
+            tag: 'Rosas Premium',
+            title: 'El regalo perfecto siempre florece',
+            subtitle: 'Rosas de tallo largo cultivadas en los mejores jardines.',
+            buttonText: 'Ver Rosas',
+            buttonLink: '/tienda',
+          },
+          {
+            image: 'https://images.unsplash.com/photo-1487530811015-780780169993?w=2400&q=95&auto=format&fit=crop',
+            tag: 'Suscripciones Florales',
+            title: 'Flores frescas cada semana',
+            subtitle: 'Suscríbete y recibe arreglos personalizados en tu puerta.',
+            buttonText: 'Ver Planes',
+            buttonLink: '/planes',
+          },
+          {
+            image: 'https://images.unsplash.com/photo-1559563458-527698bf5295?w=2400&q=95&auto=format&fit=crop',
+            tag: 'Momentos Especiales',
+            title: 'Cada flor cuenta una historia',
+            subtitle: 'Transforma cualquier momento en un recuerdo inolvidable.',
+            buttonText: 'Explorar Tienda',
+            buttonLink: '/tienda',
+          },
         ]);
       }
     } catch (error) {
