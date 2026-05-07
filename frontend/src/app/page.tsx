@@ -1,31 +1,182 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
-import { ArrowRight, Star, Check, ShoppingCart, Bell } from 'lucide-react';
+import { ArrowRight, Star, Check, ShoppingCart, Bell, ZoomIn, X, Package, Tag, Plus, Minus, Gift } from 'lucide-react';
 import { productsApi, plansApi, settingsApi } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { useCartStore } from '@/store/cart.store';
+import { motion, AnimatePresence } from 'framer-motion';
 import { HeroCarousel } from '@/components/HeroCarousel';
 import { WelcomePopup } from '@/components/WelcomePopup';
 import toast from 'react-hot-toast';
 
 // Imágenes locales de flores — servidas desde /public/flowers/
 const flowerImages = [
-  { src: '/flowers/f-rosas-rojas.jpg',   label: 'Rosas Rojas',    color: '#fee2e2' },
-  { src: '/flowers/f-girasoles.jpg',     label: 'Girasoles',      color: '#fef9c3' },
-  { src: '/flowers/f-tulipanes.jpg',     label: 'Tulipanes',      color: '#fce7f3' },
-  { src: '/flowers/f-orquideas.jpg',     label: 'Orquídeas',      color: '#f3e8ff' },
-  { src: '/flowers/f-lilies.jpg',        label: 'Lilies',         color: '#fdf2f8' },
-  { src: '/flowers/f-rosas-rosadas.jpg', label: 'Rosas Rosadas',  color: '#fff1f2' },
-  { src: '/flowers/f-claveles.jpg',      label: 'Claveles',       color: '#fce7f3' },
-  { src: '/flowers/f-arreglo.jpg',       label: 'Arreglos',       color: '#f0fdf4' },
+  { src: '/flowers/f-rosas-rojas.jpg',   label: 'Rosas Rojas',    color: '#fee2e2',  category: 'Rosas' },
+  { src: '/flowers/f-girasoles.jpg',     label: 'Girasoles',      color: '#fef9c3',  category: 'Girasoles' },
+  { src: '/flowers/f-tulipanes.jpg',     label: 'Tulipanes',      color: '#fce7f3',  category: 'Tulipanes' },
+  { src: '/flowers/f-orquideas.jpg',     label: 'Orquídeas',      color: '#f3e8ff',  category: 'Orquídeas' },
+  { src: '/flowers/f-lilies.jpg',        label: 'Lilies',         color: '#fdf2f8',  category: 'Lilies' },
+  { src: '/flowers/f-rosas-rosadas.jpg', label: 'Rosas Rosadas',  color: '#fff1f2',  category: 'Rosas' },
+  { src: '/flowers/f-claveles.jpg',      label: 'Claveles',       color: '#fce7f3',  category: 'Claveles' },
+  { src: '/flowers/f-arreglo.jpg',       label: 'Arreglos',       color: '#f0fdf4',  category: 'Arreglos' },
 ];
+
+/* ─── Mini modal de producto (igual al de tienda) ─────────── */
+function ProductModal({ product, onClose }: { product: any; onClose: () => void }) {
+  const [qty, setQty] = useState(1);
+  const [selectedAdditionals, setSelectedAdditionals] = useState<Set<number>>(new Set());
+  const { addItemWithAdditionals } = useCartStore();
+
+  const additionals: { name: string; price: number; imageUrl?: string }[] = (() => {
+    try { return JSON.parse(product.additionals || '[]'); } catch { return []; }
+  })();
+
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', fn);
+    document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', fn); document.body.style.overflow = ''; };
+  }, [onClose]);
+
+  const toggleAdditional = (i: number) => {
+    setSelectedAdditionals(prev => {
+      const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
+    });
+  };
+
+  const additionalsTotal = Array.from(selectedAdditionals).reduce((s, i) => s + (additionals[i]?.price || 0), 0);
+  const totalPrice = Number(product.price) * qty + additionalsTotal;
+
+  const handleAdd = () => {
+    const selectedAddList = Array.from(selectedAdditionals).map(i => additionals[i]).filter(Boolean);
+    for (let i = 0; i < qty; i++) {
+      addItemWithAdditionals(
+        { id: product.id, name: product.name, price: Number(product.price), imageUrl: product.imageUrl },
+        selectedAddList.map(a => ({ name: a.name, price: a.price, imageUrl: a.imageUrl }))
+      );
+    }
+    toast.success(`${product.name} agregado al carrito 🌸`);
+    onClose();
+  };
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4"
+        style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      >
+        <motion.div
+          className="bg-white w-full sm:rounded-3xl max-w-3xl max-h-[92vh] overflow-hidden shadow-2xl flex flex-col md:flex-row"
+          initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {/* Imagen */}
+          <div className="relative md:w-[45%] h-64 md:h-auto shrink-0 bg-rose-50">
+            <img src={product.imageUrl || '/flowers/f-rosas-rojas.jpg'} alt={product.name}
+              className="w-full h-full object-cover" />
+            <span className="absolute top-4 left-4 bg-white/90 text-rose-600 text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm">
+              {product.category}
+            </span>
+            <button onClick={onClose}
+              className="absolute top-4 right-4 w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all">
+              <X className="w-4 h-4 text-gray-600" />
+            </button>
+          </div>
+
+          {/* Info */}
+          <div className="flex-1 overflow-y-auto p-5 sm:p-7 flex flex-col">
+            <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest mb-1">{product.category}</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2" style={{ fontFamily: "Georgia, serif" }}>
+              {product.name}
+            </h2>
+            <div className="flex items-center gap-1 mb-3">
+              {[1,2,3,4,5].map(s => <Star key={s} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />)}
+              <span className="text-xs text-gray-400 ml-1">5.0 · Premium</span>
+            </div>
+            <div className="mb-3">
+              <span className="text-2xl font-bold text-rose-600" style={{ fontFamily: "Georgia, serif" }}>
+                {formatCurrency(Number(product.price))}
+              </span>
+              <span className="text-gray-400 text-sm ml-1">COP</span>
+            </div>
+            <div className="h-px bg-gray-100 mb-3" />
+            <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-1">{product.description}</p>
+
+            {/* Adicionales */}
+            {additionals.length > 0 && (
+              <div className="mb-4">
+                <h3 className="font-bold text-gray-800 text-sm mb-2 flex items-center gap-1.5">
+                  🎁 Complementa tu pedido
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {additionals.map((a, i) => (
+                    <button key={i} onClick={() => toggleAdditional(i)}
+                      className={`relative rounded-xl border-2 p-2 text-left transition-all ${selectedAdditionals.has(i) ? 'border-rose-500 bg-rose-50' : 'border-gray-100 hover:border-rose-200'}`}>
+                      {a.imageUrl && <img src={a.imageUrl} alt={a.name} className="w-full h-14 object-cover rounded-lg mb-1.5"
+                        onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />}
+                      <p className="text-xs font-bold text-gray-800 line-clamp-1">{a.name}</p>
+                      <p className="text-xs text-rose-600 font-bold">+{formatCurrency(a.price)}</p>
+                      {selectedAdditionals.has(i) && (
+                        <div className="absolute top-2 right-2 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center">
+                          <Check className="w-2.5 h-2.5 text-white" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Cantidad */}
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-sm font-semibold text-gray-700">Cantidad:</span>
+              <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden">
+                <button onClick={() => setQty(q => Math.max(1, q - 1))} className="px-3 py-2 hover:bg-rose-50 transition-colors">
+                  <Minus className="w-3.5 h-3.5 text-gray-500" />
+                </button>
+                <span className="px-4 py-2 font-bold text-gray-900 border-x border-gray-200 min-w-[44px] text-center text-sm">{qty}</span>
+                <button onClick={() => setQty(q => Math.min(product.stock || 99, q + 1))} className="px-3 py-2 hover:bg-rose-50 transition-colors">
+                  <Plus className="w-3.5 h-3.5 text-gray-500" />
+                </button>
+              </div>
+              {selectedAdditionals.size > 0 && (
+                <span className="text-xs text-gray-400">Total: <span className="font-bold text-rose-600">{formatCurrency(totalPrice)}</span></span>
+              )}
+            </div>
+
+            {/* Botones */}
+            <div className="flex gap-2">
+              <button onClick={handleAdd} disabled={product.stock === 0}
+                className="flex-1 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-lg hover:-translate-y-0.5">
+                <ShoppingCart className="w-4 h-4" />
+                {product.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
+              </button>
+              <Link href={`/tienda/${product.id}`}
+                className="px-4 py-3 border-2 border-gray-200 hover:border-rose-300 text-gray-500 hover:text-rose-600 rounded-2xl font-semibold text-sm transition-all flex items-center gap-1.5 whitespace-nowrap">
+                Ver más <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+            <div className="mt-3 p-3 bg-green-50 rounded-xl border border-green-100">
+              <p className="text-xs text-green-700 font-semibold flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5" /> Frescura garantizada · Entrega a domicilio
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
 export default function HomePage() {
   const [products, setProducts] = useState<any[]>([]);
   const [plans, setPlans] = useState<any[]>([]);
   const [settings, setSettings] = useState<any>(null);
   const [marqueeItems, setMarqueeItems] = useState<string[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const addItem = useCartStore((s) => s.addItem);
 
   const loadData = useCallback(async () => {
@@ -35,11 +186,9 @@ export default function HomePage() {
         plansApi.getAll(true),
         settingsApi.getAll()
       ]);
-      
       setProducts(prodRes.data.data.data || []);
       setPlans(planRes.data.data || []);
       setSettings(setRes.data.data || {});
-      
       if (setRes.data.data?.home_promo_marquee) {
         setMarqueeItems(JSON.parse(setRes.data.data.home_promo_marquee));
       }
@@ -48,9 +197,23 @@ export default function HomePage() {
     }
   }, []);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  useEffect(() => { loadData(); }, [loadData]);
+
+  // Al hacer clic en una imagen del carrusel, busca el primer producto de esa categoría
+  const handleCarouselClick = async (category: string) => {
+    try {
+      const res = await productsApi.getAll({ category, limit: 1, isAvailable: true });
+      const product = res.data.data.data?.[0];
+      if (product) {
+        setSelectedProduct(product);
+      } else {
+        // Si no hay producto de esa categoría, ir a la tienda filtrada
+        window.location.href = `/tienda?category=${encodeURIComponent(category)}`;
+      }
+    } catch {
+      window.location.href = '/tienda';
+    }
+  };
 
   const handleAdd = (product: any) => {
     addItem({ id: product.id, name: product.name, price: Number(product.price), imageUrl: product.imageUrl });
@@ -59,6 +222,9 @@ export default function HomePage() {
 
   return (
     <>
+      {/* Modal de producto */}
+      {selectedProduct && <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
+
       {/* Popup de bienvenida */}
       <WelcomePopup />
 
@@ -125,6 +291,7 @@ export default function HomePage() {
             {[...flowerImages, ...flowerImages].map((img, i) => (
               <div
                 key={i}
+                onClick={() => handleCarouselClick(img.category)}
                 className="shrink-0 w-52 mx-2 rounded-2xl overflow-hidden group cursor-pointer relative"
                 style={{ height: '280px', background: img.color }}
               >
@@ -135,6 +302,12 @@ export default function HomePage() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 />
+                {/* Overlay con lupa al hover */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all duration-300 flex items-center justify-center">
+                  <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100 shadow-lg">
+                    <ZoomIn className="w-5 h-5 text-rose-600" />
+                  </div>
+                </div>
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
                   <span className="text-white text-sm font-semibold drop-shadow">{img.label}</span>
                 </div>
