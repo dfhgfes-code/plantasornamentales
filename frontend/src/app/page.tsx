@@ -64,7 +64,7 @@ export default function HomePage() {
 
       {/* ── BANNER HOLIDAY (DINÁMICO) ── */}
       {settings?.home_holiday_banner_enabled === 'true' && (
-        <div className="bg-indigo-600 py-2.5 px-4 text-center relative z-50">
+        <div className="bg-rose-600 py-2.5 px-4 text-center relative z-50">
           <Link href={settings.home_holiday_banner_link || '/tienda'} className="group flex items-center justify-center gap-3 text-white text-sm font-bold hover:opacity-90 transition-all">
             <Bell className="w-4 h-4 animate-bounce" />
             <span>{settings.home_holiday_banner_text}</span>
@@ -77,7 +77,7 @@ export default function HomePage() {
       <HeroCarousel />
 
       {/* ── BANDA DE CONFIANZA (DINÁMICA) ── */}
-      <div className="bg-sage-600 py-3 overflow-hidden">
+      <div className="bg-rose-600 py-3 overflow-hidden">
         <div
           className="flex whitespace-nowrap"
           style={{ animation: 'marquee2 30s linear infinite' }}
@@ -104,12 +104,12 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
           <div className="flex items-end justify-between">
             <div>
-              <p className="text-pink-500 text-xs font-semibold tracking-[0.2em] uppercase mb-2">Galería</p>
+              <p className="text-rose-600 text-xs font-semibold tracking-[0.2em] uppercase mb-2">Galería</p>
               <h2 className="font-display text-4xl font-bold text-gray-900">
-                Nuestra <span className="italic text-pink-500">colección</span>
+                Nuestra <span className="italic text-rose-600">colección</span>
               </h2>
             </div>
-            <Link href="/tienda" className="hidden md:flex items-center gap-1.5 text-sm font-medium text-pink-500 hover:text-pink-700 transition-colors group">
+            <Link href="/tienda" className="hidden md:flex items-center gap-1.5 text-sm font-medium text-rose-600 hover:text-rose-700 transition-colors group">
               Ver todo <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -148,9 +148,9 @@ export default function HomePage() {
       <section className="py-20 bg-cream-dark/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-pink-500 text-xs font-semibold tracking-[0.2em] uppercase mb-2">Más vendidos</p>
+            <p className="text-rose-600 text-xs font-semibold tracking-[0.2em] uppercase mb-2">Más vendidos</p>
             <h2 className="font-display text-4xl font-bold text-gray-900 mb-3">
-              Flores <span className="italic text-pink-500">favoritas</span>
+              Flores <span className="italic text-rose-600">favoritas</span>
             </h2>
             <p className="text-gray-500 text-sm max-w-md mx-auto">Las más elegidas por nuestras clientas cada semana</p>
           </div>
@@ -179,21 +179,21 @@ export default function HomePage() {
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 flex items-end p-5 opacity-0 group-hover:opacity-100">
                         <button onClick={() => handleAdd(product)}
-                          className="w-full bg-white/90 backdrop-blur-md text-pink-600 font-bold py-3.5 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-white transition-colors shadow-glass transform translate-y-4 group-hover:translate-y-0 duration-500">
+                          className="w-full bg-white/90 backdrop-blur-md text-rose-600 font-bold py-3.5 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-white transition-colors shadow-glass transform translate-y-4 group-hover:translate-y-0 duration-500">
                           <ShoppingCart className="w-4 h-4" /> Agregar al carrito
                         </button>
                       </div>
-                      <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-md text-pink-600 text-[10px] font-bold px-4 py-1.5 rounded-full shadow-sm">
+                      <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-md text-rose-600 text-[10px] font-bold px-4 py-1.5 rounded-full shadow-sm">
                         {product.category}
                       </div>
                     </div>
                     <div className="p-4">
                       <Link href={`/tienda/${product.id}`}>
-                        <h3 className="font-bold text-gray-900 hover:text-pink-600 transition-colors mb-1 line-clamp-1">{product.name}</h3>
+                        <h3 className="font-bold text-gray-900 hover:text-rose-600 transition-colors mb-1 line-clamp-1">{product.name}</h3>
                       </Link>
                       <p className="text-xs text-gray-400 mb-3 line-clamp-2">{product.description}</p>
                       <div className="flex items-center justify-between">
-                        <span className="font-display font-bold text-pink-600 text-lg">{formatCurrency(Number(product.price))}</span>
+                        <span className="font-display font-bold text-rose-600 text-lg">{formatCurrency(Number(product.price))}</span>
                         <div className="flex items-center gap-1">
                           <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                           <span className="text-xs text-gray-400">4.9</span>
@@ -206,7 +206,7 @@ export default function HomePage() {
 
           <div className="text-center mt-10">
             <Link href="/tienda"
-              className="inline-flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-bold px-10 py-4 rounded-2xl transition-all shadow-pink hover:shadow-glass hover:-translate-y-1 text-sm tracking-wide">
+              className="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-bold px-10 py-4 rounded-2xl transition-all shadow-pink hover:shadow-glass hover:-translate-y-1 text-sm tracking-wide">
               Ver toda la tienda <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -234,10 +234,10 @@ export default function HomePage() {
             </div>
 
             <div>
-              <p className="text-pink-500 text-xs font-bold tracking-[0.2em] uppercase mb-3">Suscripciones</p>
+              <p className="text-rose-600 text-xs font-bold tracking-[0.2em] uppercase mb-3">Suscripciones</p>
               <h2 className="font-display text-4xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
                 Flores frescas,<br />
-                <span className="italic text-pink-500">sin preocuparte</span>
+                <span className="italic text-rose-600">sin preocuparte</span>
               </h2>
               <p className="text-gray-500 leading-relaxed text-lg mb-8">
                 Elige tu plan y nosotros nos encargamos de todo. Seleccionamos las flores más frescas y las entregamos directamente en la puerta de quien tú quieras.
@@ -252,8 +252,8 @@ export default function HomePage() {
                   'Nota de regalo incluida',
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-3 text-sm text-gray-700 font-medium">
-                    <div className="w-6 h-6 rounded-full bg-pink-100 flex items-center justify-center shrink-0">
-                      <Check className="w-3.5 h-3.5 text-pink-600" />
+                    <div className="w-6 h-6 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                      <Check className="w-3.5 h-3.5 text-rose-600" />
                     </div>
                     {item}
                   </li>
@@ -261,7 +261,7 @@ export default function HomePage() {
               </ul>
 
               <Link href="/planes"
-                className="inline-flex items-center gap-2 bg-sage-600 hover:bg-sage-700 text-white font-bold px-10 py-4 rounded-2xl transition-all shadow-glass hover:shadow-lg hover:-translate-y-1 text-sm tracking-wide">
+                className="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-bold px-10 py-4 rounded-2xl transition-all shadow-pink hover:shadow-lg hover:-translate-y-1 text-sm tracking-wide">
                 Ver planes disponibles <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -270,21 +270,21 @@ export default function HomePage() {
       </section>
 
       {/* CTA FINAL */}
-      <section className="relative py-32 overflow-hidden bg-sage-900">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-sage-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <section className="relative py-32 overflow-hidden bg-rose-700">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-rose-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-300/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
         <div className="relative max-w-3xl mx-auto px-4 text-center">
           <div className="text-5xl mb-6 animate-float inline-block">🌸</div>
           <h2 className="font-display text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
             Únete a nuestra familia floral
           </h2>
-          <p className="text-pink-100 text-xl mb-10 max-w-lg mx-auto leading-relaxed">
+          <p className="text-rose-100 text-xl mb-10 max-w-lg mx-auto leading-relaxed">
             Regístrate hoy y recibe 10% de descuento en tu primer pedido. Sin compromisos.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link href="/registro"
-              className="inline-flex items-center gap-2 bg-white text-sage-900 hover:bg-cream font-bold px-10 py-5 rounded-2xl transition-all shadow-xl hover:shadow-glass hover:-translate-y-1 text-sm tracking-wide">
+              className="inline-flex items-center gap-2 bg-white text-rose-700 hover:bg-rose-50 font-bold px-10 py-5 rounded-2xl transition-all shadow-xl hover:shadow-glass hover:-translate-y-1 text-sm tracking-wide">
               Crear cuenta gratis <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -293,3 +293,4 @@ export default function HomePage() {
     </>
   );
 }
+

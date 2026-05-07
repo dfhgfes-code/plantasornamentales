@@ -58,8 +58,8 @@ export function Navbar() {
                 className={cn(
                   'px-4 py-2 text-sm font-medium rounded-xl transition-all',
                   pathname === l.href
-                    ? 'text-pink-600 bg-pink-50'
-                    : 'text-gray-600 hover:text-pink-600 hover:bg-pink-50/60'
+                    ? 'text-rose-600 bg-rose-50'
+                    : 'text-gray-600 hover:text-rose-600 hover:bg-rose-50/60'
                 )}>
                 {l.label}
               </Link>
@@ -70,10 +70,10 @@ export function Navbar() {
           <div className="flex items-center gap-1.5">
             {/* Carrito */}
             <Link href="/carrito"
-              className="relative p-2.5 text-gray-500 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all">
+              className="relative p-2.5 text-gray-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all">
               <ShoppingCart className="w-5 h-5" />
               {itemCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-pink-500 text-white text-[10px] rounded-full w-4.5 h-4.5 min-w-[18px] min-h-[18px] flex items-center justify-center font-bold px-1">
+                <span className="absolute -top-0.5 -right-0.5 bg-rose-600 text-white text-[10px] rounded-full w-4.5 h-4.5 min-w-[18px] min-h-[18px] flex items-center justify-center font-bold px-1">
                   {itemCount > 9 ? '9+' : itemCount}
                 </span>
               )}
@@ -83,13 +83,13 @@ export function Navbar() {
               isAuthenticated ? (
                 <div className="hidden md:flex items-center gap-1">
                   {(user?.role === 'admin' || user?.role === 'super_admin') && (
-                    <Link href="/admin" className="p-2.5 text-gray-500 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all" title="Admin">
+                    <Link href="/admin" className="p-2.5 text-gray-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Admin">
                       <LayoutDashboard className="w-5 h-5" />
                     </Link>
                   )}
-                  <Link href="/perfil" className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all">
-                    <div className="w-7 h-7 rounded-lg bg-pink-100 flex items-center justify-center">
-                      <User className="w-4 h-4 text-pink-600" />
+                  <Link href="/perfil" className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all">
+                    <div className="w-7 h-7 rounded-lg bg-rose-100 flex items-center justify-center">
+                      <User className="w-4 h-4 text-rose-600" />
                     </div>
                     <span className="hidden lg:block">{user?.firstName}</span>
                   </Link>
@@ -99,17 +99,17 @@ export function Navbar() {
                 </div>
               ) : (
                 <div className="hidden md:flex items-center gap-2">
-                  <Link href="/login" className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-all">
+                  <Link href="/login" className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all">
                     Ingresar
                   </Link>
-                  <Link href="/registro" className="px-5 py-2 text-sm font-semibold bg-pink-500 hover:bg-pink-600 text-white rounded-xl transition-all shadow-pink hover:shadow-lg hover:-translate-y-px">
+                  <Link href="/registro" className="px-5 py-2 text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white rounded-xl transition-all shadow-pink hover:shadow-lg hover:-translate-y-px">
                     Registrarse
                   </Link>
                 </div>
               )
             )}
 
-            <button className="md:hidden p-2.5 text-gray-600 hover:bg-pink-50 rounded-xl transition-all" onClick={() => setOpen(!open)}>
+            <button className="md:hidden p-2.5 text-gray-600 hover:bg-rose-50 rounded-xl transition-all" onClick={() => setOpen(!open)}>
               {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
@@ -121,7 +121,7 @@ export function Navbar() {
             {links.map((l) => (
               <Link key={l.href} href={l.href} onClick={() => setOpen(false)}
                 className={cn('block px-4 py-3 text-sm font-medium rounded-xl transition-all',
-                  pathname === l.href ? 'bg-pink-50 text-pink-600' : 'text-gray-700 hover:bg-pink-50/60')}>
+                  pathname === l.href ? 'bg-rose-50 text-rose-600' : 'text-gray-700 hover:bg-rose-50/60')}>
                 {l.label}
               </Link>
             ))}
@@ -129,11 +129,11 @@ export function Navbar() {
               {mounted && (
                 isAuthenticated ? (
                   <>
-                    <Link href="/perfil" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 rounded-xl">
+                    <Link href="/perfil" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-rose-50 rounded-xl">
                       <User className="w-4 h-4" /> Mi perfil
                     </Link>
                     {(user?.role === 'admin' || user?.role === 'super_admin') && (
-                      <Link href="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 rounded-xl">
+                      <Link href="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-rose-50 rounded-xl">
                         <LayoutDashboard className="w-4 h-4" /> Panel Admin
                       </Link>
                     )}
@@ -143,8 +143,8 @@ export function Navbar() {
                   </>
                 ) : (
                   <>
-                    <Link href="/login" onClick={() => setOpen(false)} className="block px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 rounded-xl">Ingresar</Link>
-                    <Link href="/registro" onClick={() => setOpen(false)} className="block px-4 py-3 text-sm font-semibold text-pink-600 bg-pink-50 rounded-xl">Registrarse</Link>
+                    <Link href="/login" onClick={() => setOpen(false)} className="block px-4 py-3 text-sm text-gray-700 hover:bg-rose-50 rounded-xl">Ingresar</Link>
+                    <Link href="/registro" onClick={() => setOpen(false)} className="block px-4 py-3 text-sm font-semibold text-rose-600 bg-rose-50 rounded-xl">Registrarse</Link>
                   </>
                 )
               )}
@@ -155,3 +155,4 @@ export function Navbar() {
     </nav>
   );
 }
+
