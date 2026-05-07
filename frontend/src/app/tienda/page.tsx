@@ -93,13 +93,13 @@ function ProductModal({ product, onClose }: { product: any; onClose: () => void 
     Array.from(selectedAdditionals).reduce((sum, i) => sum + (additionals[i]?.price || 0), 0);
 
   const handleAdd = () => {
-    addItem({ id: product.id, name: product.name, price: Number(product.price), imageUrl: product.imageUrl });
-    // Agregar adicionales como ítems separados
-    Array.from(selectedAdditionals).forEach(i => {
-      const a = additionals[i];
-      if (a) addItem({ id: `${product.id}-add-${i}`, name: a.name, price: a.price, imageUrl: a.imageUrl || '' });
-    });
-    toast.success(`${product.name} agregado al carrito 🌸`);
+    const selectedAddList = Array.from(selectedAdditionals).map(i => additionals[i]).filter(Boolean);
+    const { addItemWithAdditionals } = useCartStore.getState();
+    addItemWithAdditionals(
+      { id: product.id, name: product.name, price: Number(product.price), imageUrl: product.imageUrl },
+      selectedAddList.map(a => ({ name: a.name, price: a.price, imageUrl: a.imageUrl }))
+    );
+    toast.success(`${product.name}${selectedAddList.length ? ' + complementos' : ''} agregado al carrito 🌸`);
     onClose();
   };
 

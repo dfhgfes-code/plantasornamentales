@@ -119,15 +119,15 @@ export default function ProductDetailPage() {
 
   const handleAdd = () => {
     if (!product) return;
+    const selectedAddList = Array.from(selectedAdditionals).map(i => additionals[i]).filter(Boolean);
+    const { addItemWithAdditionals } = useCartStore.getState();
     for (let i = 0; i < qty; i++) {
-      addItem({ id: product.id, name: product.name, price: Number(product.price), imageUrl: product.imageUrl });
+      addItemWithAdditionals(
+        { id: product.id, name: product.name, price: Number(product.price), imageUrl: product.imageUrl },
+        selectedAddList.map(a => ({ name: a.name, price: a.price, imageUrl: a.imageUrl }))
+      );
     }
-    // Agregar adicionales seleccionados
-    Array.from(selectedAdditionals).forEach(i => {
-      const a = additionals[i];
-      if (a) addItem({ id: `${product.id}-add-${i}`, name: a.name, price: a.price, imageUrl: a.imageUrl || '' });
-    });
-    const addNames = Array.from(selectedAdditionals).map(i => additionals[i]?.name).filter(Boolean);
+    const addNames = selectedAddList.map(a => a.name);
     toast.success(`${product.name}${addNames.length ? ' + ' + addNames.join(', ') : ''} agregado 🌸`);
   };
 
