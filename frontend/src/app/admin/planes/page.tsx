@@ -20,7 +20,9 @@ export default function AdminPlanesPage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'admin') { router.push('/login'); return; }
+    if (!isAuthenticated || (user?.role !== 'admin' && user?.role !== 'super_admin')) {
+      router.push('/login'); return;
+    }
     load();
   }, [isAuthenticated]);
 
