@@ -107,6 +107,12 @@ export class SettingsService implements OnModuleInit {
       maintenance_title: 'Estamos renovando nuestro jardín 🌱',
       maintenance_subtitle: 'Volvemos muy pronto con novedades hermosas.',
       maintenance_eta: '',
+
+      // ── Configuración de envío ────────────────────────────────
+      shipping_free: 'false',
+      shipping_price: '8000',
+      shipping_free_from: '',
+      shipping_message: 'Entrega en 24-48 horas hábiles',
     };
 
     for (const [key, value] of Object.entries(defaultSettings)) {

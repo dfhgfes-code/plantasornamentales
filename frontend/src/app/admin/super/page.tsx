@@ -309,6 +309,93 @@ export default function SuperAdminPage() {
           {/* CONTACTO & POPUP */}
           {tab === 'config' && (
             <div className="space-y-8">
+
+              {/* ── Configuración de Envío ── */}
+              <section>
+                <h3 className="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2">
+                  🚚 Configuración de Envío
+                </h3>
+                <Card className="p-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Envío gratis toggle */}
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                      <div>
+                        <p className="text-sm font-bold text-gray-800">Envío gratis</p>
+                        <p className="text-xs text-gray-400 mt-0.5">Activa para ofrecer envío sin costo</p>
+                      </div>
+                      <button onClick={() => toggleSetting('shipping_free')}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all ${settings.shipping_free === 'true' ? 'bg-green-500 border-green-500 text-white' : 'bg-white border-gray-200 text-gray-400'}`}>
+                        {settings.shipping_free === 'true'
+                          ? <><ToggleRight className="w-4 h-4" /> Gratis</>
+                          : <><ToggleLeft className="w-4 h-4" /> Con costo</>}
+                      </button>
+                    </div>
+
+                    {/* Precio de envío */}
+                    <div className={settings.shipping_free === 'true' ? 'opacity-40 pointer-events-none' : ''}>
+                      <label className="text-[10px] font-black text-gray-400 uppercase block mb-1">
+                        Precio del envío (COP)
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-bold">$</span>
+                        <input
+                          type="number"
+                          value={settings.shipping_price || '8000'}
+                          onChange={e => setSetting('shipping_price', e.target.value)}
+                          className="w-full pl-8 pr-4 py-2.5 bg-gray-50 rounded-2xl text-sm border-0 focus:ring-2 focus:ring-indigo-100"
+                          placeholder="8000"
+                        />
+                      </div>
+                      <p className="text-[10px] text-gray-400 mt-1">Este valor se muestra en el carrito de compras</p>
+                    </div>
+
+                    {/* Monto mínimo para envío gratis */}
+                    <div>
+                      <label className="text-[10px] font-black text-gray-400 uppercase block mb-1">
+                        Envío gratis desde (COP) — opcional
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-bold">$</span>
+                        <input
+                          type="number"
+                          value={settings.shipping_free_from || ''}
+                          onChange={e => setSetting('shipping_free_from', e.target.value)}
+                          className="w-full pl-8 pr-4 py-2.5 bg-gray-50 rounded-2xl text-sm border-0 focus:ring-2 focus:ring-indigo-100"
+                          placeholder="150000"
+                        />
+                      </div>
+                      <p className="text-[10px] text-gray-400 mt-1">Si el pedido supera este monto, el envío es gratis automáticamente</p>
+                    </div>
+
+                    {/* Mensaje de envío */}
+                    <div>
+                      <label className="text-[10px] font-black text-gray-400 uppercase block mb-1">
+                        Mensaje de envío
+                      </label>
+                      <input
+                        value={settings.shipping_message || ''}
+                        onChange={e => setSetting('shipping_message', e.target.value)}
+                        className="w-full px-4 py-2.5 bg-gray-50 rounded-2xl text-sm border-0 focus:ring-2 focus:ring-indigo-100"
+                        placeholder="Entrega en 24-48 horas hábiles"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Preview */}
+                  <div className="mt-4 p-3 bg-indigo-50 rounded-xl border border-indigo-100">
+                    <p className="text-xs text-indigo-700 font-semibold">
+                      Vista previa en el carrito: Envío →{' '}
+                      {settings.shipping_free === 'true'
+                        ? '🎉 Gratis'
+                        : `$${Number(settings.shipping_price || 8000).toLocaleString('es-CO')}`}
+                      {settings.shipping_free_from && settings.shipping_free !== 'true'
+                        ? ` (gratis desde $${Number(settings.shipping_free_from).toLocaleString('es-CO')})`
+                        : ''}
+                    </p>
+                  </div>
+                </Card>
+              </section>
+
               <div className="grid md:grid-cols-2 gap-8">
                 <section className="space-y-4">
                   <h3 className="font-bold text-lg text-gray-900 flex items-center gap-2"><Phone className="w-5 h-5 text-indigo-500" /> Datos de Contacto</h3>

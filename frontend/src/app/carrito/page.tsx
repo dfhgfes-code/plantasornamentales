@@ -1,14 +1,34 @@
 'use client';
 import { useCartStore } from '@/store/cart.store';
 import { formatCurrency } from '@/lib/utils';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Gift } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Gift, Truck } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
+import { useEffect, useState } from 'react';
+import { settingsApi } from '@/lib/api';
 
 export default function CarritoPage() {
   const { items, removeItem, updateQuantity, total, clearCart } = useCartStore();
+  const [shippingPrice, setShippingPrice] = useState(8000);
+  const [shippingFree, setShippingFree] = useState(false);
+  const [shippingFreeFrom, setShippingFreeFrom] = useState(0);
+  const [shippingMessage, setShippingMessage] = useState('');
+
+  useEffect(() => {
+    settingsApi.getAll().then(res => {
+      const s = res.data?.data || {};
+      setShippingPrice(Number(s.shipping_price || 8000));
+      setShippingFree(s.shipping_free === 'true');
+      setShippingFreeFrom(Number(s.shipping_free_from || 0));
+      setShippingMessage(s.shipping_message || '');
+    }).catch(() => {});
+  }, []);
+
   const subtotal = total();
-  const deliveryFee = items.length > 0 ? 8000 : 0;
+
+  // Calcular envío
+  const isFreeShipping = shippingFree || (shippingFreeFrom > 0 && subtotal >= shippingFreeFrom);
+  const deliveryFee = items.length === 0 ? 0 : (isFreeShipping ? 0 : shippingPrice);
   const grandTotal = subtotal + deliveryFee;
 
   if (items.length === 0) {
@@ -148,9 +168,32 @@ export default function CarritoPage() {
               <span>{formatCurrency(subtotal)}</span>
             </div>
             <div className="flex justify-between text-gray-500">
-              <span>Envío</span>
-              <span>{formatCurrency(deliveryFee)}</span>
+              <span className="flex items-center gap-1.5">
+                <Truck className="w-3.5 h-3.5" /> Envío
+                {shippingFreeFrom > 0 && !isFreeShipping && (
+                  <span className="text-[10px] text-green-600 font-semibold">
+                    (gratis desde {formatCurrency(shippingFreeFrom)})
+                  </span>
+                )}
+              </span>
+              <span className={isFreeShipping ? 'text-green-600 font-bold' : ''}>
+                {isFreeShipping ? '🎉 Gratis' : formatCurrency(deliveryFee)}
+              </span>
             </div>
+            {shippingMessage && (
+              <p className="text-[10px] text-gray-400 italic">{shippingMessage}</p>
+            )}
+            {shippingFreeFrom > 0 && !isFreeShipping && (
+              <div className="bg-green-50 rounded-xl p-2 border border-green-100">
+                <p className="text-[10px] text-green-700 font-semibold">
+                  ¡Agrega {formatCurrency(shippingFreeFrom - subtotal)} más para envío gratis! 🚚
+                </p>
+                <div className="mt-1.5 h-1.5 bg-green-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-green-500 rounded-full transition-all"
+                    style={{ width: `${Math.min(100, (subtotal / shippingFreeFrom) * 100)}%` }} />
+                </div>
+              </div>
+            )}
             <div className="border-t border-gray-100 pt-2 flex justify-between font-bold text-gray-900 text-base">
               <span>Total</span>
               <span className="text-rose-600">{formatCurrency(grandTotal)}</span>
