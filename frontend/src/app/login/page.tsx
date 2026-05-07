@@ -91,7 +91,7 @@ export default function LoginPage() {
           padding: 20px;
           font-family: 'Inter', sans-serif;
           position: relative;
-          overflow: hidden;
+          overflow-y: auto;
         }
 
         .login-card {
@@ -102,7 +102,7 @@ export default function LoginPage() {
           box-shadow: 0 40px 100px rgba(0,0,0,0.06);
           display: flex;
           overflow: hidden;
-          min-height: 700px;
+          min-height: min(700px, 90vh);
           position: relative;
           z-index: 10;
         }
@@ -190,7 +190,7 @@ export default function LoginPage() {
 
         .right-panel {
           flex: 1;
-          padding: 60px 60px 60px 180px; /* Perfect balance for the refined curve */
+          padding: 40px 50px 40px 160px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -198,6 +198,7 @@ export default function LoginPage() {
           position: relative;
           background: #fff;
           z-index: 5;
+          overflow-y: auto;
         }
 
         .floral-bg-decor {
@@ -218,29 +219,29 @@ export default function LoginPage() {
         }
 
         .logo-wrapper {
-          margin-bottom: 40px;
+          margin-bottom: 24px;
         }
 
         .form-header {
           text-align: center;
-          margin-bottom: 35px;
+          margin-bottom: 24px;
         }
 
         .form-header h1 {
-          font-size: 2.2rem;
+          font-size: 2rem;
           font-weight: 400;
           color: #374151;
-          margin-bottom: 8px;
+          margin-bottom: 6px;
           font-family: 'Playfair Display', serif;
         }
 
         .form-header p {
           color: #6b7280;
-          font-size: 1rem;
+          font-size: 0.95rem;
         }
 
         .input-group {
-          margin-bottom: 20px;
+          margin-bottom: 16px;
         }
 
         .input-label {
@@ -302,14 +303,14 @@ export default function LoginPage() {
 
         .btn-login {
           width: 100%;
-          padding: 16px;
+          padding: 14px;
           background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
           color: #fff;
           border: none;
           border-radius: 12px;
           font-size: 1rem;
           font-weight: 600;
-          margin-top: 30px;
+          margin-top: 20px;
           cursor: pointer;
           transition: all 0.2s;
           box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);
@@ -323,7 +324,7 @@ export default function LoginPage() {
         .divider {
           display: flex;
           align-items: center;
-          margin: 25px 0;
+          margin: 18px 0;
           color: #e5e7eb;
         }
 
@@ -362,7 +363,7 @@ export default function LoginPage() {
         }
 
         .footer-text {
-          margin-top: 40px;
+          margin-top: 24px;
           text-align: center;
           font-size: 0.95rem;
           color: #6b7280;
@@ -376,9 +377,16 @@ export default function LoginPage() {
 
         @media (max-width: 1024px) {
           .left-panel { display: none; }
-          .login-card { max-width: 500px; border-radius: 0; min-height: 100vh; }
-          .right-panel { padding: 40px 24px; }
-          .login-page { padding: 0; }
+          .login-card { max-width: 500px; border-radius: 24px; min-height: unset; }
+          .right-panel { padding: 40px 32px; }
+          .login-page { padding: 16px; align-items: flex-start; padding-top: 40px; }
+        }
+
+        @media (max-width: 480px) {
+          .login-card { border-radius: 20px; }
+          .right-panel { padding: 32px 20px; }
+          .form-header h1 { font-size: 1.7rem; }
+          .login-page { padding: 12px; padding-top: 24px; }
         }
       `}</style>
 
