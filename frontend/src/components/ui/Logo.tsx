@@ -135,15 +135,13 @@ export const Logo = ({
   return (
     <div className={cn(
       "flex group transition-all duration-300",
-      horizontal ? "flex-row items-center gap-6" : "flex-col items-center gap-4",
+      horizontal ? "flex-row items-center gap-2" : "flex-col items-center gap-4",
       centered && !horizontal ? "text-center" : "",
       className
     )}>
       {/* Masterpiece Rose Branding */}
-      <div className="relative flex items-center justify-center" style={{ width: currentSize.icon, height: currentSize.icon }}>
+      <div className="relative flex items-center justify-center shrink-0" style={{ width: currentSize.icon, height: currentSize.icon }}>
         <MasterpieceRose size={currentSize.icon} isLight={isLight} />
-        
-        {/* Soft background glow */}
         <div className={cn(
           "absolute inset-0 rounded-full blur-3xl opacity-20 -z-10 animate-soft-glow",
           isLight ? "bg-white" : "bg-rose-200"
@@ -168,7 +166,7 @@ export const Logo = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.2, delay: 1.5 }}
-          className="flex items-center gap-2 mt-3 w-full justify-center"
+          className="flex items-center gap-1.5 mt-1 w-full justify-center"
         >
           <span className={cn("flex-1 h-[0.5px]", isLight ? "bg-white/10" : "bg-gray-100")} />
           <span className={cn(
