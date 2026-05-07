@@ -113,7 +113,7 @@ export function HeroCarousel() {
             </p>
             <Link
               href={slide.buttonLink || '/tienda'}
-              className="group inline-flex items-center gap-3 bg-white text-gray-900 hover:bg-pink-50 font-bold px-8 py-4 rounded-2xl transition-all shadow-xl hover:-translate-y-0.5 text-sm"
+              className="group inline-flex items-center gap-3 bg-rose-600 hover:bg-rose-700 text-white font-bold px-8 py-4 rounded-2xl transition-all shadow-xl hover:-translate-y-0.5 text-sm tracking-wide"
             >
               {slide.buttonText || 'Ver catálogo'}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
