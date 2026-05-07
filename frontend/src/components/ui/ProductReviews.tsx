@@ -106,7 +106,7 @@ export function ProductReviews({ productId }: { productId: string }) {
 
   const handleHelpful = (id: string) => {
     if (helpfulClicked.has(id)) return;
-    setHelpfulClicked(prev => new Set([...prev, id]));
+    setHelpfulClicked(prev => { const next = new Set(prev); next.add(id); return next; });
     setReviews(prev => prev.map(r => r.id === id ? { ...r, helpful: r.helpful + 1 } : r));
   };
 
