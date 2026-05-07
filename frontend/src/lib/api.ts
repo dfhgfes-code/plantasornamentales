@@ -14,14 +14,30 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Páginas que NO requieren autenticación
+const PUBLIC_PATHS = ['/', '/tienda', '/planes', '/login', '/registro', '/carrito'];
+
 // Interceptor: manejar errores globalmente
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      const isPublic = PUBLIC_PATHS.some(p =>
+        currentPath === p ||
+        currentPath.startsWith('/tienda/') ||
+        currentPath.startsWith('/planes/')
+      );
+
+      // Limpiar token expirado
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+
+      // Solo redirigir a login si estamos en una página privada (/perfil, /checkout, /admin)
+      if (!isPublic) {
+        window.location.href = '/login';
+      }
+      // En páginas públicas: solo limpiamos el token, no redirigimos
     }
     return Promise.reject(error);
   },
