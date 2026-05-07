@@ -51,7 +51,7 @@ export const productsApi = {
 };
 
 export const plansApi = {
-  getAll: (onlyActive = false) => api.get(`/plans${onlyActive ? '?active=true' : ''}`),
+  getAll: (onlyActive = false) => api.get(`/plans${onlyActive ? '?onlyActive=true' : ''}`),
   getOne: (id: string) => api.get(`/plans/${id}`),
   create: (data: any) => api.post('/plans', data),
   update: (id: string, data: any) => api.patch(`/plans/${id}`, data),
