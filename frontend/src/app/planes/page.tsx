@@ -53,16 +53,16 @@ function PlanCard({ plan, featured, index }: { plan: any; featured: boolean; ind
       <div className={`relative rounded-2xl overflow-hidden flex flex-col transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl ${
         featured
           ? 'shadow-xl shadow-rose-200/60 ring-2 ring-rose-400'
-          : 'shadow-md shadow-gray-200/80 ring-1 ring-gray-100'
+          : 'shadow-md shadow-rose-100/80 ring-1 ring-rose-100'
       }`}>
 
-        {/* Header con imagen/gradiente de fondo */}
+        {/* Header con gradiente rosa */}
         <div className={`relative px-6 pt-8 pb-6 ${
           featured
-            ? 'bg-gradient-to-br from-rose-600 via-rose-500 to-pink-600'
+            ? 'bg-gradient-to-br from-rose-600 via-rose-500 to-pink-500'
             : isWeekly
-              ? 'bg-gradient-to-br from-slate-800 to-slate-700'
-              : 'bg-gradient-to-br from-violet-700 to-purple-600'
+              ? 'bg-gradient-to-br from-rose-800 to-rose-700'
+              : 'bg-gradient-to-br from-pink-700 to-rose-600'
         }`}>
           {/* Patrón decorativo */}
           <div className="absolute inset-0 opacity-10"
@@ -104,9 +104,9 @@ function PlanCard({ plan, featured, index }: { plan: any; featured: boolean; ind
               {plan.features.map((f: string) => (
                 <li key={f} className="flex items-start gap-2.5">
                   <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
-                    featured ? 'bg-rose-100' : 'bg-gray-100'
+                    featured ? 'bg-rose-100' : 'bg-rose-50'
                   }`}>
-                    <Check className={`w-3 h-3 ${featured ? 'text-rose-600' : 'text-gray-500'}`} />
+                    <Check className="w-3 h-3 text-rose-500" />
                   </div>
                   <span className="text-sm text-gray-600 leading-relaxed">{f}</span>
                 </li>
@@ -120,8 +120,8 @@ function PlanCard({ plan, featured, index }: { plan: any; featured: boolean; ind
               featured
                 ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-200 hover:shadow-rose-300'
                 : isWeekly
-                  ? 'bg-gradient-to-r from-slate-700 to-slate-800 text-white shadow-md hover:shadow-lg'
-                  : 'bg-gradient-to-r from-violet-600 to-purple-700 text-white shadow-md hover:shadow-lg'
+                  ? 'bg-gradient-to-r from-rose-800 to-rose-700 text-white shadow-md hover:shadow-lg'
+                  : 'bg-gradient-to-r from-pink-700 to-rose-600 text-white shadow-md hover:shadow-lg'
             }`}
           >
             Suscribirme ahora <ArrowRight className="w-4 h-4" />
