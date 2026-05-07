@@ -14,30 +14,36 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Páginas que NO requieren autenticación
-const PUBLIC_PATHS = ['/', '/tienda', '/planes', '/login', '/registro', '/carrito'];
-
 // Interceptor: manejar errores globalmente
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
       const currentPath = window.location.pathname;
-      const isPublic = PUBLIC_PATHS.some(p =>
-        currentPath === p ||
-        currentPath.startsWith('/tienda/') ||
-        currentPath.startsWith('/planes/')
-      );
 
-      // Limpiar token expirado
+      // Limpiar token expirado del localStorage
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      // Limpiar también el store de Zustand (auth-storage)
+      try {
+        const stored = localStorage.getItem('auth-storage');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          parsed.state = { ...parsed.state, user: null, token: null, isAuthenticated: false };
+          localStorage.setItem('auth-storage', JSON.stringify(parsed));
+        }
+      } catch {}
 
-      // Solo redirigir a login si estamos en una página privada (/perfil, /checkout, /admin)
-      if (!isPublic) {
+      // Solo redirigir a login si estamos en una página estrictamente privada
+      const requiresAuth =
+        currentPath.startsWith('/perfil') ||
+        currentPath.startsWith('/checkout') ||
+        currentPath.startsWith('/admin');
+
+      if (requiresAuth) {
         window.location.href = '/login';
       }
-      // En páginas públicas: solo limpiamos el token, no redirigimos
+      // En cualquier otra página: solo limpiamos el token silenciosamente
     }
     return Promise.reject(error);
   },
