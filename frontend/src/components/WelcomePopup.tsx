@@ -70,12 +70,12 @@ export function WelcomePopup() {
           <span className="absolute bottom-4 left-12 text-3xl opacity-50 animate-float" style={{ animationDelay: '0.5s' }}>🌼</span>
           <span className="absolute bottom-6 right-6 text-4xl opacity-60 animate-float" style={{ animationDelay: '1.5s' }}>🌹</span>
 
-          <div className="absolute top-4 left-4 bg-pink-500 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg z-10">
+          <div className="absolute top-4 left-4 bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg z-10">
             <Gift className="w-3.5 h-3.5" />
             {discountLabel}
           </div>
 
-          <div className="relative z-10 w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-pink-100">
+          <div className="relative z-10 w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-rose-100">
             <span className="text-4xl">🌸</span>
           </div>
         </div>
@@ -97,7 +97,7 @@ export function WelcomePopup() {
               { emoji: '🚚', text: 'Envío gratis' },
               { emoji: '💝', text: 'Sin contratos' },
             ].map(({ emoji, text }) => (
-              <div key={text} className="bg-pink-50 rounded-2xl py-3 px-2 border border-pink-100">
+              <div key={text} className="bg-rose-50 rounded-2xl py-3 px-2 border border-rose-100">
                 <div className="text-2xl mb-1">{emoji}</div>
                 <p className="text-xs text-gray-600 font-medium">{text}</p>
               </div>
@@ -109,7 +109,7 @@ export function WelcomePopup() {
             <Link
               href={ctaLink}
               onClick={close}
-              className="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm"
+              className="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-sm"
             >
               {ctaText}
               <ArrowRight className="w-4 h-4" />
@@ -117,7 +117,7 @@ export function WelcomePopup() {
             <Link
               href="/planes"
               onClick={close}
-              className="w-full bg-pink-50 hover:bg-pink-100 text-pink-600 font-semibold py-3 rounded-2xl transition-all text-sm border border-pink-100"
+              className="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold py-3 rounded-2xl transition-all text-sm border border-rose-100"
             >
               Ver planes de suscripción
             </Link>
