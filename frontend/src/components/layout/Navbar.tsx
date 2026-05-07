@@ -34,6 +34,7 @@ export function Navbar() {
     { href: '/', label: 'Inicio' },
     { href: '/tienda', label: 'Tienda' },
     { href: '/planes', label: 'Suscripciones' },
+    { href: '/nosotros', label: 'Nosotros' },
   ];
 
   return (
