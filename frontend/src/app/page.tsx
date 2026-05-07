@@ -342,7 +342,8 @@ export default function HomePage() {
                 ))
               : products.map((product) => (
                   <div key={product.id}
-                    className="group bg-white rounded-[2rem] overflow-hidden shadow-card hover:shadow-glass transition-all duration-500 hover:-translate-y-2 border border-transparent hover:border-pink-100">
+                    onClick={() => setSelectedProduct(product)}
+                    className="group bg-white rounded-[2rem] overflow-hidden shadow-card hover:shadow-glass transition-all duration-500 hover:-translate-y-2 border border-transparent hover:border-pink-100 cursor-pointer">
                     <div className="relative h-72 overflow-hidden">
                       <img
                         src={product.imageUrl || '/flowers/f-rosas-rojas.jpg'}
@@ -350,20 +351,18 @@ export default function HomePage() {
                         loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 flex items-end p-5 opacity-0 group-hover:opacity-100">
-                        <button onClick={() => handleAdd(product)}
-                          className="w-full bg-white/90 backdrop-blur-md text-rose-600 font-bold py-3.5 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-white transition-colors shadow-glass transform translate-y-4 group-hover:translate-y-0 duration-500">
-                          <ShoppingCart className="w-4 h-4" /> Agregar al carrito
-                        </button>
+                      {/* Overlay con lupa */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                        <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100 shadow-lg">
+                          <ZoomIn className="w-5 h-5 text-rose-600" />
+                        </div>
                       </div>
                       <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-md text-rose-600 text-[10px] font-bold px-4 py-1.5 rounded-full shadow-sm">
                         {product.category}
                       </div>
                     </div>
                     <div className="p-4">
-                      <Link href={`/tienda/${product.id}`}>
-                        <h3 className="font-bold text-gray-900 hover:text-rose-600 transition-colors mb-1 line-clamp-1">{product.name}</h3>
-                      </Link>
+                      <h3 className="font-bold text-gray-900 group-hover:text-rose-600 transition-colors mb-1 line-clamp-1">{product.name}</h3>
                       <p className="text-xs text-gray-400 mb-3 line-clamp-2">{product.description}</p>
                       <div className="flex items-center justify-between">
                         <span className="font-display font-bold text-rose-600 text-lg">{formatCurrency(Number(product.price))}</span>
