@@ -32,88 +32,101 @@ const FAQS = [
 
 function PlanCard({ plan, featured, index }: { plan: any; featured: boolean; index: number }) {
   const freq = plan.frequency === 'weekly' ? 'semana' : 'mes';
-  const emoji = plan.frequency === 'weekly' ? '🌷' : '🌹';
+  const isWeekly = plan.frequency === 'weekly';
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`relative rounded-3xl flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 ${
-        featured
-          ? 'bg-gradient-to-br from-rose-600 to-pink-700 shadow-2xl shadow-rose-200 scale-[1.02]'
-          : 'bg-white border border-gray-100 shadow-sm hover:shadow-lg'
-      }`}
+      className="relative group"
     >
-      {/* Badge popular */}
+      {/* Badge popular flotante */}
       {featured && (
-        <div className="absolute top-5 right-5">
-          <span className="bg-white/20 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1">
+        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20">
+          <span className="bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 whitespace-nowrap">
             <Star className="w-3 h-3 fill-white" /> Más popular
           </span>
         </div>
       )}
 
-      <div className="p-7 flex flex-col flex-1">
-        {/* Emoji + nombre */}
-        <div className="mb-5">
-          <span className="text-3xl mb-3 block">{emoji}</span>
-          <h3 className={`text-xl font-bold mb-1.5 ${featured ? 'text-white' : 'text-gray-900'}`}
+      <div className={`relative rounded-2xl overflow-hidden flex flex-col transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl ${
+        featured
+          ? 'shadow-xl shadow-rose-200/60 ring-2 ring-rose-400'
+          : 'shadow-md shadow-gray-200/80 ring-1 ring-gray-100'
+      }`}>
+
+        {/* Header con imagen/gradiente de fondo */}
+        <div className={`relative px-6 pt-8 pb-6 ${
+          featured
+            ? 'bg-gradient-to-br from-rose-600 via-rose-500 to-pink-600'
+            : isWeekly
+              ? 'bg-gradient-to-br from-slate-800 to-slate-700'
+              : 'bg-gradient-to-br from-violet-700 to-purple-600'
+        }`}>
+          {/* Patrón decorativo */}
+          <div className="absolute inset-0 opacity-10"
+            style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '20px 20px' }} />
+
+          {/* Icono floral */}
+          <div className={`relative w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-4 ${
+            featured ? 'bg-white/20' : 'bg-white/15'
+          }`}>
+            {isWeekly ? '🌷' : '🌹'}
+          </div>
+
+          <h3 className="relative text-xl font-bold text-white mb-1.5"
             style={{ fontFamily: "'Playfair Display', serif" }}>
             {plan.name}
           </h3>
-          <p className={`text-sm leading-relaxed ${featured ? 'text-rose-100' : 'text-gray-500'}`}>
+          <p className="relative text-sm leading-relaxed text-white/70 line-clamp-2">
             {plan.description}
           </p>
-        </div>
 
-        {/* Precio */}
-        <div className={`mb-6 pb-6 border-b ${featured ? 'border-white/20' : 'border-gray-100'}`}>
-          <div className="flex items-end gap-1">
-            <span className={`text-4xl font-bold ${featured ? 'text-white' : 'text-gray-900'}`}
-              style={{ fontFamily: "'Playfair Display', serif" }}>
+          {/* Precio dentro del header */}
+          <div className="relative mt-5 flex items-end gap-1.5">
+            <span className="text-4xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
               {formatCurrency(Number(plan.price))}
             </span>
-            <span className={`text-sm mb-1.5 ${featured ? 'text-rose-200' : 'text-gray-400'}`}>
-              /{freq}
-            </span>
+            <span className="text-white/60 text-sm mb-1.5">/{freq}</span>
           </div>
           {plan.frequency === 'monthly' && (
-            <p className={`text-xs mt-1 ${featured ? 'text-rose-200' : 'text-gray-400'}`}>
+            <p className="relative text-xs text-white/50 mt-1">
               ≈ {formatCurrency(Math.round(Number(plan.price) / 4))} por semana
             </p>
           )}
         </div>
 
-        {/* Features */}
-        {plan.features && plan.features.length > 0 && (
-          <ul className="space-y-3 mb-7 flex-1">
-            {plan.features.map((f: string) => (
-              <li key={f} className="flex items-start gap-2.5">
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
-                  featured ? 'bg-white/20' : 'bg-rose-50'
-                }`}>
-                  <Check className={`w-3 h-3 ${featured ? 'text-white' : 'text-rose-600'}`} />
-                </div>
-                <span className={`text-sm leading-relaxed ${featured ? 'text-rose-50' : 'text-gray-600'}`}>
-                  {f}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
+        {/* Body blanco con features */}
+        <div className="bg-white px-6 py-5 flex flex-col flex-1">
+          {plan.features && plan.features.length > 0 && (
+            <ul className="space-y-2.5 mb-6 flex-1">
+              {plan.features.map((f: string) => (
+                <li key={f} className="flex items-start gap-2.5">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
+                    featured ? 'bg-rose-100' : 'bg-gray-100'
+                  }`}>
+                    <Check className={`w-3 h-3 ${featured ? 'text-rose-600' : 'text-gray-500'}`} />
+                  </div>
+                  <span className="text-sm text-gray-600 leading-relaxed">{f}</span>
+                </li>
+              ))}
+            </ul>
+          )}
 
-        {/* CTA */}
-        <Link
-          href={`/planes/${plan.id}`}
-          className={`mt-auto flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all hover:-translate-y-0.5 ${
-            featured
-              ? 'bg-white text-rose-600 hover:bg-rose-50 shadow-lg'
-              : 'bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-100'
-          }`}
-        >
-          Suscribirme ahora <ArrowRight className="w-4 h-4" />
-        </Link>
+          <Link
+            href={`/planes/${plan.id}`}
+            className={`flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all hover:-translate-y-0.5 ${
+              featured
+                ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-200 hover:shadow-rose-300'
+                : isWeekly
+                  ? 'bg-gradient-to-r from-slate-700 to-slate-800 text-white shadow-md hover:shadow-lg'
+                  : 'bg-gradient-to-r from-violet-600 to-purple-700 text-white shadow-md hover:shadow-lg'
+            }`}
+          >
+            Suscribirme ahora <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
     </motion.div>
   );
@@ -227,7 +240,7 @@ export default function PlanesPage() {
           </div>
         ) : (
           /* ── Layout lado a lado con divisor vertical ── */
-          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-[#f8f4f1] rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="flex flex-col lg:flex-row">
 
               {/* Columna semanales */}
