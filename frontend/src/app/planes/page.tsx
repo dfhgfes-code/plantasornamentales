@@ -52,42 +52,39 @@ function PlanCard({ plan, featured, index }: { plan: any; featured: boolean; ind
 
       <div className={`relative rounded-2xl overflow-hidden flex flex-col transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl ${
         featured
-          ? 'shadow-xl shadow-rose-200/40 ring-2 ring-rose-400'
-          : 'shadow-md shadow-gray-200/60 ring-1 ring-gray-200'
+          ? 'shadow-xl shadow-rose-200/60 ring-2 ring-rose-400'
+          : 'shadow-md shadow-rose-100/60 ring-1 ring-rose-100'
       }`}>
 
-        {/* Header oscuro elegante */}
+        {/* Header cálido */}
         <div className={`relative px-6 pt-8 pb-6 ${
           featured
-            ? 'bg-gradient-to-br from-gray-900 to-gray-800'
-            : 'bg-gradient-to-br from-gray-800 to-gray-700'
+            ? 'bg-gradient-to-br from-rose-500 to-pink-600'
+            : 'bg-gradient-to-br from-rose-50 to-pink-50'
         }`}>
-          {/* Patrón decorativo muy sutil */}
-          <div className="absolute inset-0 opacity-[0.04]"
-            style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '20px 20px' }} />
-
-          {/* Icono floral */}
-          <div className="relative w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-2xl mb-4">
+          <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-4"
+            style={{ background: featured ? 'rgba(255,255,255,0.2)' : 'rgba(236,72,153,0.1)' }}>
             {isWeekly ? '🌷' : '🌹'}
           </div>
 
-          <h3 className="relative text-xl font-bold text-white mb-1.5"
+          <h3 className={`relative text-xl font-bold mb-1.5 ${featured ? 'text-white' : 'text-gray-900'}`}
             style={{ fontFamily: "'Playfair Display', serif" }}>
             {plan.name}
           </h3>
-          <p className="relative text-sm leading-relaxed text-gray-400 line-clamp-2">
+          <p className={`relative text-sm leading-relaxed line-clamp-2 ${featured ? 'text-rose-100' : 'text-gray-500'}`}>
             {plan.description}
           </p>
 
-          {/* Precio — acento rosa */}
+          {/* Precio */}
           <div className="relative mt-5 flex items-end gap-1.5">
-            <span className="text-4xl font-bold text-rose-400" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <span className={`text-4xl font-bold ${featured ? 'text-white' : 'text-rose-600'}`}
+              style={{ fontFamily: "'Playfair Display', serif" }}>
               {formatCurrency(Number(plan.price))}
             </span>
-            <span className="text-gray-500 text-sm mb-1.5">/{freq}</span>
+            <span className={`text-sm mb-1.5 ${featured ? 'text-rose-100' : 'text-gray-400'}`}>/{freq}</span>
           </div>
           {plan.frequency === 'monthly' && (
-            <p className="relative text-xs text-gray-500 mt-1">
+            <p className={`relative text-xs mt-1 ${featured ? 'text-rose-100' : 'text-gray-400'}`}>
               ≈ {formatCurrency(Math.round(Number(plan.price) / 4))} por semana
             </p>
           )}
@@ -114,8 +111,8 @@ function PlanCard({ plan, featured, index }: { plan: any; featured: boolean; ind
             href={`/planes/${plan.id}`}
             className={`flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all hover:-translate-y-0.5 ${
               featured
-                ? 'bg-rose-500 hover:bg-rose-600 text-white shadow-lg shadow-rose-200'
-                : 'bg-gray-900 hover:bg-gray-800 text-white shadow-md'
+                ? 'bg-white text-rose-600 hover:bg-rose-50 shadow-md'
+                : 'bg-rose-500 hover:bg-rose-600 text-white shadow-md shadow-rose-200'
             }`}
           >
             Suscribirme ahora <ArrowRight className="w-4 h-4" />
@@ -173,39 +170,37 @@ export default function PlanesPage() {
     <div className="min-h-screen bg-[#fdfaf7]">
 
       {/* ── Hero ── */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 pt-20 pb-32">
-        {/* Decoración sutil */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-rose-500/8 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-rose-400/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-        <div className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+      <div className="relative overflow-hidden pt-20 pb-32" style={{ background: 'linear-gradient(135deg, #fff0f3 0%, #fce7f3 40%, #fdf2f8 100%)' }}>
+        {/* Decoración floral sutil */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-rose-200/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-200/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <span className="inline-flex items-center gap-2 bg-rose-500/15 backdrop-blur-sm text-rose-300 text-xs font-semibold px-4 py-2 rounded-full mb-6 border border-rose-500/20">
+            <span className="inline-flex items-center gap-2 bg-rose-100 text-rose-600 text-xs font-semibold px-4 py-2 rounded-full mb-6 border border-rose-200">
               🌸 Suscripciones florales
             </span>
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-5xl sm:text-6xl font-bold text-white mb-5 leading-tight"
+            className="text-5xl sm:text-6xl font-bold text-gray-900 mb-5 leading-tight"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
             Flores frescas,<br />
-            <span className="italic text-rose-400">cada semana</span>
+            <span className="italic text-rose-500">cada semana</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-gray-400 text-lg max-w-xl mx-auto leading-relaxed mb-8"
+            className="text-gray-500 text-lg max-w-xl mx-auto leading-relaxed mb-8"
           >
             Elige tu plan y nosotros nos encargamos de todo. Sin compromisos, sin complicaciones.
           </motion.p>
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-wrap justify-center gap-3 text-sm text-gray-400"
+            className="flex flex-wrap justify-center gap-3 text-sm text-gray-500"
           >
             {['✓ Cancela cuando quieras', '✓ Envío incluido', '✓ Flores de temporada'].map(t => (
-              <span key={t} className="bg-white/5 px-4 py-1.5 rounded-full border border-white/10">{t}</span>
+              <span key={t} className="bg-white/80 px-4 py-1.5 rounded-full border border-rose-100 text-rose-600 font-medium">{t}</span>
             ))}
           </motion.div>
         </div>
@@ -410,24 +405,23 @@ export default function PlanesPage() {
       </section>
 
       {/* ── CTA Final ── */}
-      <section className="py-20 bg-gray-900 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-rose-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-60 h-60 bg-rose-400/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <section className="py-20 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #be123c 0%, #e11d48 50%, #db2777 100%)' }}>
+        <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="relative max-w-3xl mx-auto px-4 text-center">
           <div className="text-5xl mb-5 animate-float inline-block">🌸</div>
           <h2 className="text-4xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
             ¿Lista para empezar?
           </h2>
-          <p className="text-gray-400 text-lg mb-8 max-w-lg mx-auto leading-relaxed">
+          <p className="text-rose-100 text-lg mb-8 max-w-lg mx-auto leading-relaxed">
             Únete a más de 500 personas que ya reciben flores frescas en su puerta cada semana.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <a href="#planes"
-              className="inline-flex items-center gap-2 bg-rose-500 hover:bg-rose-600 text-white font-bold px-8 py-4 rounded-2xl transition-all shadow-lg hover:-translate-y-1 text-sm">
+              className="inline-flex items-center gap-2 bg-white text-rose-600 hover:bg-rose-50 font-bold px-8 py-4 rounded-2xl transition-all shadow-xl hover:-translate-y-1 text-sm">
               Ver planes <ArrowRight className="w-4 h-4" />
             </a>
             <Link href="/contacto"
-              className="inline-flex items-center gap-2 border border-white/20 text-gray-300 hover:bg-white/5 font-semibold px-8 py-4 rounded-2xl transition-all text-sm">
+              className="inline-flex items-center gap-2 border-2 border-white/40 text-white hover:bg-white/10 font-semibold px-8 py-4 rounded-2xl transition-all text-sm">
               Tengo preguntas
             </Link>
           </div>
