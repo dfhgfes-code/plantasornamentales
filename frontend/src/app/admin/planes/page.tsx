@@ -7,7 +7,7 @@ import { formatCurrency, cn } from '@/lib/utils';
 import { Plus, Pencil, Trash2, X, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const EMPTY = { name: '', description: '', price: '', frequency: 'monthly', deliveryCount: '1', isActive: true, features: '' };
+const EMPTY = { name: '', description: '', price: '', intervalDays: '30', deliveryCount: '1', isActive: true, features: '' };
 
 export default function AdminPlanesPage() {
   const { user, isAuthenticated } = useAuthStore();
@@ -34,7 +34,7 @@ export default function AdminPlanesPage() {
   const openCreate = () => { setEditing(null); setForm(EMPTY); setModal(true); };
   const openEdit = (p: any) => {
     setEditing(p);
-    setForm({ name: p.name, description: p.description || '', price: p.price, frequency: p.frequency, deliveryCount: p.deliveryCount, isActive: p.isActive, features: (p.features || []).join('\n') });
+    setForm({ name: p.name, description: p.description || '', price: p.price, intervalDays: p.intervalDays?.toString() || '30', deliveryCount: p.deliveryCount, isActive: p.isActive, features: (p.features || []).join('\n') });
     setModal(true);
   };
 
@@ -43,7 +43,7 @@ export default function AdminPlanesPage() {
     setSaving(true);
     try {
       const features = form.features.split('\n').map((f: string) => f.trim()).filter(Boolean);
-      const payload = { ...form, price: Number(form.price), deliveryCount: Number(form.deliveryCount), features };
+      const payload = { ...form, price: Number(form.price), intervalDays: Number(form.intervalDays), deliveryCount: Number(form.deliveryCount), features };
       if (editing) {
         await api.patch(`/admin/plans/${editing.id}`, payload);
         toast.success('Plan actualizado');
@@ -97,9 +97,15 @@ export default function AdminPlanesPage() {
                     <div className="flex items-center gap-2">
                       <span className={cn(
                         "text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-md",
-                        plan.frequency === 'weekly' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'
+                        plan.intervalDays === 7 ? 'bg-blue-50 text-blue-600' : 
+                        plan.intervalDays === 30 ? 'bg-purple-50 text-purple-600' :
+                        plan.intervalDays === 1 ? 'bg-orange-50 text-orange-600' : 'bg-gray-50 text-gray-600'
                       )}>
-                        {plan.frequency === 'weekly' ? 'Semanal' : 'Mensual'}
+                        {plan.intervalDays === 1 ? 'Diario' : 
+                         [7, 8].includes(plan.intervalDays) ? 'Semanal' : 
+                         plan.intervalDays === 15 ? 'Quincenal' : 
+                         plan.intervalDays === 30 ? 'Mensual' : 
+                         `Cada ${plan.intervalDays} días`}
                       </span>
                       {!plan.isActive && (
                         <span className="text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-md bg-gray-100 text-gray-500">
@@ -176,15 +182,19 @@ export default function AdminPlanesPage() {
               ))}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Frecuencia</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {[['weekly', '📅 Semanal'], ['monthly', '🗓️ Mensual']].map(([val, label]) => (
-                    <button key={val} onClick={() => setForm((f: any) => ({ ...f, frequency: val }))}
-                      className={`py-2.5 rounded-xl text-sm font-medium border-2 transition-all ${form.frequency === val ? 'border-pink-500 bg-pink-50 text-pink-700' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
-                      {label}
-                    </button>
-                  ))}
-                </div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Intervalo de envíos</label>
+                <select 
+                  value={form.intervalDays} 
+                  onChange={e => setForm((f: any) => ({ ...f, intervalDays: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 bg-white"
+                >
+                  <option value="1">Diario (Cada 1 día)</option>
+                  <option value="2">Cada 2 días</option>
+                  <option value="7">Semanal (Cada 7 días)</option>
+                  <option value="8">Semanal (Cada 8 días)</option>
+                  <option value="15">Quincenal (Cada 15 días)</option>
+                  <option value="30">Mensual (Cada 30 días)</option>
+                </select>
               </div>
 
               <div>

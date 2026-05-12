@@ -19,21 +19,17 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [orderId, setOrderId] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('CARD');
-  const [delivery, setDelivery] = useState({ address: '', city: '', notes: '' });
+  const [delivery, setDelivery] = useState({ 
+    address: '', city: '', notes: '',
+    senderName: '', senderPhone: '',
+    receiverName: '', receiverPhone: ''
+  });
 
   const subtotal = total();
   const deliveryFee = 8000;
   const grandTotal = subtotal + deliveryFee;
 
-  if (!isAuthenticated) {
-    return (
-      <div className="max-w-md mx-auto px-4 py-20 text-center">
-        <h2 className="text-xl font-bold text-gray-900 mb-3">Inicia sesión para continuar</h2>
-        <p className="text-gray-500 mb-6">Necesitas una cuenta para realizar tu pedido</p>
-        <Link href="/login"><Button className="w-full">Iniciar sesión</Button></Link>
-      </div>
-    );
-  }
+  // Eliminado el bloqueo de autenticación para permitir compras como invitado
 
   if (items.length === 0 && step !== 'success') {
     return (
@@ -45,8 +41,8 @@ export default function CheckoutPage() {
   }
 
   const handleCreateOrder = async () => {
-    if (!delivery.address || !delivery.city) {
-      toast.error('Completa la dirección de entrega');
+    if (!delivery.address || !delivery.city || !delivery.senderName || !delivery.receiverName) {
+      toast.error('Completa los campos obligatorios (dirección, ciudad, quien envía y recibe)');
       return;
     }
     setLoading(true);
@@ -56,6 +52,10 @@ export default function CheckoutPage() {
         deliveryAddress: delivery.address,
         deliveryCity: delivery.city,
         notes: delivery.notes,
+        senderName: delivery.senderName,
+        senderPhone: delivery.senderPhone,
+        receiverName: delivery.receiverName,
+        receiverPhone: delivery.receiverPhone,
       };
       const res = await ordersApi.create(orderData);
       setOrderId(res.data.data.id);
@@ -115,10 +115,23 @@ export default function CheckoutPage() {
         <div className="lg:col-span-2">
           {step === 'delivery' && (
             <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
-              <h2 className="font-bold text-gray-900 text-lg mb-4">Dirección de entrega</h2>
-              <Input label="Dirección completa" placeholder="Calle 45 # 12-34 Apto 201"
+              <h2 className="font-bold text-gray-900 text-lg mb-4">Información de entrega</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <Input label="Quien envía *" placeholder="Tu nombre"
+                  value={delivery.senderName} onChange={(e) => setDelivery({ ...delivery, senderName: e.target.value })} />
+                <Input label="Teléfono de quien envía" placeholder="Tu teléfono"
+                  value={delivery.senderPhone} onChange={(e) => setDelivery({ ...delivery, senderPhone: e.target.value })} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <Input label="Quien recibe *" placeholder="Nombre de quien recibe"
+                  value={delivery.receiverName} onChange={(e) => setDelivery({ ...delivery, receiverName: e.target.value })} />
+                <Input label="Teléfono de quien recibe" placeholder="Su teléfono"
+                  value={delivery.receiverPhone} onChange={(e) => setDelivery({ ...delivery, receiverPhone: e.target.value })} />
+              </div>
+              <hr className="my-4 border-gray-100" />
+              <Input label="Dirección completa *" placeholder="Calle 45 # 12-34 Apto 201"
                 value={delivery.address} onChange={(e) => setDelivery({ ...delivery, address: e.target.value })} />
-              <Input label="Ciudad" placeholder="Bogotá"
+              <Input label="Ciudad *" placeholder="Bogotá"
                 value={delivery.city} onChange={(e) => setDelivery({ ...delivery, city: e.target.value })} />
               <Input label="Notas de entrega (opcional)" placeholder="Tocar el timbre dos veces..."
                 value={delivery.notes} onChange={(e) => setDelivery({ ...delivery, notes: e.target.value })} />

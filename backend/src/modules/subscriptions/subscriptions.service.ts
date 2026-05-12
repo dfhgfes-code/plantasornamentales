@@ -12,7 +12,6 @@ import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
 import { CancelSubscriptionDto } from './dto/cancel-subscription.dto';
 import { SubscriptionStatus } from '../../common/enums/subscription-status.enum';
-import { PlanFrequency } from '../../common/enums/plan-frequency.enum';
 import { UserRole } from '../../common/enums/user-role.enum';
 import { PaginationDto, paginate } from '../../common/dto/pagination.dto';
 
@@ -43,7 +42,7 @@ export class SubscriptionsService {
 
     // Calcular próxima fecha de entrega
     const startDate = new Date(dto.startDate);
-    const nextDeliveryDate = this.calculateNextDelivery(startDate, plan.frequency);
+    const nextDeliveryDate = this.calculateNextDelivery(startDate, plan.intervalDays);
 
     const subscription = this.subscriptionRepository.create({
       userId,
@@ -161,7 +160,7 @@ export class SubscriptionsService {
     // Recalcular próxima entrega desde hoy
     subscription.nextDeliveryDate = this.calculateNextDelivery(
       new Date(),
-      subscription.plan.frequency,
+      subscription.plan.intervalDays,
     );
     await this.subscriptionRepository.save(subscription);
     return { message: 'Suscripción reactivada correctamente', data: subscription };
@@ -185,13 +184,9 @@ export class SubscriptionsService {
   }
 
   // ─── HELPERS ─────────────────────────────────────────────────
-  calculateNextDelivery(from: Date, frequency: PlanFrequency): Date {
+  calculateNextDelivery(from: Date, intervalDays: number): Date {
     const next = new Date(from);
-    if (frequency === PlanFrequency.WEEKLY) {
-      next.setDate(next.getDate() + 7);
-    } else {
-      next.setMonth(next.getMonth() + 1);
-    }
+    next.setDate(next.getDate() + (intervalDays || 30));
     return next;
   }
 

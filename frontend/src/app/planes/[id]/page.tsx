@@ -34,7 +34,17 @@ export default function PlanDetailPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const freq = plan?.frequency === 'weekly' ? 'semana' : 'mes';
+  const freq = plan?.intervalDays === 1 ? 'día' : 
+               [7, 8].includes(plan?.intervalDays) ? 'semana' : 
+               plan?.intervalDays === 15 ? 'quincena' : 
+               [30, 31].includes(plan?.intervalDays) ? 'mes' : 
+               `${plan?.intervalDays} días`;
+  const freqLabel = plan?.intervalDays === 1 ? 'Diario' : 
+                    [7, 8].includes(plan?.intervalDays) ? 'Semanal' : 
+                    plan?.intervalDays === 15 ? 'Quincenal' : 
+                    [30, 31].includes(plan?.intervalDays) ? 'Mensual' : 
+                    `Cada ${plan?.intervalDays} días`;
+  const isWeekly = plan?.intervalDays < 30;
 
   const handleCreateSubscription = async () => {
     if (!isAuthenticated) { router.push('/login'); return; }
@@ -129,7 +139,7 @@ export default function PlanDetailPage() {
                 {/* Header del plan */}
                 <div className="flex items-center gap-4 pb-5 border-b border-gray-100 mb-5">
                   <div className="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center text-2xl shrink-0">
-                    {plan.frequency === 'weekly' ? '🌷' : '🌹'}
+                    {isWeekly ? '🌷' : '🌹'}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h2 className="font-bold text-gray-900 text-lg leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -302,7 +312,7 @@ export default function PlanDetailPage() {
                 {/* Resumen */}
                 <div className="flex items-center justify-between p-4 bg-rose-50 rounded-xl border border-rose-100">
                   <div className="flex items-center gap-3">
-                    <span className="text-xl">{plan.frequency === 'weekly' ? '🌷' : '🌹'}</span>
+                    <span className="text-xl">{isWeekly ? '🌷' : '🌹'}</span>
                     <div>
                       <p className="font-semibold text-gray-900 text-sm">{plan.name}</p>
                       <p className="text-xs text-gray-500">Para: {recipient.fullName} · {recipient.city}</p>
@@ -376,7 +386,7 @@ export default function PlanDetailPage() {
                   { label: 'Plan', value: plan.name },
                   { label: 'Destinatario', value: recipient.fullName },
                   { label: 'Ciudad', value: recipient.city },
-                  { label: 'Frecuencia', value: plan.frequency === 'weekly' ? 'Semanal' : 'Mensual' },
+                  { label: 'Frecuencia', value: freqLabel },
                   { label: 'Precio', value: `${formatCurrency(Number(plan.price))}/${freq}` },
                 ].map(item => (
                   <div key={item.label} className="flex justify-between text-sm">

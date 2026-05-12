@@ -47,11 +47,7 @@ export class SubscriptionsScheduler {
         const { SubscriptionsService } = await import('./subscriptions.service');
         // Calcular manualmente para evitar dependencia circular
         const next = new Date(subscription.nextDeliveryDate);
-        if (subscription.plan.frequency === 'weekly') {
-          next.setDate(next.getDate() + 7);
-        } else {
-          next.setMonth(next.getMonth() + 1);
-        }
+        next.setDate(next.getDate() + (subscription.plan.intervalDays || 30));
 
         subscription.nextDeliveryDate = next;
         subscription.lastDeliveryDate = today;

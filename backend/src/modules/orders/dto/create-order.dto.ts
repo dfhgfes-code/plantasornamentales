@@ -41,4 +41,20 @@ export class CreateOrderDto {
   @ApiPropertyOptional({ example: 'Tocar el timbre dos veces' })
   @IsOptional() @IsString()
   notes?: string;
+
+  @ApiPropertyOptional({ description: 'Nombre de quien envía' })
+  @IsOptional() @IsString()
+  senderName?: string;
+
+  @ApiPropertyOptional({ description: 'Teléfono de quien envía' })
+  @IsOptional() @IsString()
+  senderPhone?: string;
+
+  @ApiPropertyOptional({ description: 'Nombre de quien recibe' })
+  @IsOptional() @IsString()
+  receiverName?: string;
+
+  @ApiPropertyOptional({ description: 'Teléfono de quien recibe' })
+  @IsOptional() @IsString()
+  receiverPhone?: string;
 }

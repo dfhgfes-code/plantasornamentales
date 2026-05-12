@@ -31,8 +31,12 @@ const FAQS = [
 ];
 
 function PlanCard({ plan, featured, index }: { plan: any; featured: boolean; index: number }) {
-  const freq = plan.frequency === 'weekly' ? 'semana' : 'mes';
-  const isWeekly = plan.frequency === 'weekly';
+  const freq = plan.intervalDays === 1 ? 'día' : 
+               [7, 8].includes(plan.intervalDays) ? 'semana' : 
+               plan.intervalDays === 15 ? 'quincena' : 
+               [30, 31].includes(plan.intervalDays) ? 'mes' : 
+               `${plan.intervalDays} días`;
+  const isWeekly = plan.intervalDays < 30;
 
   return (
     <motion.div
@@ -83,7 +87,7 @@ function PlanCard({ plan, featured, index }: { plan: any; featured: boolean; ind
             </span>
             <span className={`text-sm mb-1.5 ${featured ? 'text-rose-100' : 'text-gray-400'}`}>/{freq}</span>
           </div>
-          {plan.frequency === 'monthly' && (
+          {[30, 31].includes(plan.intervalDays) && (
             <p className={`relative text-xs mt-1 ${featured ? 'text-rose-100' : 'text-gray-400'}`}>
               ≈ {formatCurrency(Math.round(Number(plan.price) / 4))} por semana
             </p>
@@ -162,8 +166,8 @@ export default function PlanesPage() {
     plansApi.getAll(true).then((r) => setPlans(r.data.data || [])).finally(() => setLoading(false));
   }, []);
 
-  const weekly  = plans.filter((p) => p.frequency === 'weekly');
-  const monthly = plans.filter((p) => p.frequency === 'monthly');
+  const weekly  = plans.filter((p) => p.intervalDays < 30);
+  const monthly = plans.filter((p) => p.intervalDays >= 30);
   const allPlans = [...weekly, ...monthly];
 
   return (
@@ -239,8 +243,8 @@ export default function PlanesPage() {
                   <div className="flex items-center gap-3 mb-8">
                     <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center text-xl shrink-0">📅</div>
                     <div>
-                      <p className="font-bold text-gray-900 text-base">Planes Semanales</p>
-                      <p className="text-xs text-gray-400">Flores cada semana</p>
+                      <p className="font-bold text-gray-900 text-base">Entregas Frecuentes</p>
+                      <p className="text-xs text-gray-400">Planes diarios, semanales o quincenales</p>
                     </div>
                   </div>
                   <div className="space-y-5">

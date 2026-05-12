@@ -17,10 +17,10 @@ export class Order extends BaseEntity {
   @Column({ name: 'order_number', unique: true })
   orderNumber: string;
 
-  @Column({ name: 'user_id' })
+  @Column({ name: 'user_id', nullable: true })
   userId: string;
 
-  @ManyToOne(() => User, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => User, { nullable: true, onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
@@ -55,6 +55,18 @@ export class Order extends BaseEntity {
 
   @Column({ name: 'delivery_city', length: 100, nullable: true })
   deliveryCity: string;
+
+  @Column({ name: 'sender_name', length: 100, nullable: true })
+  senderName: string;
+
+  @Column({ name: 'sender_phone', length: 20, nullable: true })
+  senderPhone: string;
+
+  @Column({ name: 'receiver_name', length: 100, nullable: true })
+  receiverName: string;
+
+  @Column({ name: 'receiver_phone', length: 20, nullable: true })
+  receiverPhone: string;
 
   @Column({ name: 'scheduled_date', type: 'date', nullable: true })
   scheduledDate: Date;

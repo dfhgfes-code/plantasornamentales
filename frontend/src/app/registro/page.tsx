@@ -18,6 +18,7 @@ const schema = z.object({
   email: z.string().email('Correo inválido'),
   password: z.string().min(8, 'Mínimo 8 caracteres'),
   phone: z.string().optional(),
+  role: z.enum(['customer', 'wholesaler']).optional().default('customer'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -27,8 +28,9 @@ export default function RegisterPage() {
   const { setAuth } = useAuthStore();
   const router = useRouter();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: { role: 'customer' }
   });
 
   const onSubmit = async (data: FormData) => {
@@ -59,6 +61,26 @@ export default function RegisterPage() {
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-3">Tipo de cuenta</label>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setValue('role', 'customer')}
+                  className={`p-3 rounded-xl border-2 transition-all text-center ${watch('role') === 'customer' ? 'border-rose-500 bg-rose-50 text-rose-700 font-semibold' : 'border-gray-100 hover:border-gray-200 text-gray-500 font-medium'}`}
+                >
+                  Cliente
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setValue('role', 'wholesaler')}
+                  className={`p-3 rounded-xl border-2 transition-all text-center ${watch('role') === 'wholesaler' ? 'border-rose-500 bg-rose-50 text-rose-700 font-semibold' : 'border-gray-100 hover:border-gray-200 text-gray-500 font-medium'}`}
+                >
+                  Mayorista
+                </button>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <Input label="Nombre" placeholder="María" icon={<User className="w-4 h-4" />} error={errors.firstName?.message} {...register('firstName')} />
               <Input label="Apellido" placeholder="García" error={errors.lastName?.message} {...register('lastName')} />

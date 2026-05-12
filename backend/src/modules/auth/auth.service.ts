@@ -38,12 +38,18 @@ export class AuthService {
     }
 
     // Crear usuario (el hash de contraseña se hace en el @BeforeInsert de la entidad)
+    let assignedRole = UserRole.CUSTOMER;
+    if (dto.role === UserRole.WHOLESALER) {
+      assignedRole = UserRole.WHOLESALER;
+    }
+
     const user = this.userRepository.create({
       firstName: dto.firstName.trim(),
       lastName: dto.lastName.trim(),
       email: dto.email.toLowerCase().trim(),
       password: dto.password,
       phone: dto.phone,
+      role: assignedRole,
     });
 
     await this.userRepository.save(user);

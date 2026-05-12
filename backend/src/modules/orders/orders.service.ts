@@ -31,7 +31,7 @@ export class OrdersService {
   ) {}
 
   // ─── CREAR PEDIDO MANUAL ─────────────────────────────────────
-  async create(userId: string, dto: CreateOrderDto) {
+  async create(userId: string | null, dto: CreateOrderDto) {
     if (!dto.items || dto.items.length === 0) {
       throw new BadRequestException('El pedido debe tener al menos un producto');
     }
@@ -94,6 +94,10 @@ export class OrdersService {
       total,
       deliveryAddress,
       deliveryCity,
+      senderName: dto.senderName,
+      senderPhone: dto.senderPhone,
+      receiverName: dto.receiverName,
+      receiverPhone: dto.receiverPhone,
       scheduledDate: dto.scheduledDate ? new Date(dto.scheduledDate) : null,
       notes: dto.notes,
       isAutomatic: false,

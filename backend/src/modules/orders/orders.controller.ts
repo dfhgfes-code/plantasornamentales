@@ -10,6 +10,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 import { UserRole } from '../../common/enums/user-role.enum';
 import { OrderStatus } from '../../common/enums/order-status.enum';
 import { PaginationDto } from '../../common/dto/pagination.dto';
@@ -22,10 +23,11 @@ import { User } from '../users/entities/user.entity';
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
+  @Public()
   @Post()
-  @ApiOperation({ summary: 'Crear pedido manual desde tienda' })
-  create(@CurrentUser() user: User, @Body() dto: CreateOrderDto) {
-    return this.ordersService.create(user.id, dto);
+  @ApiOperation({ summary: 'Crear pedido manual desde tienda (soporta invitados)' })
+  create(@CurrentUser() user: User | null, @Body() dto: CreateOrderDto) {
+    return this.ordersService.create(user?.id || null, dto);
   }
 
   @Get('my')

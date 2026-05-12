@@ -6,7 +6,9 @@ import {
   MaxLength,
   IsOptional,
   Matches,
+  IsEnum,
 } from 'class-validator';
+import { UserRole } from '../../common/enums/user-role.enum';
 
 export class RegisterDto {
   @ApiProperty({ example: 'María', description: 'Nombre del usuario' })
@@ -36,4 +38,9 @@ export class RegisterDto {
   @IsString()
   @MaxLength(20)
   phone?: string;
+
+  @ApiPropertyOptional({ enum: UserRole, description: 'Rol de usuario (por defecto customer)' })
+  @IsOptional()
+  @IsEnum(UserRole)
+  role?: UserRole;
 }
