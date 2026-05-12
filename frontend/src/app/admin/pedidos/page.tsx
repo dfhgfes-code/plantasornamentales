@@ -48,7 +48,9 @@ export default function AdminPedidosPage() {
     !search ||
     o.orderNumber?.toLowerCase().includes(search.toLowerCase()) ||
     o.user?.email?.toLowerCase().includes(search.toLowerCase()) ||
-    o.user?.firstName?.toLowerCase().includes(search.toLowerCase())
+    o.user?.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+    o.senderName?.toLowerCase().includes(search.toLowerCase()) ||
+    o.receiverName?.toLowerCase().includes(search.toLowerCase())
   );
 
   if (!authorized) return (
@@ -131,8 +133,20 @@ export default function AdminPedidosPage() {
                   <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-5 py-4 font-bold text-gray-900">{order.orderNumber}</td>
                     <td className="px-5 py-4">
-                      <p className="font-medium text-gray-800">{order.user?.firstName} {order.user?.lastName}</p>
-                      <p className="text-xs text-gray-400">{order.user?.email}</p>
+                      {order.user ? (
+                        <>
+                          <p className="font-medium text-gray-800">{order.user.firstName} {order.user.lastName}</p>
+                          <p className="text-xs text-gray-400">{order.user.email}</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="font-medium text-gray-800">{order.senderName || 'Invitado'}</p>
+                          <p className="text-xs text-amber-500 font-semibold">Compra sin cuenta</p>
+                          {order.receiverName && (
+                            <p className="text-xs text-gray-400">Recibe: {order.receiverName}</p>
+                          )}
+                        </>
+                      )}
                     </td>
                     <td className="px-5 py-4 text-gray-500 text-xs">{formatDate(order.createdAt)}</td>
                     <td className="px-5 py-4 font-bold text-rose-600">{formatCurrency(Number(order.total))}</td>
