@@ -71,36 +71,39 @@ export function GiftCardModal({
         exit={{ opacity: 0, transition: { duration: 0.3 } }}
         className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-0 bg-black/50 backdrop-blur-sm"
       >
-        <div className="relative w-full max-w-md h-[600px] flex items-center justify-center">
+        <div className="relative w-full max-w-md h-[100dvh] flex flex-col items-center justify-center pointer-events-none">
 
-          {/* LAYER 1: Envelope Back */}
-          <motion.div
-            className="absolute w-80 h-56 bg-[#D7CCC8] rounded-xl shadow-xl border border-[#BCAAA4]"
-            initial={{ y: '100vh', opacity: 0 }}
-            animate={
-              opened 
-                ? { y: 300, opacity: 0, scale: 0.8 } 
-                : { y: 20, opacity: 1, scale: 1 }
-            }
-            transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-          />
+          {/* Contenedor base para alinear los fondos */}
+          <div className="relative w-80 h-56 flex justify-center items-end pointer-events-auto">
 
-          {/* LAYER 2: The Card */}
-          <motion.div
-            className="absolute w-full max-w-md"
-            initial={{ y: '100vh', scale: 0.6 }}
-            animate={
-              opened 
-                ? { y: 0, scale: 1, zIndex: 50, rotateX: 0 } 
-                : { y: 0, scale: 0.65, zIndex: 20, rotateX: 10 }
-            }
-            transition={{ type: 'spring', damping: 20, stiffness: 100, delay: opened ? 0.2 : 0 }}
-            style={{ transformOrigin: 'bottom center', perspective: 1000 }}
-          >
-            {/* Sombra de la tarjeta */}
-            <div className={`absolute inset-0 bg-black/20 blur-xl translate-y-8 rounded-[2rem] -z-10 transition-opacity duration-500 ${opened ? 'opacity-100' : 'opacity-0'}`} />
+            {/* LAYER 1: Envelope Back */}
+            <motion.div
+              className="absolute bottom-0 w-80 h-56 bg-[#D7CCC8] rounded-xl shadow-xl border border-[#BCAAA4]"
+              initial={{ y: '100vh', opacity: 0 }}
+              animate={
+                opened 
+                  ? { y: 300, opacity: 0, scale: 0.8 } 
+                  : { y: 0, opacity: 1, scale: 1 }
+              }
+              transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+            />
 
-            <div className="relative bg-[#FCFBF8] rounded-2xl shadow-2xl overflow-hidden border border-[#EADDD5]">
+            {/* LAYER 2: The Card */}
+            <motion.div
+              className="absolute bottom-4 w-full max-w-md sm:w-[448px] w-[95vw]"
+              initial={{ y: '100vh', scale: 0.6 }}
+              animate={
+                opened 
+                  ? { y: -80, scale: 1, zIndex: 50, rotateX: 0 } 
+                  : { y: 0, scale: 0.65, zIndex: 20, rotateX: 0 }
+              }
+              transition={{ type: 'spring', damping: 20, stiffness: 100, delay: opened ? 0.2 : 0 }}
+              style={{ transformOrigin: 'bottom center', perspective: 1000 }}
+            >
+              {/* Sombra de la tarjeta */}
+              <div className={`absolute inset-0 bg-black/20 blur-xl translate-y-8 rounded-[2rem] -z-10 transition-opacity duration-500 ${opened ? 'opacity-100' : 'opacity-0'}`} />
+
+              <div className="relative bg-[#FCFBF8] rounded-2xl shadow-2xl overflow-hidden border border-[#EADDD5]">
               
               <div className="relative px-6 pt-6 pb-4 bg-[#FAF6F0] border-b border-[#EADDD5] flex flex-col items-center justify-center text-center">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-700 to-rose-900 border-2 border-rose-950/20 shadow-inner flex items-center justify-center mb-2 shadow-[0_4px_10px_rgba(159,18,57,0.3)]">
@@ -193,38 +196,39 @@ export function GiftCardModal({
             </div>
           </motion.div>
 
-          {/* LAYER 3: Envelope Front & Flap */}
-          <motion.div
-            className="absolute w-80 h-56 z-30"
-            initial={{ y: '100vh', opacity: 0 }}
-            animate={
-              opened 
-                ? { y: 300, opacity: 0, scale: 0.8 } 
-                : { y: 20, opacity: 1, scale: 1 }
-            }
-            transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-            onClick={() => !opened && setOpened(true)}
-            style={{ cursor: opened ? 'default' : 'pointer', pointerEvents: opened ? 'none' : 'auto' }}
-          >
-            {/* Tapa del sobre frontal (SVG para hacer la forma de triángulo invertido) */}
-            <svg viewBox="0 0 320 224" className="absolute inset-0 w-full h-full drop-shadow-2xl">
-              <path d="M0,0 L160,120 L320,0 L320,224 L0,224 Z" fill="#FCFBF8" />
-              <path d="M0,0 L160,120 L320,0" fill="none" stroke="#EADDD5" strokeWidth="2" />
-            </svg>
+            {/* LAYER 3: Envelope Front & Flap */}
+            <motion.div
+              className="absolute bottom-0 w-80 h-56 z-30"
+              initial={{ y: '100vh', opacity: 0 }}
+              animate={
+                opened 
+                  ? { y: 300, opacity: 0, scale: 0.8 } 
+                  : { y: 0, opacity: 1, scale: 1 }
+              }
+              transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+              onClick={() => !opened && setOpened(true)}
+              style={{ cursor: opened ? 'default' : 'pointer', pointerEvents: opened ? 'none' : 'auto' }}
+            >
+              {/* Tapa del sobre frontal (SVG para hacer la forma de triángulo invertido) */}
+              <svg viewBox="0 0 320 224" className="absolute inset-0 w-full h-full drop-shadow-2xl">
+                <path d="M0,0 L160,120 L320,0 L320,224 L0,224 Z" fill="#FCFBF8" />
+                <path d="M0,0 L160,120 L320,0" fill="none" stroke="#EADDD5" strokeWidth="2" />
+              </svg>
 
-            {/* Sello animado */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <motion.div 
-                whileHover={{ scale: 1.1, rotate: -5 }}
-                className="w-16 h-16 rounded-full bg-gradient-to-br from-rose-700 to-rose-900 shadow-xl flex items-center justify-center border-4 border-[#FCFBF8] mb-2"
-              >
-                <Mail className="w-7 h-7 text-rose-100" />
-              </motion.div>
-              <div className="bg-white/90 backdrop-blur px-4 py-1.5 rounded-full text-[10px] font-bold text-[#8C7A6B] tracking-widest shadow-sm">
-                TOCAR PARA ABRIR
+              {/* Sello animado */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <motion.div 
+                  whileHover={{ scale: 1.1, rotate: -5 }}
+                  className="w-16 h-16 rounded-full bg-gradient-to-br from-rose-700 to-rose-900 shadow-xl flex items-center justify-center border-4 border-[#FCFBF8] mb-2"
+                >
+                  <Mail className="w-7 h-7 text-rose-100" />
+                </motion.div>
+                <div className="bg-white/90 backdrop-blur px-4 py-1.5 rounded-full text-[10px] font-bold text-[#8C7A6B] tracking-widest shadow-sm">
+                  TOCAR PARA ABRIR
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
 
           {/* Botón Cerrar (X) externo si no han abierto el sobre aún */}
           {!opened && (
@@ -233,12 +237,11 @@ export function GiftCardModal({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={onClose}
-              className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-all text-white backdrop-blur-md"
+              className="absolute top-6 right-6 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-all text-white backdrop-blur-md z-[250] pointer-events-auto"
             >
               <X className="w-5 h-5" />
             </motion.button>
           )}
-
         </div>
       </motion.div>
     </AnimatePresence>
