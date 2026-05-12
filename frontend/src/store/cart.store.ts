@@ -5,6 +5,7 @@ export interface CartAdditional {
   name: string;
   price: number;
   imageUrl?: string;
+  note?: string;
 }
 
 export interface CartItem {

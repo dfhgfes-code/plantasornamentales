@@ -10,6 +10,7 @@ import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
 import toast from 'react-hot-toast';
 import { ProductReviews } from '@/components/ui/ProductReviews';
+import { GiftCardModal } from '@/components/GiftCardModal';
 
 /* ─── Componente de imagen con zoom ─────────────────────────── */
 function ZoomImage({ src, alt }: { src: string; alt: string }) {
@@ -61,6 +62,8 @@ export default function ProductDetailPage() {
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
   const [selectedAdditionals, setSelectedAdditionals] = useState<Set<number>>(new Set());
+  const [additionalNotes, setAdditionalNotes] = useState<Record<number, string>>({});
+  const [activeGiftCard, setActiveGiftCard] = useState<number | null>(null);
 
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin';
   const [editing, setEditing] = useState(false);
@@ -107,7 +110,14 @@ export default function ProductDetailPage() {
   const toggleAdditional = (i: number) => {
     setSelectedAdditionals(prev => {
       const next = new Set(prev);
-      next.has(i) ? next.delete(i) : next.add(i);
+      if (next.has(i)) {
+        next.delete(i);
+      } else {
+        next.add(i);
+        if (additionals[i].name.toLowerCase().includes('tarjeta')) {
+          setActiveGiftCard(i);
+        }
+      }
       return next;
     });
   };
@@ -120,12 +130,12 @@ export default function ProductDetailPage() {
 
   const handleAdd = () => {
     if (!product) return;
-    const selectedAddList = Array.from(selectedAdditionals).map(i => additionals[i]).filter(Boolean);
+    const selectedAddList = Array.from(selectedAdditionals).map(i => ({ ...additionals[i], note: additionalNotes[i] })).filter(Boolean);
     const { addItemWithAdditionals } = useCartStore.getState();
     for (let i = 0; i < qty; i++) {
       addItemWithAdditionals(
         { id: product.id, name: product.name, price: Number(product.price), imageUrl: product.imageUrl },
-        selectedAddList.map(a => ({ name: a.name, price: a.price, imageUrl: a.imageUrl }))
+        selectedAddList.map(a => ({ name: a.name, price: a.price, imageUrl: a.imageUrl, note: a.note }))
       );
     }
     const addNames = selectedAddList.map(a => a.name);
@@ -476,6 +486,15 @@ export default function ProductDetailPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <ProductReviews productId={id} />
       </div>
+
+      {/* Modal de Tarjeta Animada para el Adicional */}
+      {activeGiftCard !== null && (
+        <GiftCardModal
+          value={additionalNotes[activeGiftCard] || ''}
+          onChange={(val) => setAdditionalNotes(prev => ({ ...prev, [activeGiftCard]: val }))}
+          onClose={() => setActiveGiftCard(null)}
+        />
+      )}
     </div>
   );
 }

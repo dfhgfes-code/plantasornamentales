@@ -7,9 +7,10 @@ import { useCartStore } from '@/store/cart.store';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import { GiftCardModal } from '@/components/GiftCardModal';
 
 /* ─── Tipos ─────────────────────────────────────────────────── */
-interface Additional { name: string; price: number; imageUrl?: string; }
+interface Additional { name: string; price: number; imageUrl?: string; note?: string; }
 
 /* ─── Zoom de imagen ─────────────────────────────────────────── */
 function ZoomImage({ src, alt }: { src: string; alt: string }) {
@@ -56,6 +57,8 @@ function ProductModal({ product, onClose }: { product: any; onClose: () => void 
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
   const [selectedAdditionals, setSelectedAdditionals] = useState<Set<number>>(new Set());
+  const [additionalNotes, setAdditionalNotes] = useState<Record<number, string>>({});
+  const [activeGiftCard, setActiveGiftCard] = useState<number | null>(null);
   const addItem = useCartStore((s) => s.addItem);
 
   // Parsear galería y adicionales
@@ -84,7 +87,14 @@ function ProductModal({ product, onClose }: { product: any; onClose: () => void 
   const toggleAdditional = (i: number) => {
     setSelectedAdditionals(prev => {
       const next = new Set(prev);
-      next.has(i) ? next.delete(i) : next.add(i);
+      if (next.has(i)) {
+        next.delete(i);
+      } else {
+        next.add(i);
+        if (additionals[i].name.toLowerCase().includes('tarjeta')) {
+          setActiveGiftCard(i);
+        }
+      }
       return next;
     });
   };
@@ -93,11 +103,11 @@ function ProductModal({ product, onClose }: { product: any; onClose: () => void 
     Array.from(selectedAdditionals).reduce((sum, i) => sum + (additionals[i]?.price || 0), 0);
 
   const handleAdd = () => {
-    const selectedAddList = Array.from(selectedAdditionals).map(i => additionals[i]).filter(Boolean);
+    const selectedAddList = Array.from(selectedAdditionals).map(i => ({ ...additionals[i], note: additionalNotes[i] })).filter(Boolean);
     const { addItemWithAdditionals } = useCartStore.getState();
     addItemWithAdditionals(
       { id: product.id, name: product.name, price: Number(product.price), imageUrl: product.imageUrl },
-      selectedAddList.map(a => ({ name: a.name, price: a.price, imageUrl: a.imageUrl }))
+      selectedAddList.map(a => ({ name: a.name, price: a.price, imageUrl: a.imageUrl, note: a.note }))
     );
     toast.success(`${product.name}${selectedAddList.length ? ' + complementos' : ''} agregado al carrito 🌸`);
     onClose();
@@ -282,6 +292,15 @@ function ProductModal({ product, onClose }: { product: any; onClose: () => void 
             </div>
           </div>
         </motion.div>
+
+        {/* Modal de Tarjeta Animada para el Adicional */}
+        {activeGiftCard !== null && (
+          <GiftCardModal
+            value={additionalNotes[activeGiftCard] || ''}
+            onChange={(val) => setAdditionalNotes(prev => ({ ...prev, [activeGiftCard]: val }))}
+            onClose={() => setActiveGiftCard(null)}
+          />
+        )}
       </motion.div>
     </AnimatePresence>
   );
