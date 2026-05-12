@@ -11,7 +11,46 @@ export function GiftCardModal({
   onChange: (v: string) => void;
   onClose: () => void;
 }) {
-  const [text, setText] = useState(value);
+  const [to, setTo] = useState('');
+  const [from, setFrom] = useState('');
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    let parsedTo = '';
+    let parsedFrom = '';
+    let parsedMessage = value || '';
+
+    if (value && value.startsWith('Para: ')) {
+      const parts = value.split('\n\n');
+      const header = parts[0] || '';
+      const headerLines = header.split('\n');
+      
+      if (headerLines[0]?.startsWith('Para: ')) {
+        parsedTo = headerLines[0].substring(6);
+      }
+      if (headerLines[1]?.startsWith('De: ')) {
+        parsedFrom = headerLines[1].substring(4);
+      }
+      
+      // En caso de que haya múltiples saltos de línea en el mensaje
+      parsedMessage = parts.slice(1).join('\n\n');
+    } else {
+      parsedMessage = value || '';
+    }
+    
+    setTo(parsedTo);
+    setFrom(parsedFrom);
+    setMessage(parsedMessage);
+  }, [value]);
+
+  const handleSave = () => {
+    let finalNote = message;
+    if (to.trim() || from.trim()) {
+      finalNote = `Para: ${to.trim()}\nDe: ${from.trim()}\n\n${message}`;
+    }
+    onChange(finalNote);
+    onClose();
+  };
 
   // Importar fuente cursiva elegante solo para este modal
   useEffect(() => {
@@ -33,8 +72,7 @@ export function GiftCardModal({
         className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-0 bg-black/40 backdrop-blur-sm"
         onClick={(e) => {
           if (e.target === e.currentTarget) {
-            onChange(text);
-            onClose();
+            handleSave();
           }
         }}
       >
@@ -67,7 +105,7 @@ export function GiftCardModal({
               </p>
 
               <button
-                onClick={() => { onChange(text); onClose(); }}
+                onClick={handleSave}
                 className="absolute top-4 right-4 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center transition-all text-[#8C7A6B] hover:text-rose-700 shadow-sm border border-[#EADDD5]"
               >
                 <X className="w-4 h-4" />
@@ -81,10 +119,36 @@ export function GiftCardModal({
                 backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`
               }}
             >
+              {/* Campos Para y De */}
+              <div className="flex flex-col gap-2 mb-4 relative z-10">
+                <div className="flex items-end gap-2 border-b border-[#EADDD5] pb-1">
+                  <span className="text-[10px] font-bold text-[#8C7A6B] uppercase tracking-widest mb-1.5">Para:</span>
+                  <input
+                    type="text"
+                    value={to}
+                    onChange={(e) => setTo(e.target.value)}
+                    placeholder="Escriba aquí..."
+                    className="bg-transparent border-none focus:outline-none text-2xl text-[#2C241B] w-full placeholder:text-[#D7CCC8]"
+                    style={{ fontFamily: "'Dancing Script', cursive" }}
+                  />
+                </div>
+                <div className="flex items-end gap-2 border-b border-[#EADDD5] pb-1">
+                  <span className="text-[10px] font-bold text-[#8C7A6B] uppercase tracking-widest mb-1.5">De:</span>
+                  <input
+                    type="text"
+                    value={from}
+                    onChange={(e) => setFrom(e.target.value)}
+                    placeholder="Escriba aquí..."
+                    className="bg-transparent border-none focus:outline-none text-2xl text-[#2C241B] w-full placeholder:text-[#D7CCC8]"
+                    style={{ fontFamily: "'Dancing Script', cursive" }}
+                  />
+                </div>
+              </div>
+
               <textarea
                 autoFocus
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 maxLength={250}
                 rows={5}
                 placeholder="Con todo mi amor..."
@@ -98,9 +162,9 @@ export function GiftCardModal({
                 }}
               />
 
-              <div className="flex items-center justify-between mt-6">
+              <div className="flex items-center justify-between mt-6 relative z-10">
                 <span className="text-[10px] text-[#8C7A6B] font-semibold uppercase tracking-wider">
-                  {text.length}/250
+                  {message.length}/250
                 </span>
                 <span className="text-[10px] text-rose-700 flex items-center gap-1.5 font-bold bg-rose-50 px-2.5 py-1 rounded-md border border-rose-100">
                   <PenTool className="w-3 h-3" /> Transcrito a mano
@@ -111,7 +175,7 @@ export function GiftCardModal({
             {/* Footer de acción */}
             <div className="px-6 py-4 bg-white border-t border-[#EADDD5] flex justify-end gap-3">
               <button
-                onClick={() => { onChange(text); onClose(); }}
+                onClick={handleSave}
                 className="bg-[#4A3C31] hover:bg-[#2C241B] text-[#FCFBF8] font-bold px-6 py-2.5 rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5"
               >
                 <Check className="w-4 h-4" /> Guardar tarjeta
