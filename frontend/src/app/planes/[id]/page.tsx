@@ -4,7 +4,8 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   Check, ArrowLeft, ArrowRight, MapPin, User, Gift,
-  CreditCard, Building2, Smartphone, CheckCircle, Loader2, Shield, Flower2
+  CreditCard, Building2, Smartphone, CheckCircle, Loader2,
+  Shield, Flower2, Plus, Trash2
 } from 'lucide-react';
 import { plansApi, subscriptionsApi, recipientsApi } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
@@ -12,7 +13,25 @@ import { useAuthStore } from '@/store/auth.store';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
-type Step = 'plan' | 'recipient' | 'payment' | 'success';
+type Step = 'plan' | 'destinations' | 'payment' | 'success';
+type Destination = { fullName: string; address: string; city: string; phone: string; notes: string };
+
+const EMPTY_DEST: Destination = { fullName: '', address: '', city: '', phone: '', notes: '' };
+
+function getFreqLabel(days: number) {
+  if (days === 1) return 'Diario';
+  if ([7, 8].includes(days)) return 'Semanal';
+  if (days === 15) return 'Quincenal';
+  if ([30, 31].includes(days)) return 'Mensual';
+  return `Cada ${days} días`;
+}
+function getFreqUnit(days: number) {
+  if (days === 1) return 'día';
+  if ([7, 8].includes(days)) return 'semana';
+  if (days === 15) return 'quincena';
+  if ([30, 31].includes(days)) return 'mes';
+  return `${days} días`;
+}
 
 export default function PlanDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -23,7 +42,7 @@ export default function PlanDetailPage() {
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState<Step>('plan');
   const [submitting, setSubmitting] = useState(false);
-  const [recipient, setRecipient] = useState({ fullName: '', address: '', city: '', phone: '', notes: '' });
+  const [destinations, setDestinations] = useState<Destination[]>([{ ...EMPTY_DEST }]);
   const [paymentMethod, setPaymentMethod] = useState('CARD');
 
   useEffect(() => {
@@ -34,26 +53,45 @@ export default function PlanDetailPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const freq = plan?.intervalDays === 1 ? 'día' : 
-               [7, 8].includes(plan?.intervalDays) ? 'semana' : 
-               plan?.intervalDays === 15 ? 'quincena' : 
-               [30, 31].includes(plan?.intervalDays) ? 'mes' : 
-               `${plan?.intervalDays} días`;
-  const freqLabel = plan?.intervalDays === 1 ? 'Diario' : 
-                    [7, 8].includes(plan?.intervalDays) ? 'Semanal' : 
-                    plan?.intervalDays === 15 ? 'Quincenal' : 
-                    [30, 31].includes(plan?.intervalDays) ? 'Mensual' : 
-                    `Cada ${plan?.intervalDays} días`;
+  const freq = plan ? getFreqUnit(plan.intervalDays) : '';
+  const freqLabel = plan ? getFreqLabel(plan.intervalDays) : '';
   const isWeekly = plan?.intervalDays < 30;
+  const totalPrice = Number(plan?.price || 0) * destinations.length;
 
-  const handleCreateSubscription = async () => {
+  const updateDest = (i: number, field: keyof Destination, val: string) => {
+    setDestinations(prev => prev.map((d, idx) => idx === i ? { ...d, [field]: val } : d));
+  };
+  const addDest = () => {
+    if (destinations.length >= 5) { toast.error('Máximo 5 destinos por suscripción'); return; }
+    setDestinations(prev => [...prev, { ...EMPTY_DEST }]);
+  };
+  const removeDest = (i: number) => {
+    if (destinations.length === 1) return;
+    setDestinations(prev => prev.filter((_, idx) => idx !== i));
+  };
+
+  const validateDestinations = () => {
+    for (let i = 0; i < destinations.length; i++) {
+      const d = destinations[i];
+      if (!d.fullName || !d.address || !d.city) {
+        toast.error(`Destino ${i + 1}: completa nombre, dirección y ciudad`);
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const handleCreateSubscriptions = async () => {
     if (!isAuthenticated) { router.push('/login'); return; }
+    if (!validateDestinations()) return;
     setSubmitting(true);
     try {
-      const recRes = await recipientsApi.create(recipient);
-      await subscriptionsApi.create({ planId: id, recipientId: recRes.data.data.id, paymentMethod });
+      for (const dest of destinations) {
+        const recRes = await recipientsApi.create(dest);
+        await subscriptionsApi.create({ planId: id, recipientId: recRes.data.data.id, paymentMethod });
+      }
       setStep('success');
-      toast.success('¡Suscripción creada! 🌸');
+      toast.success(`🌸 ${destinations.length > 1 ? `${destinations.length} suscripciones creadas` : 'Suscripción creada'}!`);
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Error al crear la suscripción');
     } finally {
@@ -70,7 +108,7 @@ export default function PlanDetailPage() {
 
   const stepList = [
     { key: 'plan', label: 'Plan' },
-    { key: 'recipient', label: 'Destinatario' },
+    { key: 'destinations', label: 'Destinos' },
     { key: 'payment', label: 'Pago' },
   ];
   const currentIdx = stepList.findIndex(s => s.key === step);
@@ -84,8 +122,8 @@ export default function PlanDetailPage() {
           <button
             onClick={() => {
               if (step === 'plan') router.push('/planes');
-              else if (step === 'recipient') setStep('plan');
-              else if (step === 'payment') setStep('recipient');
+              else if (step === 'destinations') setStep('plan');
+              else if (step === 'payment') setStep('destinations');
             }}
             className="flex items-center gap-2 text-sm text-gray-500 hover:text-rose-600 font-medium mb-6 transition-colors group"
           >
@@ -136,7 +174,6 @@ export default function PlanDetailPage() {
               </div>
 
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-4">
-                {/* Header del plan */}
                 <div className="flex items-center gap-4 pb-5 border-b border-gray-100 mb-5">
                   <div className="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center text-2xl shrink-0">
                     {isWeekly ? '🌷' : '🌹'}
@@ -151,11 +188,10 @@ export default function PlanDetailPage() {
                     <p className="text-2xl font-bold text-rose-600" style={{ fontFamily: "'Playfair Display', serif" }}>
                       {formatCurrency(Number(plan.price))}
                     </p>
-                    <p className="text-xs text-gray-400">/{freq}</p>
+                    <p className="text-xs text-gray-400">/{freq} · por destino</p>
                   </div>
                 </div>
 
-                {/* Features */}
                 {plan.features?.length > 0 && (
                   <ul className="space-y-2.5 mb-5">
                     {plan.features.map((f: string) => (
@@ -169,8 +205,7 @@ export default function PlanDetailPage() {
                   </ul>
                 )}
 
-                {/* Beneficios */}
-                <div className="grid grid-cols-2 gap-2 pt-4 border-t border-gray-100">
+                <div className="grid grid-cols-2 gap-2 pt-4 border-t border-gray-50">
                   {[
                     { emoji: '🚚', text: 'Envío incluido' },
                     { emoji: '⏸️', text: 'Pausa cuando quieras' },
@@ -178,15 +213,24 @@ export default function PlanDetailPage() {
                     { emoji: '❌', text: 'Sin contratos' },
                   ].map(item => (
                     <div key={item.text} className="flex items-center gap-2 text-xs text-gray-500">
-                      <span>{item.emoji}</span>
-                      <span>{item.text}</span>
+                      <span>{item.emoji}</span><span>{item.text}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
+              {/* Info multi-destino */}
+              <div className="bg-rose-50 border border-rose-100 rounded-2xl p-4 mb-4">
+                <p className="text-sm font-semibold text-rose-700 mb-1 flex items-center gap-2">
+                  <MapPin className="w-4 h-4" /> ¿Envías a más de un lugar?
+                </p>
+                <p className="text-xs text-rose-600 leading-relaxed">
+                  En el siguiente paso puedes agregar varios destinos. Se creará una suscripción por cada dirección, todas bajo tu cuenta.
+                </p>
+              </div>
+
               {!isAuthenticated ? (
-                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-4">
+                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
                   <p className="text-sm font-semibold text-amber-800 mb-1">Necesitas iniciar sesión</p>
                   <p className="text-xs text-amber-600 mb-4">Crea una cuenta o inicia sesión para suscribirte.</p>
                   <Link href="/login" className="flex items-center justify-center gap-2 w-full py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-sm transition-all">
@@ -195,99 +239,132 @@ export default function PlanDetailPage() {
                 </div>
               ) : (
                 <button
-                  onClick={() => setStep('recipient')}
+                  onClick={() => setStep('destinations')}
                   className="w-full flex items-center justify-center gap-2 py-4 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl text-sm transition-all hover:-translate-y-0.5 shadow-lg shadow-rose-200"
                 >
-                  Continuar <ArrowRight className="w-4 h-4" />
+                  Elegir destinos <ArrowRight className="w-4 h-4" />
                 </button>
               )}
             </motion.div>
           )}
 
-          {/* ── Paso 2: Destinatario ── */}
-          {step === 'recipient' && (
-            <motion.div key="recipient" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
+          {/* ── Paso 2: Destinos ── */}
+          {step === 'destinations' && (
+            <motion.div key="destinations" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
               <div className="text-center mb-6">
                 <div className="inline-flex items-center justify-center w-14 h-14 bg-rose-100 rounded-2xl mb-4">
-                  <User className="w-7 h-7 text-rose-500" />
+                  <MapPin className="w-7 h-7 text-rose-500" />
                 </div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  ¿A quién le enviamos?
+                  ¿A dónde enviamos?
                 </h1>
-                <p className="text-gray-500 text-sm">Puedes enviarlo a ti mismo o a alguien especial</p>
+                <p className="text-gray-500 text-sm">Agrega uno o más destinos de entrega</p>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Nombre completo *</label>
-                  <div className="relative">
-                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                    <input
-                      value={recipient.fullName}
-                      onChange={e => setRecipient(r => ({ ...r, fullName: e.target.value }))}
-                      placeholder="María García"
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all"
-                    />
-                  </div>
-                </div>
+              <div className="space-y-4">
+                {destinations.map((dest, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+                  >
+                    {/* Header destino */}
+                    <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50 bg-gray-50/50">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-rose-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                          {i + 1}
+                        </div>
+                        <span className="text-sm font-semibold text-gray-700">
+                          {i === 0 ? 'Destino principal' : `Destino ${i + 1}`}
+                        </span>
+                        <span className="text-xs text-rose-600 font-medium bg-rose-50 px-2 py-0.5 rounded-full">
+                          {formatCurrency(Number(plan.price))}/{freq}
+                        </span>
+                      </div>
+                      {destinations.length > 1 && (
+                        <button onClick={() => removeDest(i)}
+                          className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Dirección de entrega *</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                    <input
-                      value={recipient.address}
-                      onChange={e => setRecipient(r => ({ ...r, address: e.target.value }))}
-                      placeholder="Calle 45 # 12-34 Apto 201"
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all"
-                    />
-                  </div>
-                </div>
+                    <div className="p-5 space-y-3">
+                      <div className="relative">
+                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                        <input
+                          value={dest.fullName}
+                          onChange={e => updateDest(i, 'fullName', e.target.value)}
+                          placeholder="Nombre completo de quien recibe *"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all"
+                        />
+                      </div>
+                      <div className="relative">
+                        <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                        <input
+                          value={dest.address}
+                          onChange={e => updateDest(i, 'address', e.target.value)}
+                          placeholder="Dirección completa *"
+                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <input
+                          value={dest.city}
+                          onChange={e => updateDest(i, 'city', e.target.value)}
+                          placeholder="Ciudad *"
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all"
+                        />
+                        <input
+                          value={dest.phone}
+                          onChange={e => updateDest(i, 'phone', e.target.value)}
+                          placeholder="Teléfono"
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all"
+                        />
+                      </div>
+                      <div className="relative">
+                        <Gift className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-400 pointer-events-none" />
+                        <textarea
+                          value={dest.notes}
+                          onChange={e => updateDest(i, 'notes', e.target.value)}
+                          placeholder="Nota de regalo (opcional) 🌸"
+                          rows={2}
+                          className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all resize-none"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Ciudad *</label>
-                    <input
-                      value={recipient.city}
-                      onChange={e => setRecipient(r => ({ ...r, city: e.target.value }))}
-                      placeholder="Bogotá"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Teléfono</label>
-                    <input
-                      value={recipient.phone}
-                      onChange={e => setRecipient(r => ({ ...r, phone: e.target.value }))}
-                      placeholder="3001234567"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all"
-                    />
-                  </div>
-                </div>
+                {/* Botón agregar destino */}
+                {destinations.length < 5 && (
+                  <button
+                    onClick={addDest}
+                    className="w-full border-2 border-dashed border-rose-200 hover:border-rose-400 bg-white hover:bg-rose-50/50 text-rose-500 hover:text-rose-600 py-4 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Agregar otro destino
+                  </button>
+                )}
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    <Gift className="inline w-3.5 h-3.5 mr-1 text-rose-400" />
-                    Nota de regalo <span className="text-gray-400 font-normal">(opcional)</span>
-                  </label>
-                  <textarea
-                    value={recipient.notes}
-                    onChange={e => setRecipient(r => ({ ...r, notes: e.target.value }))}
-                    placeholder="Con amor para ti... 🌸"
-                    rows={3}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all resize-none"
-                  />
-                </div>
+                {/* Resumen total */}
+                {destinations.length > 1 && (
+                  <div className="bg-rose-50 rounded-2xl border border-rose-100 p-4 flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-gray-800">{destinations.length} suscripciones · {freqLabel}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{formatCurrency(Number(plan.price))} × {destinations.length} destinos</p>
+                    </div>
+                    <p className="text-xl font-bold text-rose-600">{formatCurrency(totalPrice)}<span className="text-sm font-normal text-gray-400">/{freq}</span></p>
+                  </div>
+                )}
 
                 <button
                   onClick={() => {
-                    if (!recipient.fullName || !recipient.address || !recipient.city) {
-                      toast.error('Completa nombre, dirección y ciudad');
-                      return;
-                    }
+                    if (!validateDestinations()) return;
                     setStep('payment');
                   }}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl text-sm transition-all hover:-translate-y-0.5 shadow-md shadow-rose-200 mt-2"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl text-sm transition-all hover:-translate-y-0.5 shadow-md shadow-rose-200"
                 >
                   Continuar al pago <ArrowRight className="w-4 h-4" />
                 </button>
@@ -310,18 +387,25 @@ export default function PlanDetailPage() {
 
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-5">
                 {/* Resumen */}
-                <div className="flex items-center justify-between p-4 bg-rose-50 rounded-xl border border-rose-100">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl">{isWeekly ? '🌷' : '🌹'}</span>
-                    <div>
-                      <p className="font-semibold text-gray-900 text-sm">{plan.name}</p>
-                      <p className="text-xs text-gray-500">Para: {recipient.fullName} · {recipient.city}</p>
+                <div className="space-y-2">
+                  {destinations.map((d, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-rose-50 rounded-xl border border-rose-100">
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 bg-rose-500 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">{i + 1}</div>
+                        <div>
+                          <p className="font-semibold text-gray-900 text-sm">{d.fullName || `Destino ${i + 1}`}</p>
+                          <p className="text-xs text-gray-500">{d.city}</p>
+                        </div>
+                      </div>
+                      <p className="font-bold text-rose-600 text-sm">{formatCurrency(Number(plan.price))}</p>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-rose-600 text-lg">{formatCurrency(Number(plan.price))}</p>
-                    <p className="text-xs text-gray-400">/{freq}</p>
-                  </div>
+                  ))}
+                  {destinations.length > 1 && (
+                    <div className="flex justify-between items-center pt-2 border-t border-gray-100 px-1">
+                      <span className="text-sm font-semibold text-gray-700">Total {destinations.length} suscripciones</span>
+                      <span className="text-lg font-bold text-rose-600">{formatCurrency(totalPrice)}<span className="text-xs text-gray-400">/{freq}</span></span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Métodos */}
@@ -335,9 +419,7 @@ export default function PlanDetailPage() {
                     ].map(({ id: mid, icon: Icon, label }) => (
                       <button key={mid} onClick={() => setPaymentMethod(mid)}
                         className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
-                          paymentMethod === mid
-                            ? 'border-rose-400 bg-rose-50'
-                            : 'border-gray-200 hover:border-rose-200 bg-white'
+                          paymentMethod === mid ? 'border-rose-400 bg-rose-50' : 'border-gray-200 hover:border-rose-200 bg-white'
                         }`}>
                         <Icon className={`w-5 h-5 ${paymentMethod === mid ? 'text-rose-500' : 'text-gray-400'}`} />
                         <span className={`text-xs font-semibold ${paymentMethod === mid ? 'text-rose-600' : 'text-gray-500'}`}>{label}</span>
@@ -346,21 +428,20 @@ export default function PlanDetailPage() {
                   </div>
                 </div>
 
-                {/* Seguridad */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
                   <Shield className="w-4 h-4 text-green-500 shrink-0" />
                   <p className="text-xs text-gray-500">Pago seguro procesado por <strong className="text-gray-700">Wompi</strong> con cifrado SSL</p>
                 </div>
 
                 <button
-                  onClick={handleCreateSubscription}
+                  onClick={handleCreateSubscriptions}
                   disabled={submitting}
                   className="w-full flex items-center justify-center gap-2 py-3.5 bg-rose-500 hover:bg-rose-600 disabled:opacity-60 text-white font-bold rounded-2xl text-sm transition-all hover:-translate-y-0.5 shadow-md shadow-rose-200"
                 >
                   {submitting ? (
                     <><Loader2 className="w-4 h-4 animate-spin" /> Procesando...</>
                   ) : (
-                    <>Confirmar suscripción <ArrowRight className="w-4 h-4" /></>
+                    <>Confirmar {destinations.length > 1 ? `${destinations.length} suscripciones` : 'suscripción'} <ArrowRight className="w-4 h-4" /></>
                   )}
                 </button>
               </div>
@@ -375,25 +456,32 @@ export default function PlanDetailPage() {
                 <CheckCircle className="w-10 h-10 text-green-500" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
-                ¡Suscripción activa! 🌸
+                {destinations.length > 1 ? '¡Suscripciones activas!' : '¡Suscripción activa!'} 🌸
               </h2>
               <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                Tu suscripción a <strong>{plan.name}</strong> fue creada. Las flores llegarán a <strong>{recipient.fullName}</strong> en {recipient.city}.
+                {destinations.length > 1
+                  ? `Tu plan "${plan.name}" se activó para ${destinations.length} destinos. Las flores llegarán puntualmente a cada dirección.`
+                  : `Tu suscripción a "${plan.name}" fue creada. Las flores llegarán a ${destinations[0].fullName} en ${destinations[0].city}.`
+                }
               </p>
 
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6 text-left space-y-3">
-                {[
-                  { label: 'Plan', value: plan.name },
-                  { label: 'Destinatario', value: recipient.fullName },
-                  { label: 'Ciudad', value: recipient.city },
-                  { label: 'Frecuencia', value: freqLabel },
-                  { label: 'Precio', value: `${formatCurrency(Number(plan.price))}/${freq}` },
-                ].map(item => (
-                  <div key={item.label} className="flex justify-between text-sm">
-                    <span className="text-gray-400">{item.label}</span>
-                    <span className="font-semibold text-gray-800">{item.value}</span>
-                  </div>
-                ))}
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Plan</span>
+                  <span className="font-semibold text-gray-800">{plan.name}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Frecuencia</span>
+                  <span className="font-semibold text-gray-800">{freqLabel}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Destinos</span>
+                  <span className="font-semibold text-gray-800">{destinations.length}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Total</span>
+                  <span className="font-semibold text-rose-600">{formatCurrency(totalPrice)}/{freq}</span>
+                </div>
               </div>
 
               <div className="flex flex-col gap-3">
