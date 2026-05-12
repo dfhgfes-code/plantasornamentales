@@ -18,7 +18,7 @@ const schema = z.object({
   email: z.string().email('Correo inválido'),
   password: z.string().min(8, 'Mínimo 8 caracteres'),
   phone: z.string().optional(),
-  role: z.enum(['customer', 'wholesaler']).optional().default('customer'),
+  role: z.enum(['customer', 'wholesaler']),
 });
 
 type FormData = z.infer<typeof schema>;
