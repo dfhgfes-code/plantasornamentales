@@ -1,0 +1,8 @@
+# Variables de Supabase para Railway
+# Copia estos valores EXACTOS en Railway > Variables
+
+SUPABASE_URL=https://qbnyqiibvcouysoygsq.supabase.co
+
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFibnlxaWlidmNvdXlzb3lnc3NxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMDAwMDEsImV4cCI6MjA5ODU3NjAwMX0.-WuCjPy-wEU9-vL1ZGKlfJDOUnJaKhjFOsCjVZJW304
+
+SUPABASE_BUCKET=plantas-images

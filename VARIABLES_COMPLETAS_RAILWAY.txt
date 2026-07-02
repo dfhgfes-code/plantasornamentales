@@ -1,0 +1,89 @@
+# ============================================
+# TODAS LAS VARIABLES PARA RAILWAY
+# Copia cada línea en Railway > Variables
+# ============================================
+
+# === APLICACIÓN ===
+NODE_ENV=production
+PORT=3000
+API_PREFIX=api/v1
+
+# === BASE DE DATOS (Usar estas en lugar de DATABASE_URL) ===
+DB_HOST=aws-0-us-east-1.pooler.supabase.com
+DB_PORT=6543
+DB_USERNAME=postgres.qbnyqiibvcouysoygsq
+DB_PASSWORD=@Joshuamadrid27
+DB_NAME=postgres
+DB_SSL=true
+
+# === JWT ===
+JWT_SECRET=janneth_plantas_jwt_secret_production_2024
+JWT_EXPIRES_IN=7d
+
+# === SUPABASE ===
+SUPABASE_URL=https://qbnyqiibvcouysoygsq.supabase.co
+SUPABASE_SERVICE_KEY=sb_secret_RIuD7PaEBQvZD8C1uU8uRA_oJmOtAAo
+SUPABASE_BUCKET=plantas-images
+
+# === WOMPI ===
+WOMPI_PUBLIC_KEY=pub_test_xxxxxxxxxxxx
+WOMPI_PRIVATE_KEY=prv_test_xxxxxxxxxxxx
+WOMPI_EVENTS_SECRET=test_events_secret
+WOMPI_BASE_URL=https://sandbox.wompi.co/v1
+
+# === CORS ===
+CORS_ORIGIN=https://*.vercel.app,http://localhost:3001
+
+# === EMAIL ===
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=jannethacevedoplantasventas@gmail.com
+SMTP_PASS=ngfzklvqsdiwtvmy
+
+# === GOOGLE AUTH ===
+GOOGLE_CLIENT_ID=606760776980-m49qk52hum9m39cb21puvnqsih5ubcc7.apps.googleusercontent.com
+
+# === LOGS ===
+LOG_LEVEL=info
+LOG_DIR=logs
+
+# ============================================
+# TOTAL: 24 variables
+# ============================================
+
+# INSTRUCCIONES:
+# 1. Ve a Railway > Variables
+# 2. Click en "Raw Editor" (arriba a la derecha)
+# 3. Copia TODO lo de abajo (desde NODE_ENV hasta LOG_DIR)
+# 4. Pégalo en el editor
+# 5. Guarda
+
+# PARA RAW EDITOR (formato JSON):
+{
+  "NODE_ENV": "production",
+  "PORT": "3000",
+  "API_PREFIX": "api/v1",
+  "DB_HOST": "aws-0-us-east-1.pooler.supabase.com",
+  "DB_PORT": "6543",
+  "DB_USERNAME": "postgres.qbnyqiibvcouysoygsq",
+  "DB_PASSWORD": "@Joshuamadrid27",
+  "DB_NAME": "postgres",
+  "DB_SSL": "true",
+  "JWT_SECRET": "janneth_plantas_jwt_secret_production_2024",
+  "JWT_EXPIRES_IN": "7d",
+  "SUPABASE_URL": "https://qbnyqiibvcouysoygsq.supabase.co",
+  "SUPABASE_SERVICE_KEY": "sb_secret_RIuD7PaEBQvZD8C1uU8uRA_oJmOtAAo",
+  "SUPABASE_BUCKET": "plantas-images",
+  "WOMPI_PUBLIC_KEY": "pub_test_xxxxxxxxxxxx",
+  "WOMPI_PRIVATE_KEY": "prv_test_xxxxxxxxxxxx",
+  "WOMPI_EVENTS_SECRET": "test_events_secret",
+  "WOMPI_BASE_URL": "https://sandbox.wompi.co/v1",
+  "CORS_ORIGIN": "https://*.vercel.app,http://localhost:3001",
+  "SMTP_HOST": "smtp.gmail.com",
+  "SMTP_PORT": "465",
+  "SMTP_USER": "jannethacevedoplantasventas@gmail.com",
+  "SMTP_PASS": "ngfzklvqsdiwtvmy",
+  "GOOGLE_CLIENT_ID": "606760776980-m49qk52hum9m39cb21puvnqsih5ubcc7.apps.googleusercontent.com",
+  "LOG_LEVEL": "info",
+  "LOG_DIR": "logs"
+}

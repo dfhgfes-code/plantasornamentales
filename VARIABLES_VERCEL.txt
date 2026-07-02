@@ -1,0 +1,24 @@
+# ============================================
+# VARIABLES PARA VERCEL - FRONTEND
+# Copiar estas 3 variables al crear el proyecto
+# ============================================
+
+NEXT_PUBLIC_API_URL=https://plantasornamentales-production.up.railway.app/api/v1
+
+NEXT_PUBLIC_WOMPI_PUBLIC_KEY=pub_test_xxxxxxxxxxxx
+
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=606760776980-m49qk52hum9m39cb21puvnqsih5ubcc7.apps.googleusercontent.com
+
+# ============================================
+# CÓMO AGREGARLAS EN VERCEL:
+# ============================================
+# 
+# Al crear el proyecto nuevo:
+# 1. Selecciona el repositorio: dfhgfes-code/plantasornamentales
+# 2. Framework: Next.js
+# 3. Root Directory: frontend
+# 4. Environment Variables:
+#    - Click "Add" y pega cada línea (nombre=valor)
+# 5. Click "Deploy"
+#
+# ============================================
