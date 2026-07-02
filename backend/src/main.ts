@@ -28,13 +28,15 @@ async function bootstrap() {
 
   // CORS
   const corsOrigin = configService.get<string>('CORS_ORIGIN', 'http://localhost:3001');
-  app.enableCors({
-    origin: (origin, callback) => {
-      // Si no hay origin (peticiones desde el mismo servidor), permitir
-      if (!origin) {
-        return callback(null, true);
-      }
-      
+  
+  // Función para validar origin
+  const validateOrigin = (origin: string, callback: (err: Error | null, allow?: boolean) => void) => {
+    // Si no hay origin (peticiones desde el mismo servidor o Postman), permitir
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    try {
       // Lista de orígenes permitidos (separados por coma)
       const allowedOrigins = corsOrigin.split(',').map(o => o.trim());
       
@@ -55,12 +57,15 @@ async function bootstrap() {
         return false;
       });
       
-      if (isAllowed) {
-        callback(null, true);
-      } else {
-        callback(new Error(`Origin ${origin} not allowed by CORS`));
-      }
-    },
+      callback(null, isAllowed);
+    } catch (error) {
+      console.error('Error validating CORS origin:', error);
+      callback(null, false);
+    }
+  };
+  
+  app.enableCors({
+    origin: validateOrigin,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
