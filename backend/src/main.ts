@@ -27,8 +27,40 @@ async function bootstrap() {
   app.setGlobalPrefix(apiPrefix);
 
   // CORS
+  const corsOrigin = configService.get<string>('CORS_ORIGIN', 'http://localhost:3001');
   app.enableCors({
-    origin: configService.get<string>('CORS_ORIGIN', 'http://localhost:3001'),
+    origin: (origin, callback) => {
+      // Si no hay origin (peticiones desde el mismo servidor), permitir
+      if (!origin) {
+        return callback(null, true);
+      }
+      
+      // Lista de orígenes permitidos (separados por coma)
+      const allowedOrigins = corsOrigin.split(',').map(o => o.trim());
+      
+      // Verificar si el origin está en la lista o coincide con algún patrón
+      const isAllowed = allowedOrigins.some(allowedOrigin => {
+        // Si es exacto
+        if (origin === allowedOrigin) return true;
+        
+        // Si tiene wildcard (*), convertir a regex
+        if (allowedOrigin.includes('*')) {
+          const pattern = allowedOrigin
+            .replace(/\./g, '\\.')
+            .replace(/\*/g, '.*');
+          const regex = new RegExp(`^${pattern}$`);
+          return regex.test(origin);
+        }
+        
+        return false;
+      });
+      
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
