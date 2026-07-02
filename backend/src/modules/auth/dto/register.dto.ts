@@ -8,7 +8,7 @@ import {
   Matches,
   IsEnum,
 } from 'class-validator';
-import { UserRole } from '../../common/enums/user-role.enum';
+import { UserRole } from '../../../common/enums/user-role.enum';
 
 export class RegisterDto {
   @ApiProperty({ example: 'María', description: 'Nombre del usuario' })
