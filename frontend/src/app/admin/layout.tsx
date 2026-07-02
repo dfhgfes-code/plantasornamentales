@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { 
@@ -11,6 +12,8 @@ import {
   ChevronRight,
   ShieldCheck,
   Flower2,
+  Menu,
+  X,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 import { useRouter } from 'next/navigation';
@@ -20,10 +23,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const { logout, user } = useAuthStore();
   const router = useRouter();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     router.push('/login');
+  };
+
+  const handleNavClick = () => {
+    setIsMobileMenuOpen(false);
   };
 
   const navItems = [
@@ -41,8 +49,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex min-h-screen bg-[#f8f7f5]">
 
+      {/* ── Mobile Menu Button ── */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center text-gray-600 hover:text-rose-600 transition-colors"
+        aria-label="Toggle menu"
+      >
+        {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+      </button>
+
+      {/* ── Mobile Overlay ── */}
+      {isMobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* ── Sidebar ── */}
-      <aside className="w-60 bg-white border-r border-gray-100 flex flex-col sticky top-0 h-screen z-40 shadow-sm">
+      <aside className={cn(
+        "w-60 bg-white border-r border-gray-100 flex flex-col sticky top-0 h-screen z-40 shadow-sm transition-transform duration-300 ease-in-out",
+        // Desktop: siempre visible
+        "lg:translate-x-0",
+        // Mobile: deslizable
+        isMobileMenuOpen ? "fixed translate-x-0" : "fixed -translate-x-full lg:translate-x-0"
+      )}>
 
         {/* Logo */}
         <div className="px-6 py-6 border-b border-gray-50">
@@ -78,6 +109,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={handleNavClick}
                 className={cn(
                   'flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all group',
                   isActive
@@ -131,7 +163,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* ── Contenido ── */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto lg:ml-0">
+        <div className="lg:hidden h-16" /> {/* Spacer for mobile menu button */}
         {children}
       </main>
     </div>
