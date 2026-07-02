@@ -52,7 +52,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* ── Mobile Menu Button ── */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center text-gray-600 hover:text-rose-600 transition-colors"
+        className="md:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center text-gray-600 hover:text-rose-600 transition-colors"
         aria-label="Toggle menu"
       >
         {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -61,7 +61,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* ── Mobile Overlay ── */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          className="md:hidden fixed inset-0 bg-black/50 z-30"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
@@ -70,9 +70,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className={cn(
         "w-60 bg-white border-r border-gray-100 flex flex-col sticky top-0 h-screen z-40 shadow-sm transition-transform duration-300 ease-in-out",
         // Desktop: siempre visible
-        "lg:translate-x-0",
+        "md:translate-x-0",
         // Mobile: deslizable
-        isMobileMenuOpen ? "fixed translate-x-0" : "fixed -translate-x-full lg:translate-x-0"
+        isMobileMenuOpen ? "fixed translate-x-0" : "fixed -translate-x-full md:translate-x-0"
       )}>
 
         {/* Logo */}
@@ -163,8 +163,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* ── Contenido ── */}
-      <main className="flex-1 overflow-auto lg:ml-0">
-        <div className="lg:hidden h-16" /> {/* Spacer for mobile menu button */}
+      <main className="flex-1 overflow-auto md:ml-0">
+        <div className="md:hidden h-16" /> {/* Spacer for mobile menu button */}
         {children}
       </main>
     </div>
