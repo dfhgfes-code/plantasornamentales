@@ -8,16 +8,16 @@ export class MailService {
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: Number(process.env.SMTP_PORT) || 465,
-      secure: true,
+      host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: false, // Puerto 587 usa TLS (no SSL)
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
-      connectionTimeout: 5000,  // 5 segundos máximo para conectar
-      greetingTimeout: 5000,    // 5 segundos para saludo SMTP
-      socketTimeout: 10000,     // 10 segundos para operaciones
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
     });
   }
 
@@ -55,7 +55,7 @@ export class MailService {
         return;
       }
       await this.transporter.sendMail({
-        from: '"Janneth Acevedo" <onboarding@resend.dev>',
+        from: '"Janneth Acevedo" <' + (process.env.SMTP_USER || 'onboarding@resend.dev') + '>',
         to,
         subject: 'Bienvenido a Janneth Acevedo 🌹',
         html: this.getBaseTemplate(title, content),
@@ -78,7 +78,7 @@ export class MailService {
     try {
       if (!process.env.SMTP_PASS) return;
       await this.transporter.sendMail({
-        from: '"Janneth Acevedo" <onboarding@resend.dev>',
+        from: '"Janneth Acevedo" <' + (process.env.SMTP_USER || 'onboarding@resend.dev') + '>',
         to,
         subject: 'Restablecer tu contraseña 🔒',
         html: this.getBaseTemplate(title, content),
