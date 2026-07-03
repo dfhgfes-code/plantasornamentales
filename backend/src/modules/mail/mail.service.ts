@@ -47,7 +47,7 @@ export class MailService {
       '<p>Hola <strong>' + name + '</strong>,</p>' +
       '<p>Nos llena de alegría darte la bienvenida a <strong>Janneth Acevedo</strong>. Tu cuenta ha sido creada con éxito.</p>' +
       '<p>Explora nuestro catálogo de plantas ornamentales y arreglos florales diseñados para hacer inolvidables tus momentos especiales.</p>' +
-      '<div style="text-align:center;"><a href="https://janneth-acevedo-plantas.vercel.app/tienda" class="button">Descubrir Arreglos</a></div>';
+      '<div style="text-align:center;"><a href="https://plantasornamentales-3cum.vercel.app/tienda" class="button">Descubrir Arreglos</a></div>';
 
     try {
       if (!process.env.SMTP_PASS) {
@@ -55,7 +55,7 @@ export class MailService {
         return;
       }
       await this.transporter.sendMail({
-        from: '"Janneth Acevedo" <' + process.env.SMTP_USER + '>',
+        from: '"Janneth Acevedo" <onboarding@resend.dev>',
         to,
         subject: 'Bienvenido a Janneth Acevedo 🌹',
         html: this.getBaseTemplate(title, content),
@@ -67,7 +67,7 @@ export class MailService {
   }
 
   async sendPasswordResetEmail(to: string, name: string, token: string): Promise<void> {
-    const resetLink = 'https://janneth-acevedo-plantas.vercel.app/restablecer?token=' + token;
+    const resetLink = 'https://plantasornamentales-3cum.vercel.app/restablecer?token=' + token;
     const title = 'Recuperación de Contraseña';
     const content =
       '<p>Hola <strong>' + name + '</strong>,</p>' +
@@ -78,11 +78,12 @@ export class MailService {
     try {
       if (!process.env.SMTP_PASS) return;
       await this.transporter.sendMail({
-        from: '"Janneth Acevedo" <' + process.env.SMTP_USER + '>',
+        from: '"Janneth Acevedo" <onboarding@resend.dev>',
         to,
         subject: 'Restablecer tu contraseña 🔒',
         html: this.getBaseTemplate(title, content),
       });
+      this.logger.log('Password reset email sent to ' + to);
     } catch (error) {
       this.logger.error('Error sending password reset email', error);
     }
