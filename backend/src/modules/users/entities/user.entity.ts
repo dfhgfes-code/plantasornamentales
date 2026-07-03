@@ -53,6 +53,12 @@ export class User extends BaseEntity {
   @Column({ name: 'email_verified', default: false })
   emailVerified: boolean;
 
+  @Column({ name: 'reset_token', nullable: true })
+  resetToken?: string;
+
+  @Column({ name: 'reset_token_expiry', type: 'timestamp', nullable: true })
+  resetTokenExpiry?: Date;
+
   // Relaciones (se completan en fases siguientes)
   // @OneToMany(() => Subscription, (sub) => sub.user)
   // subscriptions: Subscription[];

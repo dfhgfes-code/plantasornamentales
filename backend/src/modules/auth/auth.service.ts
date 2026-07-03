@@ -13,9 +13,12 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { GoogleLoginDto } from './dto/google-login.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { JwtPayload } from './strategies/jwt.strategy';
 import { UserRole } from '../../common/enums/user-role.enum';
 import { MailService } from '../mail/mail.service';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -192,6 +195,68 @@ export class AuthService {
     await this.userRepository.save(user);
 
     return { message: 'Contraseña actualizada correctamente' };
+  }
+
+  // ─── OLVIDÉ MI CONTRASEÑA ───────────────────────────────────
+  async forgotPassword(dto: ForgotPasswordDto) {
+    const user = await this.userRepository.findOne({
+      where: { email: dto.email.toLowerCase() },
+    });
+
+    // Por seguridad, siempre devolvemos el mismo mensaje
+    // (no revelamos si el email existe o no)
+    const message = 'Si el correo existe, recibirás un enlace para restablecer tu contraseña';
+
+    if (!user) {
+      return { message };
+    }
+
+    // Generar token de recuperación (válido por 1 hora)
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hora
+
+    // Guardar token y expiry en el usuario
+    await this.userRepository.update(user.id, {
+      resetToken,
+      resetTokenExpiry,
+    } as any);
+
+    // Enviar email con el enlace
+    await this.mailService.sendPasswordResetEmail(
+      user.email,
+      user.firstName,
+      resetToken,
+    );
+
+    return { message };
+  }
+
+  // ─── RESTABLECER CONTRASEÑA ─────────────────────────────────
+  async resetPassword(dto: ResetPasswordDto) {
+    const user = await this.userRepository.findOne({
+      where: { resetToken: dto.token } as any,
+    });
+
+    if (!user) {
+      throw new BadRequestException('Token inválido o expirado');
+    }
+
+    // Verificar si el token ha expirado
+    const resetTokenExpiry = (user as any).resetTokenExpiry;
+    if (!resetTokenExpiry || new Date() > new Date(resetTokenExpiry)) {
+      throw new BadRequestException('Token inválido o expirado');
+    }
+
+    // Actualizar contraseña y limpiar token
+    user.password = dto.newPassword;
+    await this.userRepository.save(user);
+
+    await this.userRepository.update(user.id, {
+      resetToken: null,
+      resetTokenExpiry: null,
+    } as any);
+
+    return { message: 'Contraseña restablecida correctamente' };
   }
 
   // ─── HELPERS ────────────────────────────────────────────────
