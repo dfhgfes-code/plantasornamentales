@@ -204,7 +204,6 @@ export class AuthService {
     });
 
     // Por seguridad, siempre devolvemos el mismo mensaje
-    // (no revelamos si el email existe o no)
     const message = 'Si el correo existe, recibirás un enlace para restablecer tu contraseña';
 
     if (!user) {
@@ -221,12 +220,13 @@ export class AuthService {
       resetTokenExpiry,
     } as any);
 
-    // Enviar email con el enlace
-    await this.mailService.sendPasswordResetEmail(
+    // Enviar email en segundo plano (NO bloqueante)
+    // Si falla el email, igual retornamos éxito
+    this.mailService.sendPasswordResetEmail(
       user.email,
       user.firstName,
       resetToken,
-    );
+    ).catch(err => console.error('Error sending reset email:', err));
 
     return { message };
   }
